@@ -1,2 +1,9 @@
+# eclipse user files
 .metadata
+.recommenders
+
+# lejos build files
+*.nxd
+*.nxj
+
 */bin
