@@ -17,6 +17,7 @@ public class Cube implements ICube {
 			{ Orientation.F, Orientation.B, Orientation.L, Orientation.R, Orientation.B, Orientation.D } };
 
 	public Cube() {
+		
 		_faces = new Face[6];
 		_faces[0] = new Face(Orientation.U);
 		_faces[1] = new Face(Orientation.D);
@@ -24,6 +25,7 @@ public class Cube implements ICube {
 		_faces[3] = new Face(Orientation.L);
 		_faces[4] = new Face(Orientation.F);
 		_faces[5] = new Face(Orientation.B);
+		
 		_actions = new Action[6];
 		_actions[0] = new Action(Robot.FlipMethod.DOUBLE, Direction.NONE);
 		_actions[1] = new Action(Robot.FlipMethod.NONE, Direction.NONE);
@@ -38,9 +40,9 @@ public class Cube implements ICube {
 	}
 
 	private void updateOrientations(Orientation orientation) {
-		Orientation[] dynamicChange = ORIENTATION_MAT[orientation.getValue()];
+		Orientation[] newOrientations = ORIENTATION_MAT[orientation.getValue()];
 		for (int i = 0; i < 6; i++) {
-			_faces[i]._dynamic_orientation = dynamicChange[_faces[i]._dynamic_orientation.getValue()];
+			_faces[i]._dynamic_orientation = newOrientations[_faces[i]._dynamic_orientation.getValue()];
 		}
 	}
 
@@ -53,21 +55,28 @@ public class Cube implements ICube {
 	public void setColors() {
 		_faces[Orientation.F.getValue()]._colors = Robot.scanFace();
 		Robot.flipCube(FlipMethod.SINGLE);
+		
 		_faces[Orientation.R.getValue()]._colors = Robot.scanFace();
 		Robot.flipCube(FlipMethod.SINGLE);
+		
 		_faces[Orientation.B.getValue()]._colors = Robot.scanFace();
 		Robot.flipCube(FlipMethod.SINGLE);
+		
 		_faces[Orientation.L.getValue()]._colors = Robot.scanFace();
 		Robot.rotateCube(Direction.RIGHT);
 		Robot.flipCube(FlipMethod.SINGLE);
+		
 		_faces[Orientation.D.getValue()]._colors = Robot.scanFace();
 		Robot.flipCube(FlipMethod.DOUBLE);
 		Robot.rotateCube(Direction.MIRROR);
+		
 		_faces[Orientation.U.getValue()]._colors = Robot.scanFace();
 	}
 
 	public class Action {
+		
 		public Robot.FlipMethod flips;
+		
 		public Direction direction;
 
 		public Action(Robot.FlipMethod flips, Direction direction) {
@@ -77,11 +86,13 @@ public class Cube implements ICube {
 	}
 
 	public class Face implements IFace {
+		
 		private Colors[][] _colors;
+		
 		private Orientation _dynamic_orientation;
 
-		public Face(Orientation current) {
-			this._dynamic_orientation = current;
+		public Face(Orientation orientation) {
+			this._dynamic_orientation = orientation;
 			this._colors = new Colors[3][3];
 		}
 
@@ -90,9 +101,18 @@ public class Cube implements ICube {
 		}
 
 		public void turn(Direction direction) {
-			FlipMethod cube_flips = _actions[_dynamic_orientation.getValue()].flips;
-			Direction cube_rotation = _actions[_dynamic_orientation.getValue()].direction;
-			changePosition(cube_flips, cube_rotation, _dynamic_orientation);
+			
+			FlipMethod cubeFlips = _actions[_dynamic_orientation.getValue()].flips;
+			
+			Direction cubeRotation = _actions[_dynamic_orientation.getValue()].direction;
+			
+			// If a cube flip is required, we must mirror the face turning direction:
+			if (cubeFlips != FlipMethod.NONE){
+				cubeRotation = cubeRotation.mirror();
+			}
+			
+			changePosition(cubeFlips, cubeRotation, _dynamic_orientation);
+			
 			Robot.turnFace(direction);
 		}
 	}
