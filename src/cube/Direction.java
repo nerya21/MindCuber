@@ -11,4 +11,15 @@ public enum Direction {
     public int getDegree() {
         return degree;
     }
+    
+    public Direction mirror() {
+    	switch (this) {
+	    	case LEFT:
+				return RIGHT;
+			case RIGHT:
+				return LEFT;			
+			default:
+				return this;
+		}
+    }
 }
