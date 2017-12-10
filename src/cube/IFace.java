@@ -1,5 +1,8 @@
 package cube;
 
+import robot.Colors;
+import robot.Direction;
+
 public interface IFace {
 	
 	/*

@@ -22,19 +22,49 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>src/cube/Colors.java</name>
+			<name>src/application/Application.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/cube/Colors.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/Application.java</locationURI>
+		</link>
+		<link>
+			<name>src/application/CalibrationMenu.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/CalibrationMenu.java</locationURI>
+		</link>
+		<link>
+			<name>src/application/Logger.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/Logger.java</locationURI>
+		</link>
+		<link>
+			<name>src/application/LoggerGroup.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/LoggerGroup.java</locationURI>
+		</link>
+		<link>
+			<name>src/application/LoggerLevel.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/LoggerLevel.java</locationURI>
+		</link>
+		<link>
+			<name>src/application/MainMenu.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/MainMenu.java</locationURI>
+		</link>
+		<link>
+			<name>src/application/TestsMenu.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/TestsMenu.java</locationURI>
+		</link>
+		<link>
+			<name>src/cube/Action.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/cube/Action.java</locationURI>
 		</link>
 		<link>
 			<name>src/cube/Cube.java</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/src/cube/Cube.java</locationURI>
-		</link>
-		<link>
-			<name>src/cube/Direction.java</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/cube/Direction.java</locationURI>
 		</link>
 		<link>
 			<name>src/cube/ICube.java</name>
@@ -49,12 +79,42 @@
 		<link>
 			<name>src/cube/Orientation.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/cube/Orientation.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Orientation.java</locationURI>
 		</link>
 		<link>
-			<name>src/cube/Robot.java</name>
+			<name>src/robot/Calibration.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/cube/NXT/Robot.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Calibration.java</locationURI>
+		</link>
+		<link>
+			<name>src/robot/Colors.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Colors.java</locationURI>
+		</link>
+		<link>
+			<name>src/robot/Direction.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Direction.java</locationURI>
+		</link>
+		<link>
+			<name>src/robot/FlipMethod.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/FlipMethod.java</locationURI>
+		</link>
+		<link>
+			<name>src/robot/Robot.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/NXT/Robot.java</locationURI>
+		</link>
+		<link>
+			<name>src/robot/SensorLocation.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/SensorLocation.java</locationURI>
+		</link>
+		<link>
+			<name>src/robot/Tests.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Tests.java</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
