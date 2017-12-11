@@ -2,6 +2,9 @@ package twophase;
 
 import java.util.List;
 
+import application.Logger;
+import application.LoggerGroup;
+import application.LoggerLevel;
 import robot.Direction;
 import cube.Orientation;
 
@@ -181,6 +184,7 @@ public class TwoPhase {
 					CoordCube.getPruning(CoordCube.Slice_Twist_Prun, CoordCube.N_SLICE1 * twist[n + 1] + slice[n + 1]));
 
 			//if minDistPhase1 = 0, the H subgroup is reached
+			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "9.2");
 			if (minDistPhase1[n + 1] == 0 && n >= depthPhase1 - 5) {
 				minDistPhase1[n + 1] = 10; //we don't want to go deeper in this branch, so any value >5 is possible
 				//we look for phase2 solution only if this is a "new maneuver", meaning n == depthPhase1 - 1

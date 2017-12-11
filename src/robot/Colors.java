@@ -9,7 +9,7 @@ public enum Colors {
     	this.color = color;
     }
     
-    int getValue() {
+    public int getValue() {
         return color;
     }
 }

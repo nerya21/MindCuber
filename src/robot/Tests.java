@@ -52,6 +52,5 @@ public class Tests extends Robot {
 			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
 			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
 		}
-//		flipCube(FlipMethod.SINGLE);
 	}
 }

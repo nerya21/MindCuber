@@ -1,5 +1,7 @@
 package cube;
 
+import robot.Colors;
+
 public interface ICube {
 	
 	/*

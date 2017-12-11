@@ -10,7 +10,7 @@ import application.LoggerLevel;
 import lejos.nxt.Button;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
-import lejos.nxt.NXTRegulatedMotor;
+import lejos.robotics.RegulatedMotor;
 import lejos.util.Delay;
 
 /**
@@ -106,11 +106,11 @@ public class Calibration extends Robot {
 		calibrateMotor(Tray.motor, true);
 	}
 
-	private static int calibrateMotor(NXTRegulatedMotor motor, boolean reset) {
+	private static int calibrateMotor(RegulatedMotor motor, boolean reset) {
 		return calibrateMotor(motor, reset, null);
 	}
 
-	private static int calibrateMotor(NXTRegulatedMotor motor, boolean reset, ColorSensor sensor) {
+	private static int calibrateMotor(RegulatedMotor motor, boolean reset, ColorSensor sensor) {
 		Delay.msDelay(200);
 		
 		for (;;) {

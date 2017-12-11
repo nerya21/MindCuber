@@ -22,11 +22,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>src/RubiksCubeSolver.java</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/RubiksCubeSolver.java</locationURI>
-		</link>
-		<link>
 			<name>src/application/Application.java</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/src/application/Application.java</locationURI>
@@ -39,7 +34,7 @@
 		<link>
 			<name>src/application/Logger.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/application/Logger.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/src/application/NXT/Logger.java</locationURI>
 		</link>
 		<link>
 			<name>src/application/LoggerGroup.java</name>
@@ -84,7 +79,7 @@
 		<link>
 			<name>src/cube/Orientation.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Orientation.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/src/cube/Orientation.java</locationURI>
 		</link>
 		<link>
 			<name>src/robot/Calibration.java</name>
