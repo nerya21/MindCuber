@@ -86,7 +86,14 @@ public class Cube implements ICube {
 		_faces[Orientation.U.getValue()]._colors = Robot.scanFace();
 		Robot.Tray.setSpeed(500);
 	}
-
+	public setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
+		_faces[0]._colors = up;
+		_faces[1]._colors = down;
+		_faces[2]._colors = right;
+		_faces[3]._colors = left;
+		_faces[4]._colors = front;
+		_faces[5]._colors = back;
+	}
 	public class Face implements IFace {
 		
 		private Colors[][] _colors;
