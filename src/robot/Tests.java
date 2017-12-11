@@ -19,8 +19,7 @@ public class Tests extends Robot {
 	 * test the readColor method
 	 */
 	public static void readColor() {
-		ColorDetector.setMotorAlligned();
-
+		ColorDetector.setMotorLocation(SensorLocation.ALLIGN);
 		LCD.clear();
 		LCD.drawString("Hold Enter for", 0, 0);
 		LCD.drawString("scan, Exit for", 0, 1);
@@ -35,8 +34,7 @@ public class Tests extends Robot {
 				red = rawColor.getRed();
 				green = rawColor.getGreen();
 				blue = rawColor.getBlue();
-				color = "Result: " + ColorDetector.readColor(rawColor) + "\t\tRaw: [" + red + "," + green + "," + blue
-						+ "]";
+				color = "Result: " + ColorDetector.readColor(rawColor, SensorLocation.ALLIGN) + "\t\tRaw: [" + red + "," + green + "," + blue + "]";
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, color);
 			}
 		}
@@ -49,11 +47,10 @@ public class Tests extends Robot {
 	 * in order to manually check the robustness of the robot
 	 */
 	public static void bruteForce() {
-//		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
-//			rotateCube(i % 5 == 0 ? Direction.RIGHT : Direction.NONE);
-//			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
-//			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
-//		}
-		flipCube(FlipMethod.DOUBLE);
+		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
+			rotateCube(i % 5 == 0 ? Direction.RIGHT : Direction.NONE);
+			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
+			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
+		}
 	}
 }

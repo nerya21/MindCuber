@@ -33,16 +33,21 @@ public class Calibration extends Robot {
 			calibrationFile.createNewFile();
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			
-			ColorDetector.setMotorAlligned();
-			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Calibration results:");
-			for (Colors color : Colors.values()) {
-				rgb = calibrateColor(color);
-				for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
-					calibrationFileStream.writeInt(rgb[rgbIndex]);
-					ColorDetector.thresholds[color.getValue()][rgbIndex] = rgb[rgbIndex];
+			for (SensorLocation location : SensorLocation.values()) {
+				if (location == SensorLocation.CORNER) {
+					Tray.motor.rotate(45 * 3);
 				}
-				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT,
-						"---> " + color + ": [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
+				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Calibration results for " + location + ":");
+				for (Colors color : Colors.values()) {
+					rgb = calibrateColor(color, location);
+					
+					for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
+						calibrationFileStream.writeInt(rgb[rgbIndex]);
+						ColorDetector.thresholds[location.getValue()][color.getValue()][rgbIndex] = rgb[rgbIndex];
+					}
+					Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
+				}
+				Tray.motor.rotateTo(0);
 			}
 			
 		} catch (IOException e) {
@@ -65,21 +70,25 @@ public class Calibration extends Robot {
 	 * Helper method for colorSensor()
 	 *
 	 * @param color the color calibrated
+	 * @param location TODO
 	 * @return the color average reading
 	 */
-	private static int[] calibrateColor(Colors color) {
+	private static int[] calibrateColor(Colors color, SensorLocation location) {
 		LCD.clear();
 		LCD.drawString("Color calibrate", 0, 0);
+		LCD.drawString(location.toString(), 0, 1);
 		LCD.drawString("Place " + color, 0, 2);
 		LCD.drawString("and press Enter", 0, 3);
 
+		ColorDetector.setMotorLocation(SensorLocation.CORNER);
 		Button.waitForAnyPress();
-
+		ColorDetector.setMotorLocation(location);
+		
 		LCD.clear();
 		LCD.drawString("Color calibrate", 0, 0);
 		LCD.drawString("Scanning " + color, 0, 2);
 		LCD.drawString("Please wait", 0, 3);
-
+		
 		return ColorDetector.readRgbAverage(100);
 	}
 
@@ -139,7 +148,7 @@ public class Calibration extends Robot {
 	public static void colorMotor() {
 		File calibrationFile = null;
 		DataOutputStream calibrationFileStream = null;
-		int centerDegree, allignDegree, cornerDegree;
+		int degree;
 		
 		try {
 			calibrationFile = new File("color_motor.dat");
@@ -148,39 +157,19 @@ public class Calibration extends Robot {
 			
 			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Color sensor motor calibration:");
 			
-			LCD.clear();
-			LCD.drawString("Color motor cal.", 0, 0);
-			LCD.drawString("Center", 0, 1);
-			LCD.drawString("Rotate < > or", 0, 2);
-			LCD.drawString("Enter to cont.", 0, 3);
-			ColorDetector.motor.rotateTo(0);
-			Tray.motor.rotateTo(0);
-			centerDegree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);
-			calibrationFileStream.writeInt(centerDegree);
-			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> Center: " + centerDegree);
-			
-			LCD.clear();
-			LCD.drawString("Color motor cal.", 0, 0);
-			LCD.drawString("Outer", 0, 1);
-			LCD.drawString("Rotate < > or", 0, 2);
-			LCD.drawString("Enter to cont.", 0, 3);
-			ColorDetector.motor.rotateTo(0);
-			allignDegree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);		
-			calibrationFileStream.writeInt(allignDegree);
-			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> Outer: " + allignDegree);
-			
-			LCD.clear();
-			LCD.drawString("Color motor cal.", 0, 0);
-			LCD.drawString("Corner", 0, 1);
-			LCD.drawString("Rotate < > or", 0, 2);
-			LCD.drawString("Enter to cont.", 0, 3);
-			ColorDetector.motor.rotateTo(0);
-			Tray.motor.rotateTo(45 * 3);
-			cornerDegree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);
-			calibrationFileStream.writeInt(cornerDegree);
-			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> Corner: " + cornerDegree);
-			
-			ColorDetector.setMotorDegrees(centerDegree, allignDegree, cornerDegree);
+			for (SensorLocation location : SensorLocation.values()) {
+				LCD.clear();
+				LCD.drawString("Color motor cal.", 0, 0);
+				LCD.drawString(location.toString(), 0, 1);
+				LCD.drawString("Rotate < > or", 0, 2);
+				LCD.drawString("Enter to cont.", 0, 3);
+				ColorDetector.motor.rotateTo(0);
+				Tray.motor.rotateTo(location == SensorLocation.CORNER ? 45 * 3 : 0);
+				degree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);
+				calibrationFileStream.writeInt(degree);
+				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + location + ": " + degree);
+				ColorDetector.setMotorDegree(location, degree);
+			}
 		} catch (IOException e) {
 			LCD.clear();
 			LCD.drawString("Motor calibrate", 0, 0);

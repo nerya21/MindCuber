@@ -128,7 +128,7 @@ public class Robot {
 		final static NXTRegulatedMotor motor = new NXTRegulatedMotor(MotorPort.C);
 		final static ColorSensor sensor = new ColorSensor(SensorPort.S2);
 
-		static int[][] thresholds = new int[6][3];
+		static int[][][] thresholds = new int[3][6][3];
 		static int centerDegree = SENSOR_CENTER_DEFAULT_DEGREE;
 		static int allignDegree = SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE;
 		static int cornerDegree = SENSOR_OUTER_CORNER_DEFAULT_DEGREE;
@@ -143,34 +143,71 @@ public class Robot {
 			updateDegrees();
 		}
 
-		protected static void setMotorDegrees(int center, int allign, int corner) {
-			centerDegree = center;
-			allignDegree = allign;
-			cornerDegree = corner;
-		}
+//		protected static void setMotorDegrees(int center, int allign, int corner) {
+//			centerDegree = center;
+//			allignDegree = allign;
+//			cornerDegree = corner;
+//		}
 		
 		protected static void setMotorDefaultDegrees() {
-			setMotorDegrees(SENSOR_CENTER_DEFAULT_DEGREE, SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE, SENSOR_OUTER_CORNER_DEFAULT_DEGREE);
+			setMotorDegree(SensorLocation.CENTER, SENSOR_CENTER_DEFAULT_DEGREE);
+			setMotorDegree(SensorLocation.ALLIGN, SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE);
+			setMotorDegree(SensorLocation.CORNER, SENSOR_OUTER_CORNER_DEFAULT_DEGREE);
 		}
 		
-		protected static void setMotorAlligned() {
-			motor.rotateTo(allignDegree);
+//		protected static void setMotorAlligned() {
+//			motor.rotateTo(allignDegree);
+//		}
+//		
+//		protected static void setMotorCorner() {
+//			motor.rotateTo(cornerDegree);
+//		}
+//		
+//		protected static void setMotorCenter() {
+//			motor.rotateTo(centerDegree);
+//		}
+		
+		protected static void setMotorLocation(SensorLocation location) {
+			int degree;
+			
+			switch (location) {
+			case CENTER:
+				degree = centerDegree;
+				break;
+			case ALLIGN:
+				degree = allignDegree;
+				break;
+			case CORNER:
+				degree = cornerDegree;
+				break;
+			default:
+				degree = 0;
+			}
+			motor.rotateTo(degree);
 		}
 		
-		protected static void setMotorCorner() {
-			motor.rotateTo(cornerDegree);
-		}
-		
-		protected static void setMotorCenter() {
-			motor.rotateTo(centerDegree);
+		protected static void setMotorDegree(SensorLocation location, int degree) {
+			switch (location) {
+			case CENTER:
+				centerDegree = degree;
+				break;
+			case ALLIGN:
+				allignDegree = degree;
+				break;
+			case CORNER:
+				cornerDegree = degree;
+				break;
+			default:
+			}
 		}
 		
 		/**
 		 * Read color from RGB raw data
+		 * @param location TODO
 		 * 
 		 * @return the detected color
 		 */
-		private static Colors readColor(int[] rawColorRgb) {
+		private static Colors readColor(int[] rawColorRgb, SensorLocation location) {
 			double minDistance = 0;
 			double distance;
 			Colors closestColor = Colors.RED;
@@ -181,12 +218,12 @@ public class Robot {
 			for (Colors color : Colors.values()) {
 				distance = 0;
 				for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-					distance += Math.pow((thresholds[color.getValue()][rgbIndex] - rawColorRgb[rgbIndex]),2);
+					distance += Math.pow((thresholds[location.getValue()][color.getValue()][rgbIndex] - rawColorRgb[rgbIndex]),2);
 				}
 				
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT,
-						"---> Comparing to " + color + ". Threshold: [" + thresholds[color.getValue()][0] + "]["
-								+ thresholds[color.getValue()][1] + "][" + thresholds[color.getValue()][2]
+						"---> Comparing to " + color + ". Threshold: [" + thresholds[location.getValue()][color.getValue()][0] + "]["
+								+ thresholds[location.getValue()][color.getValue()][1] + "][" + thresholds[location.getValue()][color.getValue()][2]
 								+ "] Distance: " + distance);
 				
 				if (firstRun || distance < minDistance) {
@@ -202,26 +239,28 @@ public class Robot {
 
 		/**
 		 * Read color from Color raw data
+		 * @param location TODO
 		 * 
 		 * @return the detected color
 		 */
-		protected static Colors readColor(Color rawColor) {
+		protected static Colors readColor(Color rawColor, SensorLocation location) {
 			int rawColorRgb[] = new int[3];
 			rawColorRgb[0] = rawColor.getRed();
 			rawColorRgb[1] = rawColor.getGreen();
 			rawColorRgb[2] = rawColor.getBlue();
 			
-			return readColor(rawColorRgb);
+			return readColor(rawColorRgb, location);
 		}
 		
 		/**
 		 * Read color at current position
+		 * @param location TODO
 		 * 
 		 * @return the detected color
 		 */
-		private static Colors readColor() {
+		private static Colors readColor(SensorLocation location) {
 			int[] rawColor = readRgbAverage(100);
-			return readColor(rawColor);
+			return readColor(rawColor, location);
 		}
 		
 		/**
@@ -273,13 +312,14 @@ public class Robot {
 			
 			try {				
 				calibrationFileStream = new DataInputStream(new FileInputStream(calibrationFile));
-
 				Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Loading thresholds from previous calibration:");
-				for (Colors color : Colors.values()) {
-					for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-						thresholds[color.getValue()][rgbIndex] = calibrationFileStream.readInt();
+				for (SensorLocation location : SensorLocation.values()) {
+					for (Colors color : Colors.values()) {
+						for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
+							thresholds[location.getValue()][color.getValue()][rgbIndex] = calibrationFileStream.readInt();
+						}
+						Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + thresholds[location.getValue()][color.getValue()][0] + "][" + thresholds[location.getValue()][color.getValue()][1] + "][" + thresholds[location.getValue()][color.getValue()][2] + "]");
 					}
-					Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + thresholds[color.getValue()][0] + "][" + thresholds[color.getValue()][1] + "][" + thresholds[color.getValue()][2] + "]");
 				}
 			} catch (IOException e) {
 				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Failed loading thresholds from file, default thresholds will be used");
@@ -307,14 +347,12 @@ public class Robot {
 				calibrationFileStream = new DataInputStream(new FileInputStream(calibrationFile));
 				Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Loading degrees from previous calibration:");
 				
-				int centerDegree = calibrationFileStream.readInt();
-				Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "---> Center: " + centerDegree);
-				int allignDegree = calibrationFileStream.readInt();
-				Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "---> Outer: " + allignDegree);
-				int cornerDegree = calibrationFileStream.readInt();
-				Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "---> Corner: " + cornerDegree);
-				
-				setMotorDegrees(centerDegree, allignDegree, cornerDegree);
+				int degree;
+				for (SensorLocation location : SensorLocation.values()) {
+					degree = calibrationFileStream.readInt();
+					setMotorDegree(location, degree);
+					Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "---> " + location + ": " + degree);
+				}
 			} catch (IOException e) {
 				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Failed loading thresholds from file, default degrees will be used");
 				setMotorDefaultDegrees();
@@ -328,9 +366,11 @@ public class Robot {
 		 */
 		public static void setDefaultThresholds() {
 			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: this thresholds are not optimised, please run the calibration routine from the menu");
-			for (Colors color : Colors.values()) {
-				for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-					ColorDetector.thresholds[color.getValue()][rgbIndex] = DEFAULT_COLOR_SENSOR_THRESHOLD[color.getValue()][rgbIndex];
+			for (SensorLocation location : SensorLocation.values()) {
+				for (Colors color : Colors.values()) {
+					for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
+						ColorDetector.thresholds[location.getValue()][color.getValue()][rgbIndex] = DEFAULT_COLOR_SENSOR_THRESHOLD[color.getValue()][rgbIndex];
+					}
 				}
 			}		
 		}
@@ -353,28 +393,23 @@ public class Robot {
 	public static Colors[][] scanFace() {
 		Colors[][] faceColors = new Colors[3][3];
 		int coordinate, row, col;
+		SensorLocation location;
 		
 		for (coordinate = 0; coordinate < 8; coordinate++) {
 			row = COORDINATE_SCAN_ORDER[coordinate][0];
 			col = COORDINATE_SCAN_ORDER[coordinate][1];
-			if (coordinate % 2 == 0) {
-				ColorDetector.setMotorAlligned();
-			}
-			else {
-				ColorDetector.setMotorCorner();
-			}
-			faceColors[row][col] = ColorDetector.readColor();
-			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT,
-					"Color at [" + row + "][" + col + "] is " + faceColors[row][col]);
+			location = coordinate % 2 == 0 ? SensorLocation.ALLIGN : SensorLocation.CORNER;
+			ColorDetector.setMotorLocation(location);
+			faceColors[row][col] = ColorDetector.readColor(location);
+			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Color at [" + row + "][" + col + "] is " + faceColors[row][col]);
 			Tray.motor.rotate(TRAY_SCAN_STEP_DEGREE);
 		}
 
 		row = COORDINATE_SCAN_ORDER[coordinate][0];
 		col = COORDINATE_SCAN_ORDER[coordinate][1];
-		ColorDetector.motor.rotateTo(SENSOR_CENTER_DEFAULT_DEGREE);
-		faceColors[row][col] = ColorDetector.readColor();
-		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT,
-				"Color at [" + row + "][" + col + "] is " + faceColors[row][col]);
+		ColorDetector.setMotorLocation(SensorLocation.CENTER);
+		faceColors[row][col] = ColorDetector.readColor(SensorLocation.CENTER);
+		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Color at [" + row + "][" + col + "] is " + faceColors[row][col]);
 		ColorDetector.motor.rotateTo(0);
 		return faceColors;
 	}
