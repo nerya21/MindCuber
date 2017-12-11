@@ -11,4 +11,6 @@ public interface ICube {
 	 * TODO: Documentation
 	 */
 	void setColors();
+	
+	void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right);
 }
