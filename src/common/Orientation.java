@@ -1,4 +1,4 @@
-package cube;
+package common;
 
 public enum Orientation {
 	U(0), D(1), R(2), L(3), F(4), B(5);

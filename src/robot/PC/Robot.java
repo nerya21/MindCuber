@@ -1,9 +1,8 @@
 package cube;
 
-import lejos.nxt.MotorPort;
-import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
-import lejos.nxt.comm.RConsole;
+import lejos.nxt.remote.RemoteMotor;
 import lejos.util.Delay;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.ColorSensor.Color;
@@ -13,8 +12,8 @@ public class Robot {
 	private static final int ARM_MOTOR_FLIP_SPEED = 500;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
-	private static final int TRAY_MOTOR_EXTRA_ROTATION = 18;
-	private static final int TRAY_MOTOR_STARTUP_SPEED = 500;
+	private static final int TRAY_MOTOR_EXTRA_ROTATION = 11;
+	private static final int TRAY_MOTOR_STARTUP_SPEED = 400;
 	private static final int SENSOR_CENTER_DEGREE = 180;
 	private static final int SENSOR_OUTER_ALLIGN_DEGREE = 125;
 	private static final int SENSOR_OUTER_CORNER_DEGREE = 105;
@@ -38,8 +37,6 @@ public class Robot {
 	}
 
 	public static void init() {
-		RConsole.openUSB(5000);
-		System.setOut(RConsole.getPrintStream());
 		Arm.init();
 		Tray.init();
 		ColorDetector.init();
@@ -47,9 +44,10 @@ public class Robot {
 	}
 
 	private static class Tray {
-		final static NXTRegulatedMotor motor = new NXTRegulatedMotor(MotorPort.A);
+		final static RemoteMotor motor = Motor.A;
 
 		private static void init() {
+			motor.setPower(100);
 			motor.resetTachoCount();
 			motor.setSpeed(TRAY_MOTOR_STARTUP_SPEED);
 			//motor.setAcceleration(10000);
@@ -60,7 +58,7 @@ public class Robot {
 	}
 
 	private static class Arm {
-		final static NXTRegulatedMotor motor = new NXTRegulatedMotor(MotorPort.C);
+		final static RemoteMotor motor = Motor.C;
 		static boolean hold = false;
 
 		private static void init() {
@@ -91,7 +89,7 @@ public class Robot {
 	}
 
 	private static class ColorDetector {
-		final static NXTRegulatedMotor motor = new NXTRegulatedMotor(MotorPort.B);
+		final static RemoteMotor motor = Motor.B;
 		final static ColorSensor sensor = new ColorSensor(SensorPort.S2);
 
 		private static void init() {
@@ -120,17 +118,6 @@ public class Robot {
 		
 		private static Colors readColor() {
 			Colors color = translateColor(sensor.getColorID());
-			if ((color == Colors.RED || color == Colors.ORANGE || color == Colors.YELLOW)) {
-				Color rawColor = sensor.getRawColor();
-				if (rawColor.getGreen() < 317) {
-					color = Colors.RED;
-				}
-				else if (rawColor.getGreen() < 465) {
-					color = Colors.ORANGE;
-				} else {
-					color = Colors.YELLOW;
-				}
-			}
 			return color;
 		}
 	}
@@ -186,11 +173,16 @@ public class Robot {
 		Tray.motor.rotate(direction.getDegree() * TRAY_MOTOR_ROTATION_FACTOR);
 	}
 
+	
+	
+	
+	
 	public static void main(String[] args) {
-		Robot.init();
-		for (int i = 0; i < 1; i++) {
-			//flipCube(FlipMethod.SINGLE);
-			turnFace(Direction.LEFT);
+		init();
+		
+		for (int i = 0; i < 4; i++) {
+			turnFace(Direction.RIGHT);
+			flipCube(FlipMethod.SINGLE);
 		}
 	}
 }

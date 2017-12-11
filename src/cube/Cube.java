@@ -1,6 +1,12 @@
 package cube;
 
-import cube.Robot.FlipMethod;
+import application.Logger;
+import application.LoggerGroup;
+import application.LoggerLevel;
+import robot.Colors;
+import robot.Direction;
+import robot.FlipMethod;
+import robot.Robot;
 
 public class Cube implements ICube {
 
@@ -27,12 +33,12 @@ public class Cube implements ICube {
 		_faces[5] = new Face(Orientation.B);
 		
 		_actions = new Action[6];
-		_actions[0] = new Action(Robot.FlipMethod.DOUBLE, Direction.NONE);
-		_actions[1] = new Action(Robot.FlipMethod.NONE, Direction.NONE);
-		_actions[2] = new Action(Robot.FlipMethod.SINGLE, Direction.RIGHT);
-		_actions[3] = new Action(Robot.FlipMethod.SINGLE, Direction.LEFT);
-		_actions[4] = new Action(Robot.FlipMethod.SINGLE, Direction.NONE);
-		_actions[5] = new Action(Robot.FlipMethod.SINGLE, Direction.MIRROR);
+		_actions[0] = new Action(FlipMethod.DOUBLE, Direction.NONE);
+		_actions[1] = new Action(FlipMethod.NONE, Direction.NONE);
+		_actions[2] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
+		_actions[3] = new Action(FlipMethod.SINGLE, Direction.LEFT);
+		_actions[4] = new Action(FlipMethod.SINGLE, Direction.NONE);
+		_actions[5] = new Action(FlipMethod.SINGLE, Direction.MIRROR);
 	}
 
 	public Face getFace(Orientation orientation) {
@@ -53,36 +59,32 @@ public class Cube implements ICube {
 	}
 
 	public void setColors() {
+		Robot.Tray.setSpeed(200);
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.F);
 		_faces[Orientation.F.getValue()]._colors = Robot.scanFace();
-		Robot.flipCube(FlipMethod.SINGLE);
 		
+		Robot.flipCube(FlipMethod.SINGLE);		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.R);
 		_faces[Orientation.R.getValue()]._colors = Robot.scanFace();
-		Robot.flipCube(FlipMethod.SINGLE);
 		
+		Robot.flipCube(FlipMethod.SINGLE);		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.B);
 		_faces[Orientation.B.getValue()]._colors = Robot.scanFace();
-		Robot.flipCube(FlipMethod.SINGLE);
 		
+		Robot.flipCube(FlipMethod.SINGLE);		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.L);
 		_faces[Orientation.L.getValue()]._colors = Robot.scanFace();
+		
 		Robot.rotateCube(Direction.RIGHT);
-		Robot.flipCube(FlipMethod.SINGLE);
-		
+		Robot.flipCube(FlipMethod.SINGLE);		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.D);
 		_faces[Orientation.D.getValue()]._colors = Robot.scanFace();
+		
 		Robot.flipCube(FlipMethod.DOUBLE);
-		Robot.rotateCube(Direction.MIRROR);
-		
+		Robot.rotateCube(Direction.MIRROR);		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.U);
 		_faces[Orientation.U.getValue()]._colors = Robot.scanFace();
-	}
-
-	public class Action {
-		
-		public Robot.FlipMethod flips;
-		
-		public Direction direction;
-
-		public Action(Robot.FlipMethod flips, Direction direction) {
-			this.flips = flips;
-			this.direction = direction;
-		}
+		Robot.Tray.setSpeed(500);
 	}
 
 	public class Face implements IFace {
@@ -96,14 +98,15 @@ public class Cube implements ICube {
 			this._colors = new Colors[3][3];
 		}
 
+		@Override
 		public Colors getColor(int i, int j) {
 			return _colors[i][j];
 		}
 
+		@Override
 		public void turn(Direction direction) {
 			
-			FlipMethod cubeFlips = _actions[_dynamic_orientation.getValue()].flips;
-			
+			FlipMethod cubeFlips = _actions[_dynamic_orientation.getValue()].flips;			
 			Direction cubeRotation = _actions[_dynamic_orientation.getValue()].direction;
 			
 			// If a cube flip is required, we must mirror the face turning direction:
@@ -117,9 +120,4 @@ public class Cube implements ICube {
 		}
 	}
 
-	// public static void main(String[] args) {
-	// Robot.init();
-	// Cube cube = new Cube();
-	// cube.setColors();
-	// }
 }
