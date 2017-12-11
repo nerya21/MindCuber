@@ -34,10 +34,12 @@ public class Calibration extends Robot {
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			
 			for (SensorLocation location : SensorLocation.values()) {
-				if (location == SensorLocation.CORNER) {
-					Tray.motor.rotate(45 * 3);
-				}
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Calibration results for " + location + ":");
+				if (location == SensorLocation.CORNER) {
+					ColorDetector.motor.rotateTo(0);
+					Tray.motor.rotateTo(45 * 3);
+					ColorDetector.setMotorLocation(SensorLocation.CORNER);
+				}
 				for (Colors color : Colors.values()) {
 					rgb = calibrateColor(color, location);
 					
@@ -165,6 +167,7 @@ public class Calibration extends Robot {
 				LCD.drawString("Enter to cont.", 0, 3);
 				ColorDetector.motor.rotateTo(0);
 				Tray.motor.rotateTo(location == SensorLocation.CORNER ? 45 * 3 : 0);
+				ColorDetector.setMotorLocation(location);
 				degree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);
 				calibrationFileStream.writeInt(degree);
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + location + ": " + degree);

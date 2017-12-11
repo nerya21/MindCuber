@@ -59,6 +59,7 @@ public class Cube implements ICube {
 	}
 
 	public void setColors() {
+		Robot.Tray.setSpeed(200);
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.F);
 		_faces[Orientation.F.getValue()]._colors = Robot.scanFace();
 		
@@ -83,6 +84,7 @@ public class Cube implements ICube {
 		Robot.rotateCube(Direction.MIRROR);		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.U);
 		_faces[Orientation.U.getValue()]._colors = Robot.scanFace();
+		Robot.Tray.setSpeed(500);
 	}
 
 	public class Face implements IFace {

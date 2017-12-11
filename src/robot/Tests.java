@@ -47,10 +47,11 @@ public class Tests extends Robot {
 	 * in order to manually check the robustness of the robot
 	 */
 	public static void bruteForce() {
-		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
-			rotateCube(i % 5 == 0 ? Direction.RIGHT : Direction.NONE);
-			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
-			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
-		}
+//		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
+//			rotateCube(i % 5 == 0 ? Direction.RIGHT : Direction.NONE);
+//			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
+//			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
+//		}
+		flipCube(FlipMethod.SINGLE);
 	}
 }

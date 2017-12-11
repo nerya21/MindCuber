@@ -24,7 +24,7 @@ import lejos.util.Delay;
 public class Robot {
 	private static final int ARM_MOTOR_DEFAULT_SPEED = 400;
 	private static final int ARM_POSITION_TACKLE = -210;
-	private static final int ARM_POSITION_HOLD = -160;
+	private static final int ARM_POSITION_HOLD = -155;
 	private static final int ARM_POSITION_REST = 0;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
@@ -54,7 +54,7 @@ public class Robot {
 	 * 
 	 * Represents the motor which controls the cube tray
 	 */
-	protected static class Tray {
+	public static class Tray {
 		final static NXTRegulatedMotor motor = new NXTRegulatedMotor(MotorPort.A);
 
 		private static void init() {
@@ -64,6 +64,10 @@ public class Robot {
 
 		private static void rotate(int degree) {
 			motor.rotate(degree * TRAY_MOTOR_ROTATION_FACTOR);
+		}
+		
+		public static void setSpeed(int speed) {
+			motor.setSpeed(speed);
 		}
 	}
 

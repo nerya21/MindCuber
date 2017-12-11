@@ -22,6 +22,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>src/RubiksCubeSolver.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/RubiksCubeSolver.java</locationURI>
+		</link>
+		<link>
 			<name>src/application/Application.java</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/src/application/Application.java</locationURI>
@@ -115,6 +120,61 @@
 			<name>src/robot/Tests.java</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/src/robot/Tests.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Color.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Color.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/CoordCube.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/CoordCube.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Corner.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Corner.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/CubieCube.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/CubieCube.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Edge.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Edge.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/FaceCube.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/FaceCube.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Facelet.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Facelet.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Move.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Move.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Search.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Search.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/Tools.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/Tools.java</locationURI>
+		</link>
+		<link>
+			<name>src/twophase/TwoPhase.java</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/twophase/TwoPhase.java</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
