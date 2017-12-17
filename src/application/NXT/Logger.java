@@ -58,12 +58,14 @@ public class Logger {
 	 * @param timeout timeout for console connection
 	 */
 	public static void connectConsole(int timeout) {
-		if (RConsole.isOpen()) {
-			RConsole.close();
+		if (timeout != 0) {
+			if (RConsole.isOpen()) {
+				RConsole.close();
+			}
+			LCD.clear();
+			RConsole.openUSB(timeout);
+			console = RConsole.getPrintStream();
 		}
-		LCD.clear();
-		RConsole.openUSB(timeout);
-		console = RConsole.getPrintStream();
 	}
 
 	/**

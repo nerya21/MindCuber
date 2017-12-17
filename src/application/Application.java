@@ -122,16 +122,16 @@ public class Application {
 		ICube cube = new Cube();
 		Robot.waitForCube();
 		//cube.setColors();
-		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "1");
-		Colors[][] front = {{Colors.WHITE, Colors.WHITE, Colors.WHITE}, {Colors.WHITE, Colors.WHITE, Colors.WHITE}, {Colors.WHITE, Colors.WHITE, Colors.WHITE}};
-		Colors[][] right = {{Colors.BLUE, Colors.BLUE, Colors.BLUE}, {Colors.BLUE, Colors.BLUE, Colors.BLUE}, {Colors.BLUE, Colors.BLUE, Colors.BLUE}};
-		Colors[][] back = {{Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}, {Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}, {Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}};
-		Colors[][] up = {{Colors.ORANGE, Colors.GREEN, Colors.ORANGE}, {Colors.ORANGE, Colors.ORANGE, Colors.ORANGE}, {Colors.ORANGE, Colors.ORANGE, Colors.ORANGE}};
-		Colors[][] left = {{Colors.GREEN, Colors.GREEN, Colors.GREEN}, {Colors.RED, Colors.GREEN, Colors.GREEN}, {Colors.GREEN, Colors.GREEN, Colors.GREEN}};
-		Colors[][] down = {{Colors.RED, Colors.RED, Colors.RED}, {Colors.RED, Colors.RED, Colors.RED}, {Colors.RED, Colors.ORANGE, Colors.RED}};
-		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "2");
+		
+		Colors[][] front = {{Colors.WHITE, Colors.WHITE, Colors.ORANGE}, {Colors.YELLOW, Colors.WHITE, Colors.YELLOW}, {Colors.RED, Colors.WHITE, Colors.RED}};
+		Colors[][] right = {{Colors.YELLOW, Colors.YELLOW, Colors.BLUE}, {Colors.ORANGE, Colors.ORANGE, Colors.BLUE}, {Colors.BLUE, Colors.ORANGE, Colors.RED}};
+		Colors[][] back = {{Colors.YELLOW, Colors.WHITE, Colors.ORANGE}, {Colors.YELLOW, Colors.YELLOW, Colors.RED}, {Colors.WHITE, Colors.WHITE, Colors.WHITE}};
+		Colors[][] up = {{Colors.WHITE, Colors.BLUE, Colors.ORANGE}, {Colors.BLUE, Colors.GREEN, Colors.RED}, {Colors.GREEN, Colors.RED, Colors.GREEN}};
+		Colors[][] left = {{Colors.GREEN, Colors.ORANGE, Colors.RED}, {Colors.BLUE, Colors.RED, Colors.GREEN}, {Colors.ORANGE, Colors.RED, Colors.GREEN}};
+		Colors[][] down = {{Colors.YELLOW, Colors.GREEN, Colors.YELLOW}, {Colors.GREEN, Colors.BLUE, Colors.GREEN}, {Colors.BLUE, Colors.ORANGE, Colors.BLUE}};
+		
 		cube.setColorsManual(up, down, front, back, left, right);
-		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "3");
+		
 		//map colors to face colors
 		IFace face;
 		
@@ -142,50 +142,47 @@ public class Application {
 			Color faceColor = convertOrientation2FaceColor(orientation);
 			colors2FaceColors[color.getValue()] = faceColor;
 		}
-		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "4");
+		
 		//build cube representation for the algorithm
 		Color[] facelets = new Color[54];
-//		Colors realColor;
-//		Orientation orientation;
-//		int i,j,c = 0;
-//		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "5");
-//		for(Color faceColor : Color.values()) {
-//			orientation = convertFaceColor2Orientation(faceColor);
-//			face = cube.getFace(orientation);
-//			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "6 " + faceColor);
-//			for (i = 0; i < 3; i++) {
-//				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "7 i=" + i);
-//				for (j = 0; j < 3; j++) {
-//					Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "8 j=" + j);
-//					realColor = face.getColor(i, j);
-//					facelets[c++] = colors2FaceColors[realColor.getValue()];
-//				}
-//			}
-//			
-//		}
-//
-//		String s = "";
-//		for (int k =0; k<54;k++) {
-//			if (facelets[k] == Color.U) {
-//				s+="U";
-//			}
-//			if (facelets[k] == Color.B) {
-//				s+="B";
-//			}
-//			if (facelets[k] == Color.F) {
-//				s+="F";
-//			}
-//			if (facelets[k] == Color.R) {
-//				s+="R";
-//			}
-//			if (facelets[k] == Color.L) {
-//				s+="L";
-//			}
-//			if (facelets[k] == Color.D) {
-//				s+="D";
-//			}
-//		}
-		String s = "ULUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDUDLLLDLLLLLBBBBBBBBB";
+		Colors realColor;
+		Orientation orientation;
+		int i,j,c = 0;
+		
+		for(Color faceColor : Color.values()) {
+			orientation = convertFaceColor2Orientation(faceColor);
+			face = cube.getFace(orientation);
+			
+			for (i = 0; i < 3; i++) {				
+				for (j = 0; j < 3; j++) {					
+					realColor = face.getColor(i, j);
+					facelets[c++] = colors2FaceColors[realColor.getValue()];
+				}
+			}			
+		}
+
+		String s = "";
+		for (int k =0; k<54;k++) {
+			if (facelets[k] == Color.U) {
+				s+="U";
+			}
+			if (facelets[k] == Color.B) {
+				s+="B";
+			}
+			if (facelets[k] == Color.F) {
+				s+="F";
+			}
+			if (facelets[k] == Color.R) {
+				s+="R";
+			}
+			if (facelets[k] == Color.L) {
+				s+="L";
+			}
+			if (facelets[k] == Color.D) {
+				s+="D";
+			}
+		}
+		//String s = "ULUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDUDLLLDLLLLLBBBBBBBBB";
 		for (int l = 0; l<54; l++) {
 			if (s.charAt(l) == 'U')
 				facelets[l] = Color.U;
@@ -200,18 +197,18 @@ public class Application {
 			else if (s.charAt(l) == 'B')
 				facelets[l] = Color.B;
 		}
-		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "9 s=" + s);
+		
 		List<Move> moves = new ArrayList<>();
 		int depth = 24;
 		int status;
 		do {
 			status = TwoPhase.findSolution(facelets, depth, 120, moves);
-			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "9.5 s=" + s);
+			
 			depth = moves.size() - 1;
-			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "10 s = " + status);
+			
 		} while (status == 0);
 		
-		Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "11 s = " + moves.size());
+		
 		if(moves.size() != 0) {
 			handleSolution(cube, moves);
 		}

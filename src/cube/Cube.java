@@ -25,12 +25,15 @@ public class Cube implements ICube {
 	public Cube() {
 		
 		_faces = new Face[6];
-		_faces[0] = new Face(Orientation.U);
-		_faces[1] = new Face(Orientation.D);
-		_faces[2] = new Face(Orientation.R);
-		_faces[3] = new Face(Orientation.L);
-		_faces[4] = new Face(Orientation.F);
-		_faces[5] = new Face(Orientation.B);
+		for (Orientation orientation : Orientation.values()) {
+			_faces[orientation.getValue()] = new Face(orientation);
+		}
+//		_faces[0] = new Face(Orientation.U);
+//		_faces[1] = new Face(Orientation.D);
+//		_faces[2] = new Face(Orientation.R);
+//		_faces[3] = new Face(Orientation.L);
+//		_faces[4] = new Face(Orientation.F);
+//		_faces[5] = new Face(Orientation.B);
 		
 		_actions = new Action[6];
 		_actions[0] = new Action(FlipMethod.DOUBLE, Direction.NONE);
@@ -88,12 +91,12 @@ public class Cube implements ICube {
 	}
 	
 	public void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
-		_faces[0]._colors = up;
-		_faces[1]._colors = down;
-		_faces[2]._colors = right;
-		_faces[3]._colors = left;
-		_faces[4]._colors = front;
-		_faces[5]._colors = back;
+		_faces[Orientation.U.getValue()]._colors = up;
+		_faces[Orientation.D.getValue()]._colors = down;
+		_faces[Orientation.R.getValue()]._colors = right;
+		_faces[Orientation.L.getValue()]._colors = left;
+		_faces[Orientation.F.getValue()]._colors = front;
+		_faces[Orientation.B.getValue()]._colors = back;
 	}
 	
 	public class Face implements IFace {

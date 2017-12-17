@@ -16,7 +16,7 @@ public class Logger {
 
 	private static final int LOGGER_DEFAULT_TIMEOUT = 5000;
 	private static final char LOG_FILE_DELIMITER = ',';
-	private static final String LOG_FILE_NAME = "c:\\log.csv";
+	private static final String LOG_FILE_NAME = "log.csv";
 	private static final char CONSOLE_DELIMITER = '\t';
 
 	private static PrintStream console;
@@ -88,8 +88,10 @@ public class Logger {
 	 */
 	private static void writeToLogFile(LoggerLevel level, LoggerGroup group, String text) {
 		try {
-			logFileStream.writeBytes(String.valueOf(timeSincePower.elapsed()) + LOG_FILE_DELIMITER + level
-					+ LOG_FILE_DELIMITER + group + LOG_FILE_DELIMITER + text.replace(',', ' ') + "\r\n");
+			if (logFileStream != null) {
+				logFileStream.writeBytes(String.valueOf(timeSincePower.elapsed()) + LOG_FILE_DELIMITER + level
+						+ LOG_FILE_DELIMITER + group + LOG_FILE_DELIMITER + text.replace(',', ' ') + "\r\n");
+			}
 		} catch (IOException e) {}
 	}
 
