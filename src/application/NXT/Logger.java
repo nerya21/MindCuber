@@ -5,10 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
+import lejos.util.Stopwatch;
 import lejos.nxt.LCD;
 import lejos.nxt.comm.RConsole;
-import lejos.util.Stopwatch;
 
 /**
  * Logger Class

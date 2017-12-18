@@ -10,10 +10,10 @@ import application.LoggerLevel;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
 import lejos.nxt.ColorSensor.Color;
-import lejos.nxt.MotorPort;
-import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
+import lejos.nxt.MotorPort;
+import lejos.nxt.NXTRegulatedMotor;
 import lejos.util.Delay;
 
 /**
@@ -28,7 +28,8 @@ public class Robot {
 	private static final int ARM_POSITION_REST = 0;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
-	private static final int TRAY_MOTOR_STARTUP_SPEED = 500;
+	private static final int TRAY_MOTOR_DEFAULT_SPEED = 500;
+	private static final int TRAY_MOTOR_SCAN_SPEED = 200;
 	private static final int SENSOR_CENTER_DEFAULT_DEGREE = 170;
 	private static final int SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE = 115;
 	private static final int SENSOR_OUTER_CORNER_DEFAULT_DEGREE = 95;
@@ -59,16 +60,13 @@ public class Robot {
 
 		private static void init() {
 			motor.resetTachoCount();
-			motor.setSpeed(TRAY_MOTOR_STARTUP_SPEED);
+			motor.setSpeed(TRAY_MOTOR_DEFAULT_SPEED);
 		}
 
 		private static void rotate(int degree) {
 			motor.rotate(degree * TRAY_MOTOR_ROTATION_FACTOR);
 		}
 		
-		public static void setSpeed(int speed) {
-			motor.setSpeed(speed);
-		}
 	}
 
 	/**
@@ -211,7 +209,7 @@ public class Robot {
 		 * 
 		 * @return the detected color
 		 */
-		private static Colors readColor(int[] rawColorRgb, SensorLocation location) {
+		static Colors readColor(int[] rawColorRgb, SensorLocation location) {
 			double minDistance = 0;
 			double distance;
 			Colors closestColor = Colors.RED;
@@ -265,7 +263,7 @@ public class Robot {
 		private static Colors readColor(SensorLocation location) {
 			int[] rawColor = readRgbAverage(100);
 			return readColor(rawColor, location);
-		}
+		}		
 		
 		/**
 		 * Read RGB averaged
@@ -279,15 +277,15 @@ public class Robot {
 			Color color;
 			
 			for (int i = 0; i < numberOfSamples; i++) {
-				color = sensor.getRawColor();
+				color = sensor.getColor();
 				if (color.getRed() != 0 && color.getGreen() != 0 && color.getBlue() != 0) {
 					rgb[0] += color.getRed();
 					rgb[1] += color.getGreen();
 					rgb[2] += color.getBlue();
 					actualNumberOfSamples++;
 				}
-			}
-
+			}			
+			
 			if (actualNumberOfSamples == 0) {
 				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Fatal color sensor error");
 				return new int[] {-1 , -1, -1};
@@ -369,7 +367,7 @@ public class Robot {
 		 * Set thresholds to defaults 
 		 */
 		public static void setDefaultThresholds() {
-			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: this thresholds are not optimised, please run the calibration routine from the menu");
+			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: those thresholds are not optimised, please run the calibration routine from the menu");
 			for (SensorLocation location : SensorLocation.values()) {
 				for (Colors color : Colors.values()) {
 					for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
@@ -377,7 +375,7 @@ public class Robot {
 					}
 				}
 			}		
-		}
+		}		
 	}
 
 	/**
@@ -387,6 +385,14 @@ public class Robot {
 	 */
 	protected static class ProximitySensor {
 		final static UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S3);
+	}	
+
+	public static void setTrayScanSpeed() {
+		Tray.motor.setSpeed(TRAY_MOTOR_SCAN_SPEED);
+	}
+	
+	public static void setTrayDefaultSpeed() {
+		Tray.motor.setSpeed(TRAY_MOTOR_DEFAULT_SPEED);
 	}
 	
 	/**

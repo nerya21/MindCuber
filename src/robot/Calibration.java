@@ -115,7 +115,7 @@ public class Calibration extends Robot {
 		
 		for (;;) {
 			if (sensor != null) {
-				sensor.getRawColor(); /* Needed for light */
+				sensor.getColorID(); /* Needed for light */
 			}
 			
 			while (Button.RIGHT.isDown()) {
@@ -158,6 +158,7 @@ public class Calibration extends Robot {
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			
 			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Color sensor motor calibration:");
+			Tray.motor.resetTachoCount();
 			
 			for (SensorLocation location : SensorLocation.values()) {
 				LCD.clear();
@@ -178,10 +179,10 @@ public class Calibration extends Robot {
 			LCD.drawString("Motor calibrate", 0, 0);
 			LCD.drawString("Calibration fail", 0, 2);
 			LCD.drawString("Using defaults", 0, 3);
+			ColorDetector.setMotorDefaultDegrees();
 			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Color motor calibration failed");
 		} finally {
-			ColorDetector.motor.rotateTo(0);
-			ColorDetector.setMotorDefaultDegrees();
+			ColorDetector.motor.rotateTo(0);			
 			Tray.motor.rotateTo(0);			
 			try {
 				calibrationFileStream.close();

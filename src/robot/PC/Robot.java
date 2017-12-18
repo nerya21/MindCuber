@@ -1,3 +1,5 @@
+
+
 package robot;
 
 import java.io.DataInputStream;
@@ -9,10 +11,10 @@ import application.LoggerGroup;
 import application.LoggerLevel;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
-import lejos.nxt.Motor;
 import lejos.nxt.ColorSensor.Color;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
+import lejos.nxt.Motor;
 import lejos.nxt.remote.RemoteMotor;
 import lejos.util.Delay;
 
@@ -28,7 +30,8 @@ public class Robot {
 	private static final int ARM_POSITION_REST = 0;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
-	private static final int TRAY_MOTOR_STARTUP_SPEED = 500;
+	private static final int TRAY_MOTOR_DEFAULT_SPEED = 500;
+	private static final int TRAY_MOTOR_SCAN_SPEED = 200;
 	private static final int SENSOR_CENTER_DEFAULT_DEGREE = 170;
 	private static final int SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE = 115;
 	private static final int SENSOR_OUTER_CORNER_DEFAULT_DEGREE = 95;
@@ -59,16 +62,13 @@ public class Robot {
 
 		private static void init() {
 			motor.resetTachoCount();
-			motor.setSpeed(TRAY_MOTOR_STARTUP_SPEED);
+			motor.setSpeed(TRAY_MOTOR_DEFAULT_SPEED);
 		}
 
 		private static void rotate(int degree) {
 			motor.rotate(degree * TRAY_MOTOR_ROTATION_FACTOR);
 		}
 		
-		public static void setSpeed(int speed) {
-			motor.setSpeed(speed);
-		}
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class Robot {
 		 * Set thresholds to defaults 
 		 */
 		public static void setDefaultThresholds() {
-			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: this thresholds are not optimised, please run the calibration routine from the menu");
+			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: those thresholds are not optimised, please run the calibration routine from the menu");
 			for (SensorLocation location : SensorLocation.values()) {
 				for (Colors color : Colors.values()) {
 					for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
@@ -368,7 +368,7 @@ public class Robot {
 					}
 				}
 			}		
-		}
+		}		
 	}
 
 	/**
@@ -378,6 +378,14 @@ public class Robot {
 	 */
 	protected static class ProximitySensor {
 		final static UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S3);
+	}	
+
+	public static void setTrayScanSpeed() {
+		Tray.motor.setSpeed(TRAY_MOTOR_SCAN_SPEED);
+	}
+	
+	public static void setTrayDefaultSpeed() {
+		Tray.motor.setSpeed(TRAY_MOTOR_DEFAULT_SPEED);
 	}
 	
 	/**

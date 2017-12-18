@@ -8,7 +8,8 @@ package application;
 public enum TestsMenu {
 	BRUTEFORCE(0, "Brute Force"),
 	COLOR(1, "Read Color"),
-	BACK(2, "Back");
+	FLIP(2, "Flip Cube"),
+	BACK(3, "Back");
 
 	private final static String title = "Tests";
 	private final int value;
@@ -29,7 +30,7 @@ public enum TestsMenu {
 	}
 
 	public static String[] getItems() {
-		return new String[] { BRUTEFORCE.toString(), COLOR.toString(), BACK.toString() };
+		return new String[] { BRUTEFORCE.toString(), COLOR.toString(), FLIP.toString(), BACK.toString() };
 	}
 
 	public static String getTitle() {

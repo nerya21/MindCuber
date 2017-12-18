@@ -26,14 +26,14 @@ public class Tests extends Robot {
 		LCD.drawString("return to menu", 0, 2);
 
 		String color;
-		Color rawColor;
+		int[] rawColor;
 		int red, green, blue;
 		while (!Button.ESCAPE.isDown()) {
 			while (Button.ENTER.isDown()) {
-				rawColor = ColorDetector.sensor.getRawColor();
-				red = rawColor.getRed();
-				green = rawColor.getGreen();
-				blue = rawColor.getBlue();
+				rawColor = ColorDetector.readRgbAverage(100);
+				red = rawColor[0];
+				green = rawColor[1];
+				blue = rawColor[2];
 				color = "Result: " + ColorDetector.readColor(rawColor, SensorLocation.ALLIGN) + "\t\tRaw: [" + red + "," + green + "," + blue + "]";
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, color);
 			}
@@ -52,5 +52,9 @@ public class Tests extends Robot {
 			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
 			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
 		}
+	}
+	
+	public static void flipCube() {
+		Robot.flipCube(FlipMethod.SINGLE);
 	}
 }
