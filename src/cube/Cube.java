@@ -15,12 +15,12 @@ public class Cube implements ICube {
 	private Action[] _actions;
 
 	private static final Orientation[][] ORIENTATION_MAT = {
-			{ Orientation.D, Orientation.U, Orientation.R, Orientation.L, Orientation.B, Orientation.F },
-			{ Orientation.U, Orientation.D, Orientation.R, Orientation.L, Orientation.F, Orientation.B },
-			{ Orientation.F, Orientation.B, Orientation.D, Orientation.U, Orientation.L, Orientation.R },
-			{ Orientation.F, Orientation.B, Orientation.U, Orientation.D, Orientation.R, Orientation.L },
-			{ Orientation.F, Orientation.B, Orientation.R, Orientation.L, Orientation.D, Orientation.U },
-			{ Orientation.F, Orientation.B, Orientation.L, Orientation.R, Orientation.B, Orientation.D } };
+			{ Orientation.D, Orientation.L, Orientation.F, Orientation.U, Orientation.R, Orientation.B },
+			{ Orientation.L, Orientation.D, Orientation.B, Orientation.R, Orientation.U, Orientation.F },
+			{ Orientation.L, Orientation.F, Orientation.D, Orientation.R, Orientation.B, Orientation.U },
+			{ Orientation.U, Orientation.R, Orientation.F, Orientation.D, Orientation.L, Orientation.B },
+			{ Orientation.L, Orientation.U, Orientation.F, Orientation.R, Orientation.D, Orientation.B },
+			{ Orientation.L, Orientation.B, Orientation.U, Orientation.R, Orientation.F, Orientation.D } };
 
 	public Cube() {
 		
@@ -36,12 +36,12 @@ public class Cube implements ICube {
 //		_faces[5] = new Face(Orientation.B);
 		
 		_actions = new Action[6];
-		_actions[0] = new Action(FlipMethod.DOUBLE, Direction.NONE);
-		_actions[1] = new Action(FlipMethod.NONE, Direction.NONE);
-		_actions[2] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
-		_actions[3] = new Action(FlipMethod.SINGLE, Direction.LEFT);
-		_actions[4] = new Action(FlipMethod.SINGLE, Direction.NONE);
-		_actions[5] = new Action(FlipMethod.SINGLE, Direction.MIRROR);
+		_actions[Orientation.U.getValue()] = new Action(FlipMethod.DOUBLE, Direction.NONE);
+		_actions[Orientation.D.getValue()] = new Action(FlipMethod.NONE, Direction.NONE);
+		_actions[Orientation.R.getValue()] = new Action(FlipMethod.SINGLE, Direction.MIRROR);
+		_actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE);
+		_actions[Orientation.F.getValue()] = new Action(FlipMethod.SINGLE, Direction.LEFT);
+		_actions[Orientation.B.getValue()] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
 	}
 
 	public Face getFace(Orientation orientation) {
@@ -131,10 +131,11 @@ public class Cube implements ICube {
 			Direction cubeRotation = _actions[_dynamic_orientation.getValue()].direction;
 			
 			// If a cube flip is required, we must mirror the face turning direction:
+			/*
 			if (cubeFlips != FlipMethod.NONE){
 				cubeRotation = cubeRotation.mirror();
 			}
-			
+			*/
 			changePosition(cubeFlips, cubeRotation, _dynamic_orientation);
 			
 			Robot.turnFace(direction);

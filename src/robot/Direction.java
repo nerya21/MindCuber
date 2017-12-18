@@ -1,7 +1,7 @@
 package robot;
 
 public enum Direction {
-	NONE(0),LEFT(-90), RIGHT(90), MIRROR(180);
+	NONE(0),RIGHT(90),MIRROR(180),LEFT(-90);
 
     private final int degree;
     private Direction(int degree) {

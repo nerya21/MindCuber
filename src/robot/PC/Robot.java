@@ -24,9 +24,9 @@ import lejos.util.Delay;
  * Implements simple API for cube manipulation on NXT2.0
  */
 public class Robot {
-	private static final int ARM_MOTOR_DEFAULT_SPEED = 450;
-	private static final int ARM_POSITION_TACKLE = -210;
-	private static final int ARM_POSITION_HOLD = -160;
+	private static final int ARM_MOTOR_DEFAULT_SPEED = 550;
+	private static final int ARM_POSITION_TACKLE = -220;
+	private static final int ARM_POSITION_HOLD = -155;
 	private static final int ARM_POSITION_REST = 0;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
@@ -211,7 +211,7 @@ public class Robot {
 		 * 
 		 * @return the detected color
 		 */
-		private static Colors readColor(int[] rawColorRgb, SensorLocation location) {
+		static Colors readColor(int[] rawColorRgb, SensorLocation location) {
 			int color = sensor.getColorID();
 			
 			switch (color) {

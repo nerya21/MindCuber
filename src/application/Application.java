@@ -120,100 +120,100 @@ public class Application {
 	private static void solveCube() {
 		ICube cube = new Cube();
 		Robot.waitForCube();
-		cube.setColors();
-//		
-//		Colors[][] front = {{Colors.WHITE, Colors.WHITE, Colors.ORANGE}, {Colors.YELLOW, Colors.WHITE, Colors.YELLOW}, {Colors.RED, Colors.WHITE, Colors.RED}};
-//		Colors[][] right = {{Colors.YELLOW, Colors.YELLOW, Colors.BLUE}, {Colors.ORANGE, Colors.ORANGE, Colors.BLUE}, {Colors.BLUE, Colors.ORANGE, Colors.RED}};
-//		Colors[][] back = {{Colors.YELLOW, Colors.WHITE, Colors.ORANGE}, {Colors.YELLOW, Colors.YELLOW, Colors.RED}, {Colors.WHITE, Colors.WHITE, Colors.WHITE}};
-//		Colors[][] up = {{Colors.WHITE, Colors.BLUE, Colors.ORANGE}, {Colors.BLUE, Colors.GREEN, Colors.RED}, {Colors.GREEN, Colors.RED, Colors.GREEN}};
-//		Colors[][] left = {{Colors.GREEN, Colors.ORANGE, Colors.RED}, {Colors.BLUE, Colors.RED, Colors.GREEN}, {Colors.ORANGE, Colors.RED, Colors.GREEN}};
-//		Colors[][] down = {{Colors.YELLOW, Colors.GREEN, Colors.YELLOW}, {Colors.GREEN, Colors.BLUE, Colors.GREEN}, {Colors.BLUE, Colors.ORANGE, Colors.BLUE}};
-//		
-//		cube.setColorsManual(up, down, front, back, left, right);
-//		
-//		//map colors to face colors
-//		IFace face;
-//		
-//		Color[] colors2FaceColors = new Color[6];
-//		for(Orientation orientation: Orientation.values()) {
-//			face = cube.getFace(orientation);
-//			Colors color = face.getColor(1, 1);
-//			Color faceColor = convertOrientation2FaceColor(orientation);
-//			colors2FaceColors[color.getValue()] = faceColor;
-//		}
-//		
-//		//build cube representation for the algorithm
-//		Color[] facelets = new Color[54];
-//		Colors realColor;
-//		Orientation orientation;
-//		int i,j,c = 0;
-//		
-//		for(Color faceColor : Color.values()) {
-//			orientation = convertFaceColor2Orientation(faceColor);
-//			face = cube.getFace(orientation);
-//			
-//			for (i = 0; i < 3; i++) {				
-//				for (j = 0; j < 3; j++) {					
-//					realColor = face.getColor(i, j);
-//					facelets[c++] = colors2FaceColors[realColor.getValue()];
-//				}
-//			}			
-//		}
-//
-//		String s = "";
-//		for (int k =0; k<54;k++) {
-//			if (facelets[k] == Color.U) {
-//				s+="U";
-//			}
-//			if (facelets[k] == Color.B) {
-//				s+="B";
-//			}
-//			if (facelets[k] == Color.F) {
-//				s+="F";
-//			}
-//			if (facelets[k] == Color.R) {
-//				s+="R";
-//			}
-//			if (facelets[k] == Color.L) {
-//				s+="L";
-//			}
-//			if (facelets[k] == Color.D) {
-//				s+="D";
-//			}
-//		}
-//		//String s = "ULUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDUDLLLDLLLLLBBBBBBBBB";
-//		for (int l = 0; l<54; l++) {
-//			if (s.charAt(l) == 'U')
-//				facelets[l] = Color.U;
-//			else if (s.charAt(l) == 'R')
-//				facelets[l] = Color.R;
-//			else if (s.charAt(l) == 'L')
-//				facelets[l] = Color.L;
-//			else if (s.charAt(l) == 'D')
-//				facelets[l] = Color.D;
-//			else if (s.charAt(l) == 'F')
-//				facelets[l] = Color.F;
-//			else if (s.charAt(l) == 'B')
-//				facelets[l] = Color.B;
-//		}
-//		
-//		List<Move> moves = new ArrayList<>();
-//		int depth = 24;
-//		int status;
-//		do {
-//			status = TwoPhase.findSolution(facelets, depth, 120, moves);
-//			
-//			depth = moves.size() - 1;
-//			
-//		} while (status == 0);
-//		
-//		
-//		if(moves.size() != 0) {
-//			handleSolution(cube, moves);
-//		}
-//		else {
-//			//handle error
-//		}
+		//cube.setColors();
+		
+		Colors[][] front = {{Colors.RED, Colors.RED, Colors.WHITE}, {Colors.GREEN, Colors.GREEN, Colors.BLUE}, {Colors.ORANGE, Colors.WHITE, Colors.WHITE}};
+		Colors[][] right = {{Colors.BLUE, Colors.YELLOW, Colors.ORANGE}, {Colors.YELLOW, Colors.ORANGE, Colors.WHITE}, {Colors.GREEN, Colors.ORANGE, Colors.WHITE}};
+		Colors[][] back = {{Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}, {Colors.BLUE, Colors.BLUE, Colors.GREEN}, {Colors.BLUE, Colors.WHITE, Colors.BLUE}};
+		Colors[][] up = {{Colors.GREEN, Colors.GREEN, Colors.GREEN}, {Colors.ORANGE, Colors.YELLOW, Colors.RED}, {Colors.WHITE, Colors.BLUE, Colors.ORANGE}};
+		Colors[][] left = {{Colors.RED, Colors.YELLOW, Colors.GREEN}, {Colors.RED, Colors.RED, Colors.ORANGE}, {Colors.YELLOW, Colors.WHITE, Colors.BLUE}};
+		Colors[][] down = {{Colors.YELLOW, Colors.RED, Colors.ORANGE}, {Colors.GREEN, Colors.WHITE, Colors.BLUE}, {Colors.RED, Colors.ORANGE, Colors.RED}};
+		
+		cube.setColorsManual(up, down, front, back, left, right);
+		
+		//map colors to face colors
+		IFace face;
+		
+		Color[] colors2FaceColors = new Color[6];
+		for(Orientation orientation: Orientation.values()) {
+			face = cube.getFace(orientation);
+			Colors color = face.getColor(1, 1);
+			Color faceColor = convertOrientation2FaceColor(orientation);
+			colors2FaceColors[color.getValue()] = faceColor;
+		}
+		
+		//build cube representation for the algorithm
+		Color[] facelets = new Color[54];
+		Colors realColor;
+		Orientation orientation;
+		int i,j,c = 0;
+		
+		for(Color faceColor : Color.values()) {
+			orientation = convertFaceColor2Orientation(faceColor);
+			face = cube.getFace(orientation);
+			
+			for (i = 0; i < 3; i++) {				
+				for (j = 0; j < 3; j++) {					
+					realColor = face.getColor(i, j);
+					facelets[c++] = colors2FaceColors[realColor.getValue()];
+				}
+			}			
+		}
+
+		String s = "";
+		for (int k =0; k<54;k++) {
+			if (facelets[k] == Color.U) {
+				s+="U";
+			}
+			if (facelets[k] == Color.B) {
+				s+="B";
+			}
+			if (facelets[k] == Color.F) {
+				s+="F";
+			}
+			if (facelets[k] == Color.R) {
+				s+="R";
+			}
+			if (facelets[k] == Color.L) {
+				s+="L";
+			}
+			if (facelets[k] == Color.D) {
+				s+="D";
+			}
+		}
+		//String s = "ULUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDUDLLLDLLLLLBBBBBBBBB";
+		for (int l = 0; l<54; l++) {
+			if (s.charAt(l) == 'U')
+				facelets[l] = Color.U;
+			else if (s.charAt(l) == 'R')
+				facelets[l] = Color.R;
+			else if (s.charAt(l) == 'L')
+				facelets[l] = Color.L;
+			else if (s.charAt(l) == 'D')
+				facelets[l] = Color.D;
+			else if (s.charAt(l) == 'F')
+				facelets[l] = Color.F;
+			else if (s.charAt(l) == 'B')
+				facelets[l] = Color.B;
+		}
+		
+		List<Move> moves = new ArrayList<>();
+		int depth = 24;
+		int status;
+		do {
+			status = TwoPhase.findSolution(facelets, depth, 120, moves);
+			
+			depth = moves.size() - 1;
+			
+		} while (status == 0);
+		
+		
+		if(moves.size() != 0) {
+			handleSolution(cube, moves);
+		}
+		else {
+			//handle error
+		}
 	}
 
 	/**
