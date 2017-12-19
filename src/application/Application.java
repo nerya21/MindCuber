@@ -235,8 +235,8 @@ public class Application {
 	public static void main(String[] args) {
 		Logger.init(LoggerLevel.DEBUG);
 		Robot.init();		
-		
-		run();
+		robot.Tests.readColor();
+		//run();
 
 		Logger.close();
 	}

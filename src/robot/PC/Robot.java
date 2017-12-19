@@ -6,16 +6,14 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import application.Logger;
 import application.LoggerGroup;
 import application.LoggerLevel;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
-import lejos.nxt.ColorSensor.Color;
-import lejos.nxt.SensorPort;
-import lejos.nxt.UltrasonicSensor;
-import lejos.nxt.Motor;
-import lejos.nxt.remote.RemoteMotor;
 import lejos.util.Delay;
 
 /**
@@ -43,22 +41,20 @@ public class Robot {
 	private static final int[][] DEFAULT_COLOR_SENSOR_THRESHOLD = { { 602, 599, 540 }, { 587, 537, 387 },
 			{ 520, 320, 230 }, { 255, 368, 404 }, { 318, 456, 318 }, { 566, 345, 224 } };
 
-	/**
-	 * Initialization
-	 */
+	
 	public static void init() {
 		Arm.init();
 		Tray.init();
 		ColorDetector.init();
 	}
-
+	
 	/**
 	 * Tray Class
 	 * 
 	 * Represents the motor which controls the cube tray
 	 */
 	public static class Tray {
-		final static RemoteMotor motor = Motor.A;
+		final static NxtMotor motor = new NxtMotor(0); //A
 
 		private static void init() {
 			motor.resetTachoCount();
@@ -77,8 +73,8 @@ public class Robot {
 	 * Represents the motor responsible for holding and flipping the cube
 	 */
 	protected static class Arm {
-		final static RemoteMotor motor = Motor.B;
-
+		final static NxtMotor motor = new NxtMotor(1); //B
+		
 		/**
 		 * Initialization
 		 */
@@ -129,8 +125,8 @@ public class Robot {
 	 * Represents the color detector unit, both motor and sensor
 	 */
 	protected static class ColorDetector {
-		final static RemoteMotor motor = Motor.C;
-		final static ColorSensor sensor = new ColorSensor(SensorPort.S2);
+		final static NxtMotor motor = new NxtMotor(2); //C
+		final static NxtSensor sensor = new NxtSensor(1); //2
 
 		static int[][][] thresholds = new int[3][6][3];
 		static int centerDegree = SENSOR_CENTER_DEFAULT_DEGREE;
@@ -143,33 +139,17 @@ public class Robot {
 		private static void init() {
 			motor.setSpeed(SENSOR_MOTOR_SPEED);
 			motor.resetTachoCount();
-			updateThresholds();
-			updateDegrees();
+			//updateThresholds();
+			//setDefaultThresholds();
+			//updateDegrees();
+			//setMotorDefaultDegrees();
 		}
 
-//		protected static void setMotorDegrees(int center, int allign, int corner) {
-//			centerDegree = center;
-//			allignDegree = allign;
-//			cornerDegree = corner;
-//		}
-		
 		protected static void setMotorDefaultDegrees() {
 			setMotorDegree(SensorLocation.CENTER, SENSOR_CENTER_DEFAULT_DEGREE);
 			setMotorDegree(SensorLocation.ALLIGN, SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE);
 			setMotorDegree(SensorLocation.CORNER, SENSOR_OUTER_CORNER_DEFAULT_DEGREE);
 		}
-		
-//		protected static void setMotorAlligned() {
-//			motor.rotateTo(allignDegree);
-//		}
-//		
-//		protected static void setMotorCorner() {
-//			motor.rotateTo(cornerDegree);
-//		}
-//		
-//		protected static void setMotorCenter() {
-//			motor.rotateTo(centerDegree);
-//		}
 		
 		protected static void setMotorLocation(SensorLocation location) {
 			int degree;
@@ -206,89 +186,15 @@ public class Robot {
 		}
 		
 		/**
-		 * Read color from RGB raw data
-		 * @param location TODO
-		 * 
-		 * @return the detected color
-		 */
-		static Colors readColor(int[] rawColorRgb, SensorLocation location) {
-			int color = sensor.getColorID();
-			
-			switch (color) {
-			case 0:
-				return Colors.RED;
-			case 1:
-				return Colors.GREEN;
-			case 2:
-				return Colors.BLUE;
-			case 3:
-				return Colors.YELLOW;
-			case 5:
-				return Colors.ORANGE;
-			case 6:
-				return Colors.WHITE;
-			default:
-				return Colors.WHITE;
-			}
-		}
-
-		/**
-		 * Read color from Color raw data
-		 * @param location TODO
-		 * 
-		 * @return the detected color
-		 */
-		protected static Colors readColor(Color rawColor, SensorLocation location) {
-			int rawColorRgb[] = new int[3];
-			rawColorRgb[0] = rawColor.getRed();
-			rawColorRgb[1] = rawColor.getGreen();
-			rawColorRgb[2] = rawColor.getBlue();
-			
-			return readColor(rawColorRgb, location);
-		}
-		
-		/**
 		 * Read color at current position
 		 * @param location TODO
 		 * 
 		 * @return the detected color
 		 */
-		private static Colors readColor(SensorLocation location) {
-			int[] rawColor = readRgbAverage(100);
-			return readColor(rawColor, location);
-		}
-		
-		/**
-		 * Read RGB averaged
-		 *
-		 * @param numberOfSamples
-		 * @return RGB color
-		 */
-		public static int[] readRgbAverage(int numberOfSamples) {
-			int[] rgb = { 0, 0, 0 };
-			int actualNumberOfSamples = 0;
-			Color color;
+		private static RawColor readColor(SensorLocation location) {
+			int[] rawColor = sensor.readColorRgb(100);
 			
-			for (int i = 0; i < numberOfSamples; i++) {
-				color = sensor.getRawColor();
-				if (color.getRed() != 0 && color.getGreen() != 0 && color.getBlue() != 0) {
-					rgb[0] += color.getRed();
-					rgb[1] += color.getGreen();
-					rgb[2] += color.getBlue();
-					actualNumberOfSamples++;
-				}
-			}
-
-			if (actualNumberOfSamples == 0) {
-				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Fatal color sensor error");
-				return new int[] {-1 , -1, -1};
-			}
-			
-			for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-				rgb[rgbIndex] /= actualNumberOfSamples;
-			}
-
-			return rgb;
+			return null;
 		}
 		
 		/**
@@ -377,7 +283,7 @@ public class Robot {
 	 * Represents the proximity sensor unit
 	 */
 	protected static class ProximitySensor {
-		final static UltrasonicSensor sensor = new UltrasonicSensor(SensorPort.S3);
+		final static NxtSensor sensor = new NxtSensor(2); //3
 	}	
 
 	public static void setTrayScanSpeed() {
@@ -403,7 +309,7 @@ public class Robot {
 			col = COORDINATE_SCAN_ORDER[coordinate][1];
 			location = coordinate % 2 == 0 ? SensorLocation.ALLIGN : SensorLocation.CORNER;
 			ColorDetector.setMotorLocation(location);
-			faceColors[row][col] = ColorDetector.readColor(location);
+			//faceColors[row][col] = ColorDetector.readColor(location);
 			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Color at [" + row + "][" + col + "] is " + faceColors[row][col]);
 			Tray.motor.rotate(TRAY_SCAN_STEP_DEGREE);
 		}
@@ -411,7 +317,7 @@ public class Robot {
 		row = COORDINATE_SCAN_ORDER[coordinate][0];
 		col = COORDINATE_SCAN_ORDER[coordinate][1];
 		ColorDetector.setMotorLocation(SensorLocation.CENTER);
-		faceColors[row][col] = ColorDetector.readColor(SensorLocation.CENTER);
+		//faceColors[row][col] = ColorDetector.readColor(SensorLocation.CENTER);
 		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Color at [" + row + "][" + col + "] is " + faceColors[row][col]);
 		ColorDetector.motor.rotateTo(0);
 		return faceColors;

@@ -91,7 +91,7 @@ public class Calibration extends Robot {
 		LCD.drawString("Scanning " + color, 0, 2);
 		LCD.drawString("Please wait", 0, 3);
 		
-		return ColorDetector.readRgbAverage(100);
+		return ColorDetector.sensor.readColorRgb(100);
 	}
 
 	/**
@@ -106,16 +106,16 @@ public class Calibration extends Robot {
 		calibrateMotor(Tray.motor, true);
 	}
 
-	private static int calibrateMotor(RegulatedMotor motor, boolean reset) {
-		return calibrateMotor(motor, reset, null);
+	private static void calibrateMotor(NxtMotor motor, boolean reset) {
+		calibrateMotor(motor, reset, null);
 	}
 
-	private static int calibrateMotor(RegulatedMotor motor, boolean reset, ColorSensor sensor) {
+	private static void calibrateMotor(NxtMotor motor, boolean reset, NxtSensor sensor) {
 		Delay.msDelay(200);
 		
 		for (;;) {
 			if (sensor != null) {
-				sensor.getColorID(); /* Needed for light */
+				//sensor.setLight();
 			}
 			
 			while (Button.RIGHT.isDown()) {
@@ -128,7 +128,6 @@ public class Calibration extends Robot {
 				if (reset) {
 					motor.resetTachoCount();
 				}
-				return motor.getTachoCount();
 			}
 		}
 	}
@@ -169,7 +168,8 @@ public class Calibration extends Robot {
 				ColorDetector.motor.rotateTo(0);
 				Tray.motor.rotateTo(location == SensorLocation.CORNER ? 45 * 3 : 0);
 				ColorDetector.setMotorLocation(location);
-				degree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);
+				degree = 0;
+				calibrateMotor(ColorDetector.motor, false);
 				calibrationFileStream.writeInt(degree);
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + location + ": " + degree);
 				ColorDetector.setMotorDegree(location, degree);

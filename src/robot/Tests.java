@@ -34,7 +34,7 @@ public class Tests extends Robot {
 				red = rawColor[0];
 				green = rawColor[1];
 				blue = rawColor[2];
-				color = "Result: " + ColorDetector.readColor(rawColor, SensorLocation.ALLIGN) + "\t\tRaw: [" + red + "," + green + "," + blue + "]";
+				color = "Result: [" + red + "," + green + "," + blue + "]";
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, color);
 			}
 		}
@@ -55,6 +55,7 @@ public class Tests extends Robot {
 	}
 	
 	public static void flipCube() {
-		Robot.flipCube(FlipMethod.SINGLE);
+		//Robot.flipCube(FlipMethod.SINGLE);
+		//Robot.ColorDetector.test2();
 	}
 }
