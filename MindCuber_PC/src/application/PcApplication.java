@@ -7,6 +7,7 @@ import cube.ICube;
 import cube.IFace;
 import cube.Orientation;
 import robot.Colors;
+import robot.NxtOperation;
 import robot.Robot;
 import twophase.Color;
 import twophase.Move;
@@ -19,7 +20,7 @@ import lejos.util.TextMenu;
  * 
  * Implements the main application routine
  */
-public class Application {
+public class PcApplication {
 	
 	private static void handleSolution(ICube cube, List<Move> moves) {
 		for(Move move: moves) {
@@ -108,7 +109,7 @@ public class Application {
 						break;
 					}
 				}
-			} else if (selection == MainMenu.EXIT.getValue()) {
+			} else if (selection == MainMenu.EXIT.getValue() || selection == -1) {
 				return;
 			}
 		}
@@ -119,18 +120,18 @@ public class Application {
 	 */
 	private static void solveCube() {
 		ICube cube = new Cube();
-		Robot.waitForCube();
-		//cube.setColors();
+		//Robot.waitForCube();
+		cube.setColors();
 		
-		Colors[][] front = {{Colors.RED, Colors.RED, Colors.WHITE}, {Colors.GREEN, Colors.GREEN, Colors.BLUE}, {Colors.ORANGE, Colors.WHITE, Colors.WHITE}};
-		Colors[][] right = {{Colors.BLUE, Colors.YELLOW, Colors.ORANGE}, {Colors.YELLOW, Colors.ORANGE, Colors.WHITE}, {Colors.GREEN, Colors.ORANGE, Colors.WHITE}};
-		Colors[][] back = {{Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}, {Colors.BLUE, Colors.BLUE, Colors.GREEN}, {Colors.BLUE, Colors.WHITE, Colors.BLUE}};
-		Colors[][] up = {{Colors.GREEN, Colors.GREEN, Colors.GREEN}, {Colors.ORANGE, Colors.YELLOW, Colors.RED}, {Colors.WHITE, Colors.BLUE, Colors.ORANGE}};
-		Colors[][] left = {{Colors.RED, Colors.YELLOW, Colors.GREEN}, {Colors.RED, Colors.RED, Colors.ORANGE}, {Colors.YELLOW, Colors.WHITE, Colors.BLUE}};
-		Colors[][] down = {{Colors.YELLOW, Colors.RED, Colors.ORANGE}, {Colors.GREEN, Colors.WHITE, Colors.BLUE}, {Colors.RED, Colors.ORANGE, Colors.RED}};
-		
-		cube.setColorsManual(up, down, front, back, left, right);
-		
+//		Colors[][] front = {{Colors.RED, Colors.RED, Colors.WHITE}, {Colors.GREEN, Colors.GREEN, Colors.BLUE}, {Colors.ORANGE, Colors.WHITE, Colors.WHITE}};
+//		Colors[][] right = {{Colors.BLUE, Colors.YELLOW, Colors.ORANGE}, {Colors.YELLOW, Colors.ORANGE, Colors.WHITE}, {Colors.GREEN, Colors.ORANGE, Colors.WHITE}};
+//		Colors[][] back = {{Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}, {Colors.BLUE, Colors.BLUE, Colors.GREEN}, {Colors.BLUE, Colors.WHITE, Colors.BLUE}};
+//		Colors[][] up = {{Colors.GREEN, Colors.GREEN, Colors.GREEN}, {Colors.ORANGE, Colors.YELLOW, Colors.RED}, {Colors.WHITE, Colors.BLUE, Colors.ORANGE}};
+//		Colors[][] left = {{Colors.RED, Colors.YELLOW, Colors.GREEN}, {Colors.RED, Colors.RED, Colors.ORANGE}, {Colors.YELLOW, Colors.WHITE, Colors.BLUE}};
+//		Colors[][] down = {{Colors.YELLOW, Colors.RED, Colors.ORANGE}, {Colors.GREEN, Colors.WHITE, Colors.BLUE}, {Colors.RED, Colors.ORANGE, Colors.RED}};
+//		
+//		cube.setColorsManual(up, down, front, back, left, right);
+//		
 		//map colors to face colors
 		IFace face;
 		
@@ -214,6 +215,7 @@ public class Application {
 		else {
 			//handle error
 		}
+		Robot.finish();
 	}
 
 	/**
@@ -234,10 +236,15 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 		Logger.init(LoggerLevel.DEBUG);
-		Robot.init();		
-		robot.Tests.readColor();
-		//run();
-
+		try {
+			Robot.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		
+		run();
+		
+		NxtOperation.close();
 		Logger.close();
 	}
 

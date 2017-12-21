@@ -40,4 +40,16 @@ public class NxtMotor {
 	public void resetTachoCount() {
 		NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_RESET_TACHO_COUNT, 0, 0);
 	}
+
+	public int getTachoCount() {
+		byte[] inputBuffer = NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_GET_TACHO_COUNT, 0, 4);
+		int tachoCount = 0;
+		
+		tachoCount |= (((int)inputBuffer[0]) & 0x000000FF) << 0;
+		tachoCount |= (((int)inputBuffer[1]) & 0x000000FF) << 8;
+		tachoCount |= (((int)inputBuffer[2]) & 0x000000FF) << 16;
+		tachoCount |= (((int)inputBuffer[3]) & 0x000000FF) << 24;
+		
+		return tachoCount;
+	}
 }

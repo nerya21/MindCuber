@@ -3,6 +3,8 @@ package robot;
 import application.Logger;
 import application.LoggerGroup;
 import application.LoggerLevel;
+import cube.Orientation;
+import cube.RawColor;
 import lejos.nxt.Button;
 import lejos.nxt.ColorSensor.Color;
 import lejos.nxt.LCD;
@@ -25,20 +27,22 @@ public class Tests extends Robot {
 		LCD.drawString("scan, Exit for", 0, 1);
 		LCD.drawString("return to menu", 0, 2);
 
-		String color;
-		int[] rawColor;
-		int red, green, blue;
-		while (!Button.ESCAPE.isDown()) {
-			while (Button.ENTER.isDown()) {
-				rawColor = ColorDetector.readRgbAverage(100);
-				red = rawColor[0];
-				green = rawColor[1];
-				blue = rawColor[2];
-				color = "Result: [" + red + "," + green + "," + blue + "]";
-				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, color);
+		String colorFormatted;
+		int[] color;
+		for (;;) {
+			int buttons = Button.waitForAnyPress();
+			
+			if ((buttons & Button.ID_ENTER) != 0) {
+				color = ColorDetector.sensor.readColorRgb(1);
+				RawColor rawColor = new RawColor(Orientation.B, 0, 0, color);
+				colorFormatted = "Read color:" + "\tRed: " + rawColor.red + "\tGreen: " + rawColor.green + "\tBlue: " + rawColor.blue + "\tHue: " + rawColor.hue + "\tWhite distance: " + rawColor.whiteDistance;
+				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, colorFormatted);
+			}
+			
+			if ((buttons & Button.ID_ESCAPE) != 0) {
+				break;
 			}
 		}
-
 		ColorDetector.motor.rotateTo(0);
 	}
 
@@ -50,12 +54,15 @@ public class Tests extends Robot {
 		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
 			rotateCube(i % 5 == 0 ? Direction.RIGHT : Direction.NONE);
 			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
+			//flipCube(FlipMethod.SINGLE);
+
 			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
 		}
+		Robot.Arm.release();
 	}
 	
 	public static void flipCube() {
-		//Robot.flipCube(FlipMethod.SINGLE);
-		//Robot.ColorDetector.test2();
+		Robot.flipCube(FlipMethod.SINGLE);
+		Robot.Arm.release();
 	}
 }

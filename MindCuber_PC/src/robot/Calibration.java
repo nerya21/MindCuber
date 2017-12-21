@@ -33,24 +33,33 @@ public class Calibration extends Robot {
 			calibrationFile.createNewFile();
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			
-			for (SensorLocation location : SensorLocation.values()) {
-				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Calibration results for " + location + ":");
-				if (location == SensorLocation.CORNER) {
-					ColorDetector.motor.rotateTo(0);
-					Tray.motor.rotateTo(45 * 3);
-					ColorDetector.setMotorLocation(SensorLocation.CORNER);
-				}
-				for (Colors color : Colors.values()) {
-					rgb = calibrateColor(color, location);
-					
-					for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
-						calibrationFileStream.writeInt(rgb[rgbIndex]);
-						ColorDetector.thresholds[location.getValue()][color.getValue()][rgbIndex] = rgb[rgbIndex];
-					}
-					Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
-				}
-				Tray.motor.rotateTo(0);
+			rgb = calibrateColor();			
+			for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
+				calibrationFileStream.writeInt(rgb[rgbIndex]);
+				ColorDetector.whiteThreshold[rgbIndex] = rgb[rgbIndex];
 			}
+			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "--->  White calibration result: [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
+			
+			Tray.motor.rotateTo(0);
+			
+//			for (SensorLocation location : SensorLocation.values()) {
+//				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Calibration results for " + location + ":");
+//				if (location == SensorLocation.CORNER) {
+//					ColorDetector.motor.rotateTo(0);
+//					Tray.motor.rotateTo(45 * 3);
+//					ColorDetector.setMotorLocation(SensorLocation.CORNER);
+//				}
+//				for (Colors color : Colors.values()) {
+//					rgb = calibrateColor(color, location);
+//					
+//					for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
+//						calibrationFileStream.writeInt(rgb[rgbIndex]);
+//						ColorDetector.thresholds[location.getValue()][color.getValue()][rgbIndex] = rgb[rgbIndex];
+//					}
+//					Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
+//				}
+//				Tray.motor.rotateTo(0);
+//			}
 			
 		} catch (IOException e) {
 			LCD.clear();
@@ -75,20 +84,18 @@ public class Calibration extends Robot {
 	 * @param location TODO
 	 * @return the color average reading
 	 */
-	private static int[] calibrateColor(Colors color, SensorLocation location) {
+	private static int[] calibrateColor() {
 		LCD.clear();
 		LCD.drawString("Color calibrate", 0, 0);
-		LCD.drawString(location.toString(), 0, 1);
-		LCD.drawString("Place " + color, 0, 2);
 		LCD.drawString("and press Enter", 0, 3);
 
 		ColorDetector.setMotorLocation(SensorLocation.CORNER);
 		Button.waitForAnyPress();
-		ColorDetector.setMotorLocation(location);
+		ColorDetector.setMotorLocation(SensorLocation.ALLIGN);
 		
 		LCD.clear();
 		LCD.drawString("Color calibrate", 0, 0);
-		LCD.drawString("Scanning " + color, 0, 2);
+		LCD.drawString("Scanning " , 0, 2);
 		LCD.drawString("Please wait", 0, 3);
 		
 		return ColorDetector.sensor.readColorRgb(100);
@@ -106,28 +113,31 @@ public class Calibration extends Robot {
 		calibrateMotor(Tray.motor, true);
 	}
 
-	private static void calibrateMotor(NxtMotor motor, boolean reset) {
-		calibrateMotor(motor, reset, null);
+	private static int calibrateMotor(NxtMotor motor, boolean reset) {
+		return calibrateMotor(motor, reset, null);
 	}
 
-	private static void calibrateMotor(NxtMotor motor, boolean reset, NxtSensor sensor) {
+	private static int calibrateMotor(NxtMotor motor, boolean reset, NxtSensor sensor) {
 		Delay.msDelay(200);
 		
 		for (;;) {
 			if (sensor != null) {
-				//sensor.setLight();
+				sensor.readColorRgb(1);
 			}
 			
-			while (Button.RIGHT.isDown()) {
+			int buttons = Button.waitForAnyPress();
+			
+			if ((buttons & Button.ID_RIGHT) != 0) {
 				motor.rotate(1);
 			}
-			while (Button.LEFT.isDown()) {
+			if ((buttons & Button.ID_LEFT) != 0) {
 				motor.rotate(-1);
 			}
-			if (Button.ENTER.isDown()) {
+			if ((buttons & Button.ID_ENTER) != 0) {
 				if (reset) {
 					motor.resetTachoCount();
 				}
+				return motor.getTachoCount();
 			}
 		}
 	}
@@ -168,8 +178,7 @@ public class Calibration extends Robot {
 				ColorDetector.motor.rotateTo(0);
 				Tray.motor.rotateTo(location == SensorLocation.CORNER ? 45 * 3 : 0);
 				ColorDetector.setMotorLocation(location);
-				degree = 0;
-				calibrateMotor(ColorDetector.motor, false);
+				degree = calibrateMotor(ColorDetector.motor, false, ColorDetector.sensor);
 				calibrationFileStream.writeInt(degree);
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + location + ": " + degree);
 				ColorDetector.setMotorDegree(location, degree);

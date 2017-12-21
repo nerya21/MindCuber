@@ -1,5 +1,8 @@
 package cube;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import application.Logger;
 import application.LoggerGroup;
 import application.LoggerLevel;
@@ -62,36 +65,95 @@ public class Cube implements ICube {
 	}
 
 	public void setColors() {
+		ArrayList<RawColor> allColors = new ArrayList<RawColor>();
+		
 		Robot.setTrayScanSpeed();
 		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.F);
-		_faces[Orientation.F.getValue()]._colors = Robot.scanFace();
+		Robot.scanFace(allColors, Orientation.F);
 		
 		Robot.flipCube(FlipMethod.SINGLE);		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.R);
-		_faces[Orientation.R.getValue()]._colors = Robot.scanFace();
+		Robot.scanFace(allColors, Orientation.R);
 		
 		Robot.flipCube(FlipMethod.SINGLE);		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.B);
-		_faces[Orientation.B.getValue()]._colors = Robot.scanFace();
+		Robot.scanFace(allColors, Orientation.B);
 		
 		Robot.flipCube(FlipMethod.SINGLE);		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.L);
-		_faces[Orientation.L.getValue()]._colors = Robot.scanFace();
+		Robot.scanFace(allColors, Orientation.L);
 		
 		Robot.rotateCube(Direction.RIGHT);
 		Robot.flipCube(FlipMethod.SINGLE);		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.D);
-		_faces[Orientation.D.getValue()]._colors = Robot.scanFace();
+		Robot.scanFace(allColors, Orientation.D);
 		
 		Robot.flipCube(FlipMethod.DOUBLE);
 		Robot.rotateCube(Direction.MIRROR);		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning face: " + Orientation.U);
-		_faces[Orientation.U.getValue()]._colors = Robot.scanFace();
+		Robot.scanFace(allColors, Orientation.U);
 		
 		Robot.setTrayDefaultSpeed();
 		
-		fixColors();
+		calcColors(allColors);
+		//fixColors();
+	}
+	
+	private void calcColors(ArrayList<RawColor> allColors) {
+		setWhitesByDistance(allColors);
+		setNonWhitesByHue(allColors);
+		fixCorners();
+		printCubeColorsToLogger(allColors);
+	}
+
+	private void printCubeColorsToLogger(ArrayList<RawColor> allColors) {
+		for (Orientation orientation: Orientation.values()) {
+			for (int row = 0; row < 3; row++) {
+				for (int col = 0; col< 3; col++) {
+					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, orientation + "[" + row + "][" + col + "]: " + _faces[orientation.getValue()].getColor(row, col));
+				}
+			}
+		}
+		
+	}
+
+	private void setWhitesByDistance(ArrayList<RawColor> allColors) {
+		Collections.sort(allColors, RawColor.whiteComparator);
+		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+			RawColor color = allColors.get(0);
+			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.WHITE);
+			allColors.remove(0);
+		}
+	}
+	
+	private void setNonWhitesByHue(ArrayList<RawColor> allColors) {
+		Collections.sort(allColors, RawColor.hueComparator);
+		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+			RawColor color = allColors.get(0);
+			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.RED);
+			allColors.remove(0);
+		}
+		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+			RawColor color = allColors.get(0);
+			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.ORANGE);
+			allColors.remove(0);
+		}
+		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+			RawColor color = allColors.get(0);
+			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.YELLOW);
+			allColors.remove(0);
+		}
+		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+			RawColor color = allColors.get(0);
+			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.GREEN);
+			allColors.remove(0);
+		}
+		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+			RawColor color = allColors.get(0);
+			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.BLUE);
+			allColors.remove(0);
+		}
 	}
 	
 	public void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
@@ -222,8 +284,8 @@ public class Cube implements ICube {
 	/**
 	 * 
 	 */
-	private void fixColors() {
-		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning cube for RED/ORANGE color error");
+	private void fixCorners() {
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning cube for RED/ORANGE color error:");
 		for (Orientation orientation : Orientation.values()) {
 			Face face = getFace(orientation);
 			
@@ -237,7 +299,7 @@ public class Cube implements ICube {
 							Colors scannedColor = face.getColor(corner.row, corner.col);
 							Colors cornerColor = cornerColors[1];
 							if (scannedColor != cornerColor) {
-								Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Color error detected at " + face.orientation + "[" + corner.row + "][" + corner.col + "]: fixing " + scannedColor + " to " + cornerColor);
+								Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "---> Color error detected at " + face.orientation + "[" + corner.row + "][" + corner.col + "]: fixing " + scannedColor + " to " + cornerColor);
 								face.setColor(corner.row, corner.col, cornerColor);
 							}
 						}

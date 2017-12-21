@@ -8,5 +8,9 @@
 
 # log files
 *.log
+*.csv
+
+# dat files
+*.dat
 
 */bin
