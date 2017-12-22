@@ -6,8 +6,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import application.Logger;
@@ -15,10 +13,8 @@ import application.LoggerGroup;
 import application.LoggerLevel;
 import cube.Orientation;
 import cube.RawColor;
-import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
 import lejos.util.Delay;
-import robot.Robot.ColorDetector;
 
 /**
  * Robot Class
@@ -28,9 +24,10 @@ import robot.Robot.ColorDetector;
 public class Robot {
 	private static final int ARM_MOTOR_DEFAULT_SPEED = 550;
 	private static final int ARM_POSITION_HOLD = -157;
+	private static final int ARM_POSITION_HOLD_EXTRA = 10;
 	private static final int ARM_POSITION_TACKLE = ARM_POSITION_HOLD - 47;
 	private static final int ARM_POSITION_REST = -0;
-	private static final int TRAY_MOTOR_EXTRA_ROTATION = 7;
+	private static final int ARM_FLIP_DELAY_MS = 100;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
 	private static final int TRAY_MOTOR_DEFAULT_SPEED = 500;
@@ -41,14 +38,13 @@ public class Robot {
 	private static final int TRAY_SCAN_STEP_DEGREE = 135;
 	private static final int PROXIMITY_SENSOR_THRESHOLD = 15;
 	private static final int PROXIMITY_SENSOR_ERROR = 255;
-	private static final int[][] COORDINATE_SCAN_ORDER = { { 1, 2 }, { 2, 2 }, { 2, 1 }, { 2, 0 }, { 1, 0 }, { 0, 0 },
-			{ 0, 1 }, { 0, 2 }, { 1, 1 } };
-	private static final int[][] DEFAULT_COLOR_SENSOR_THRESHOLD = { { 602, 599, 540 }, { 587, 537, 387 },
-			{ 520, 320, 230 }, { 255, 368, 404 }, { 318, 456, 318 }, { 566, 345, 224 } };
-
+	private static final int[][] COORDINATE_SCAN_ORDER = { { 1, 2 }, { 2, 2 }, { 2, 1 }, { 2, 0 }, { 1, 0 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, { 1, 1 } };
+	private static final int[] DEFAULT_WHITE_CALIBRATION = {255, 255, 255};
+	protected static final String CALIBRATION_FILE_COLOR_SENSOR = "sensor.dat";
+	protected static final String CALIBRATION_FILE_COLOR_MOTOR = "color_motor.dat";
 	
-	public static void init() throws Exception {
-		NxtOperation.init();
+	public static void init() {
+		NxtCommand.init();
 		Arm.init();
 		Tray.init();
 		ColorDetector.init();
@@ -113,15 +109,14 @@ public class Robot {
 		/**
 		 * Flip the cube
 		 *
-		 * @param flipping method (SINGLE/DOUBLE/NONE)
+		 * @param method Flip method (SINGLE/DOUBLE/NONE)
 		 */
 		private static void flip(FlipMethod method) {
 			for (int i = 0; i < method.getFlips(); i++) {
 				motor.rotateTo(ARM_POSITION_HOLD);
-				Delay.msDelay(100);
-				
+				Delay.msDelay(ARM_FLIP_DELAY_MS);				
 				motor.rotateTo(ARM_POSITION_TACKLE);
-				motor.rotateTo(ARM_POSITION_HOLD+10);
+				motor.rotateTo(ARM_POSITION_HOLD+ARM_POSITION_HOLD_EXTRA);
 				motor.rotateTo(ARM_POSITION_HOLD);
 			}			
 		}
@@ -137,11 +132,10 @@ public class Robot {
 		final static NxtMotor motor = new NxtMotor(2); //C
 		final static NxtSensor sensor = new NxtSensor(0); //1
 
-		//static int[][][] thresholds = new int[3][6][3];
 		public static int[] whiteThreshold = new int[3];
-		static int centerDegree = SENSOR_CENTER_DEFAULT_DEGREE;
-		static int allignDegree = SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE;
-		static int cornerDegree = SENSOR_OUTER_CORNER_DEFAULT_DEGREE;
+		static int centerDegree;
+		static int allignDegree;
+		static int cornerDegree;
 		
 		/**
 		 * Initialization
@@ -149,10 +143,8 @@ public class Robot {
 		private static void init() {
 			motor.setSpeed(SENSOR_MOTOR_SPEED);
 			motor.resetTachoCount();
-			updateThresholds();
-			//setDefaultThresholds();
-			updateDegrees();
-			//setMotorDefaultDegrees();
+			loadThresholds();
+			loadDegrees();
 		}
 
 		protected static void setMotorDefaultDegrees() {
@@ -196,25 +188,13 @@ public class Robot {
 		}
 		
 		/**
-		 * Read color at current position
-		 * @param location TODO
-		 * 
-		 * @return the detected color
+		 * Load thresholds from existing file
 		 */
-//		private static RawColor readColor(SensorLocation location) {
-//			int[] rawColor = sensor.readColorRgb(100);
-//			
-//			return null;
-//		}
-		
-		/**
-		 * Update thresholds from existing file
-		 */
-		public static void updateThresholds() {
+		public static void loadThresholds() {
 			File calibrationFile;
 			DataInputStream calibrationFileStream = null;
 			
-			calibrationFile = new File("sensor.dat");
+			calibrationFile = new File(CALIBRATION_FILE_COLOR_SENSOR);
 			if (!calibrationFile.exists()) {
 				Logger.log(LoggerLevel.WARNING, LoggerGroup.ROBOT, "No calibration file found, default thresholds will be used");
 				setDefaultThresholds();
@@ -228,14 +208,6 @@ public class Robot {
 					ColorDetector.whiteThreshold[rgbIndex] = calibrationFileStream.readInt();
 				}
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> [" + ColorDetector.whiteThreshold[0] + "][" + ColorDetector.whiteThreshold[1] + "]["+ ColorDetector.whiteThreshold[2] + "]");
-//				for (SensorLocation location : SensorLocation.values()) {
-//					for (Colors color : Colors.values()) {
-//						for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-//							thresholds[location.getValue()][color.getValue()][rgbIndex] = calibrationFileStream.readInt();
-//						}
-//						Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + thresholds[location.getValue()][color.getValue()][0] + "][" + thresholds[location.getValue()][color.getValue()][1] + "][" + thresholds[location.getValue()][color.getValue()][2] + "]");
-//					}
-//				}
 			} catch (IOException e) {
 				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Failed loading thresholds from file, default thresholds will be used");
 				setDefaultThresholds();
@@ -245,13 +217,13 @@ public class Robot {
 		}
 
 		/**
-		 * Update degrees from existing file
+		 * Load degrees from existing file
 		 */
-		public static void updateDegrees() {
+		public static void loadDegrees() {
 			File calibrationFile;
 			DataInputStream calibrationFileStream = null;
 			
-			calibrationFile = new File("color_motor.dat");
+			calibrationFile = new File(CALIBRATION_FILE_COLOR_MOTOR);
 			if (!calibrationFile.exists()) {
 				Logger.log(LoggerLevel.WARNING, LoggerGroup.ROBOT, "No calibration file found, default degrees will be used");
 				setMotorDefaultDegrees();
@@ -282,15 +254,8 @@ public class Robot {
 		public static void setDefaultThresholds() {
 			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: those thresholds are not optimised, please run the calibration routine from the menu");
 			for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-				ColorDetector.whiteThreshold[rgbIndex] = 255;
+				ColorDetector.whiteThreshold[rgbIndex] = DEFAULT_WHITE_CALIBRATION[rgbIndex];
 			}
-//			for (SensorLocation location : SensorLocation.values()) {
-//				for (Colors color : Colors.values()) {
-//					for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
-//						ColorDetector.thresholds[location.getValue()][color.getValue()][rgbIndex] = DEFAULT_COLOR_SENSOR_THRESHOLD[color.getValue()][rgbIndex];
-//					}
-//				}
-//			}		
 		}		
 	}
 
@@ -313,10 +278,9 @@ public class Robot {
 	
 	/**
 	 * Scan cube's face
-	 * @param f 
-	 * @param allColors 
-	 *
-	 * @return 2d array representing the face's colors
+	 * 
+	 * @param allColors List of all scanned colors 
+	 * @param orientation Current cube orientation
 	 */
 	public static void scanFace(ArrayList<RawColor> allColors, Orientation orientation) {
 		int coordinate, row, col;
@@ -331,7 +295,7 @@ public class Robot {
 			rgb = ColorDetector.sensor.readColorRgb(100);
 			RawColor rawColor = new RawColor(orientation, row, col, rgb);
 			allColors.add(rawColor);
-			String colorFormatted = "Read color:" + "\tRed: " + rawColor.red + "\tGreen: " + rawColor.green + "\tBlue: " + rawColor.blue + "\tHue: " + rawColor.hue + "\tWhite distance: " + rawColor.whiteDistance;
+			String colorFormatted = orientation + "[" + row + "][" + col + "]: RGB=[" + rawColor.red + "][" + rawColor.green + "][" + rawColor.blue + "] Hue=" + rawColor.hue + " whiteDistance=" + rawColor.whiteDistance;
 			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, colorFormatted);
 			Tray.motor.rotate(TRAY_SCAN_STEP_DEGREE);
 		}
@@ -343,7 +307,7 @@ public class Robot {
 		rgb = ColorDetector.sensor.readColorRgb(100);
 		RawColor rawColor = new RawColor(orientation, row, col, rgb);
 		allColors.add(rawColor);
-		String colorFormatted = "---> [" + row + "]["+ col + "]:" + "\tRed: " + rawColor.red + "\tGreen: " + rawColor.green + "\tBlue: " + rawColor.blue + "\tHue: " + rawColor.hue + "\tWhite distance: " + rawColor.whiteDistance;
+		String colorFormatted = orientation + "[" + row + "][" + col + "]: RGB=[" + rawColor.red + "][" + rawColor.green + "][" + rawColor.blue + "] Hue=" + rawColor.hue + " whiteDistance=" + rawColor.whiteDistance;
 		Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, colorFormatted);
 		ColorDetector.motor.rotateTo(0);
 	}
@@ -351,7 +315,7 @@ public class Robot {
 	/**
 	 * Flip the cube
 	 *
-	 * @param flipping method (SINGLE/DOUBLE/NONE)
+	 * @param method Flip method (SINGLE/DOUBLE/NONE)
 	 */
 	public static void flipCube(FlipMethod method) {
 		Arm.flip(method);
@@ -360,7 +324,7 @@ public class Robot {
 	/**
 	 * Rotate the face currently pointing down
 	 *
-	 * @param turning direction (LEFT/RIGHT/MIRROR/NONE)
+	 * @param direction Turning direction (LEFT/RIGHT/MIRROR/NONE)
 	 */
 	public static void turnFace(Direction direction) {
 		//Arm.hold();
@@ -370,14 +334,13 @@ public class Robot {
 	/**
 	 * Rotate the entire cube
 	 *
-	 * @param rotate direction (LEFT/RIGHT/MIRROR/NONE)
+	 * @param direction Rotate direction (LEFT/RIGHT/MIRROR/NONE)
 	 */
 	public static void rotateCube(Direction direction) {
 		if (direction != Direction.NONE) {
 			Arm.release();
 			Tray.rotate(direction.getDegree());
 		}
-		// Arm.hold();
 	}
 	
 	/**

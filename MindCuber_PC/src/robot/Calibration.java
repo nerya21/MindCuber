@@ -8,9 +8,7 @@ import application.Logger;
 import application.LoggerGroup;
 import application.LoggerLevel;
 import lejos.nxt.Button;
-import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
-import lejos.robotics.RegulatedMotor;
 import lejos.util.Delay;
 
 /**
@@ -29,7 +27,7 @@ public class Calibration extends Robot {
 		DataOutputStream calibrationFileStream = null;
 
 		try {
-			calibrationFile = new File("sensor.dat");
+			calibrationFile = new File(CALIBRATION_FILE_COLOR_SENSOR);
 			calibrationFile.createNewFile();
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			
@@ -162,7 +160,7 @@ public class Calibration extends Robot {
 		int degree;
 		
 		try {
-			calibrationFile = new File("color_motor.dat");
+			calibrationFile = new File(CALIBRATION_FILE_COLOR_MOTOR);
 			calibrationFile.createNewFile();
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			

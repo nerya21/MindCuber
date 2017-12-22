@@ -13,9 +13,8 @@ import robot.Robot;
 
 public class Cube implements ICube {
 
-	private Face[] _faces;
-
-	private Action[] _actions;
+	private Face[] faces;
+	private Action[] actions;
 
 	private static final Orientation[][] ORIENTATION_MAT = {
 			{ Orientation.D, Orientation.L, Orientation.F, Orientation.U, Orientation.R, Orientation.B },
@@ -27,34 +26,28 @@ public class Cube implements ICube {
 
 	public Cube() {
 		
-		_faces = new Face[6];
+		faces = new Face[6];
 		for (Orientation orientation : Orientation.values()) {
-			_faces[orientation.getValue()] = new Face(orientation);
+			faces[orientation.getValue()] = new Face(orientation);
 		}
-//		_faces[0] = new Face(Orientation.U);
-//		_faces[1] = new Face(Orientation.D);
-//		_faces[2] = new Face(Orientation.R);
-//		_faces[3] = new Face(Orientation.L);
-//		_faces[4] = new Face(Orientation.F);
-//		_faces[5] = new Face(Orientation.B);
 		
-		_actions = new Action[6];
-		_actions[Orientation.U.getValue()] = new Action(FlipMethod.DOUBLE, Direction.NONE);
-		_actions[Orientation.D.getValue()] = new Action(FlipMethod.NONE, Direction.NONE);
-		_actions[Orientation.R.getValue()] = new Action(FlipMethod.SINGLE, Direction.MIRROR);
-		_actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE);
-		_actions[Orientation.F.getValue()] = new Action(FlipMethod.SINGLE, Direction.LEFT);
-		_actions[Orientation.B.getValue()] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
+		actions = new Action[6];
+		actions[Orientation.U.getValue()] = new Action(FlipMethod.DOUBLE, Direction.NONE);
+		actions[Orientation.D.getValue()] = new Action(FlipMethod.NONE, Direction.NONE);
+		actions[Orientation.R.getValue()] = new Action(FlipMethod.SINGLE, Direction.MIRROR);
+		actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE);
+		actions[Orientation.F.getValue()] = new Action(FlipMethod.SINGLE, Direction.LEFT);
+		actions[Orientation.B.getValue()] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
 	}
 
 	public Face getFace(Orientation orientation) {
-		return _faces[orientation.getValue()];
+		return faces[orientation.getValue()];
 	}
 
 	private void updateOrientations(Orientation orientation) {
 		Orientation[] newOrientations = ORIENTATION_MAT[orientation.getValue()];
 		for (int i = 0; i < 6; i++) {
-			_faces[i]._dynamic_orientation = newOrientations[_faces[i]._dynamic_orientation.getValue()];
+			faces[i].dynamicOrientation = newOrientations[faces[i].dynamicOrientation.getValue()];
 		}
 	}
 
@@ -96,11 +89,10 @@ public class Cube implements ICube {
 		
 		Robot.setTrayDefaultSpeed();
 		
-		calcColors(allColors);
-		//fixColors();
+		calcAndSetColors(allColors);
 	}
 	
-	private void calcColors(ArrayList<RawColor> allColors) {
+	private void calcAndSetColors(ArrayList<RawColor> allColors) {
 		setWhitesByDistance(allColors);
 		setNonWhitesByHue(allColors);
 		fixCorners();
@@ -111,7 +103,7 @@ public class Cube implements ICube {
 		for (Orientation orientation: Orientation.values()) {
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col< 3; col++) {
-					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, orientation + "[" + row + "][" + col + "]: " + _faces[orientation.getValue()].getColor(row, col));
+					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, orientation + "[" + row + "][" + col + "]: " + faces[orientation.getValue()].getColor(row, col));
 				}
 			}
 		}
@@ -122,7 +114,7 @@ public class Cube implements ICube {
 		Collections.sort(allColors, RawColor.whiteComparator);
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.WHITE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.WHITE);
 			allColors.remove(0);
 		}
 	}
@@ -131,119 +123,129 @@ public class Cube implements ICube {
 		Collections.sort(allColors, RawColor.hueComparator);
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.RED);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.RED);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.ORANGE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.ORANGE);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.YELLOW);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.YELLOW);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.GREEN);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.GREEN);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			_faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.BLUE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.BLUE);
 			allColors.remove(0);
 		}
 	}
 	
 	public void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
-		_faces[Orientation.U.getValue()]._colors = up;
-		_faces[Orientation.D.getValue()]._colors = down;
-		_faces[Orientation.R.getValue()]._colors = right;
-		_faces[Orientation.L.getValue()]._colors = left;
-		_faces[Orientation.F.getValue()]._colors = front;
-		_faces[Orientation.B.getValue()]._colors = back;
+		faces[Orientation.U.getValue()].colors = up;
+		faces[Orientation.D.getValue()].colors = down;
+		faces[Orientation.R.getValue()].colors = right;
+		faces[Orientation.L.getValue()].colors = left;
+		faces[Orientation.F.getValue()].colors = front;
+		faces[Orientation.B.getValue()].colors = back;
 	}
 	
 	public class Face implements IFace {
 		
-		private final Orientation orientation;
-		private Colors[][] _colors;		
-		private Orientation _dynamic_orientation;
+		final Orientation orientation;
+		private Colors[][] colors;		
+		private Orientation dynamicOrientation;
 
 		public Face(Orientation orientation) {
 			this.orientation = orientation;
-			this._dynamic_orientation = orientation;
-			this._colors = new Colors[3][3];
+			this.dynamicOrientation = orientation;
+			this.colors = new Colors[3][3];
 		}
  
 		@Override
 		public Colors getColor(int i, int j) {
-			return _colors[i][j];
+			return colors[i][j];
 		}
 
-		private void setColor(int i, int j, Colors color) {
-			_colors[i][j] = color;
+		void setColor(int i, int j, Colors color) {
+			colors[i][j] = color;
 		}
 		
 		@Override
 		public void turn(Direction direction) {
 			
-			FlipMethod cubeFlips = _actions[_dynamic_orientation.getValue()].flips;			
-			Direction cubeRotation = _actions[_dynamic_orientation.getValue()].direction;
-			
-			// If a cube flip is required, we must mirror the face turning direction:
-			/*
-			if (cubeFlips != FlipMethod.NONE){
-				cubeRotation = cubeRotation.mirror();
-			}
-			*/
-			changePosition(cubeFlips, cubeRotation, _dynamic_orientation);
+			FlipMethod cubeFlips = actions[dynamicOrientation.getValue()].flips;			
+			Direction cubeRotation = actions[dynamicOrientation.getValue()].direction;
+	
+			changePosition(cubeFlips, cubeRotation, dynamicOrientation);
 			
 			Robot.turnFace(direction);
 		}
 	}
 
-	private static final Corner[][] LEFT_CORNERS_CORNER = {/*U*/ {Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT}, 
-															/*R*/ {Corner.LOWER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT},
-															/*F*/ {Corner.LOWER_LEFT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.UPPER_RIGHT},
-															/*D*/ {Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT},
-															/*L*/ {Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.UPPER_LEFT},
-															/*B*/ {Corner.UPPER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_LEFT}};
 	
-	private static final Orientation[][] LEFT_CORNERS_FACE = {/*U*/ {Orientation.B, Orientation.R, Orientation.L ,Orientation.F}, 
-																/*R*/ {Orientation.U, Orientation.B, Orientation.F ,Orientation.D},
-																/*F*/ {Orientation.U, Orientation.R, Orientation.L ,Orientation.D},
-																/*D*/ {Orientation.F, Orientation.R, Orientation.L ,Orientation.B},
-																/*L*/ {Orientation.U, Orientation.F, Orientation.B ,Orientation.D},
-																/*B*/ {Orientation.U, Orientation.L, Orientation.R ,Orientation.D}};
+	private static final Colors[][] RED_ORANGE_CORNERS = {
+			{Colors.YELLOW, Colors.RED, Colors.BLUE},
+			{Colors.WHITE, Colors.RED, Colors.GREEN},
+			{Colors.BLUE, Colors.RED, Colors.WHITE},
+			{Colors.GREEN, Colors.RED, Colors.YELLOW},
+			{Colors.BLUE, Colors.ORANGE, Colors.YELLOW},
+			{Colors.WHITE, Colors.ORANGE, Colors.BLUE},
+			{Colors.YELLOW, Colors.ORANGE, Colors.GREEN},				
+			{Colors.GREEN, Colors.ORANGE, Colors.WHITE} };  
 	
-	private static final Corner[][] RIGHT_CORNERS_CORNER = {/*U*/ {Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.UPPER_LEFT}, 
-															/*R*/ {Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.LOWER_LEFT},
-															/*F*/ {Corner.UPPER_RIGHT, Corner.LOWER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_LEFT},
-															/*D*/ {Corner.LOWER_RIGHT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT},
-															/*L*/ {Corner.UPPER_RIGHT, Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT},
-															/*B*/ {Corner.UPPER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_LEFT}};
+	
+	private static final Corner[][] LEFT_CORNERS_CORNER = {
+			/*U*/ {Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT}, 
+			/*R*/ {Corner.LOWER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT},
+			/*F*/ {Corner.LOWER_LEFT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.UPPER_RIGHT},
+			/*D*/ {Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT},
+			/*L*/ {Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.UPPER_LEFT},
+			/*B*/ {Corner.UPPER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_LEFT} };
+	
+	private static final Orientation[][] LEFT_CORNERS_FACE = {
+			/*U*/ {Orientation.B, Orientation.R, Orientation.L ,Orientation.F}, 
+			/*R*/ {Orientation.U, Orientation.B, Orientation.F ,Orientation.D},
+			/*F*/ {Orientation.U, Orientation.R, Orientation.L ,Orientation.D},
+			/*D*/ {Orientation.F, Orientation.R, Orientation.L ,Orientation.B},
+			/*L*/ {Orientation.U, Orientation.F, Orientation.B ,Orientation.D},
+			/*B*/ {Orientation.U, Orientation.L, Orientation.R ,Orientation.D} };
+	
+	private static final Corner[][] RIGHT_CORNERS_CORNER = {
+			/*U*/ {Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.UPPER_LEFT}, 
+			/*R*/ {Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.LOWER_LEFT},
+			/*F*/ {Corner.UPPER_RIGHT, Corner.LOWER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_LEFT},
+			/*D*/ {Corner.LOWER_RIGHT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT},
+			/*L*/ {Corner.UPPER_RIGHT, Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT},
+			/*B*/ {Corner.UPPER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_LEFT} };
 
-	private static final Orientation[][] RIGHT_CORNERS_FACE = {/*U*/ {Orientation.L, Orientation.B, Orientation.F ,Orientation.R}, 
-																/*R*/ {Orientation.F, Orientation.U, Orientation.D ,Orientation.B},
-																/*F*/ {Orientation.L, Orientation.U, Orientation.D ,Orientation.R},
-																/*D*/ {Orientation.L, Orientation.F, Orientation.B ,Orientation.R},
-																/*L*/ {Orientation.B, Orientation.U, Orientation.D ,Orientation.F},
-																/*B*/ {Orientation.R, Orientation.U, Orientation.D ,Orientation.L}};
+	private static final Orientation[][] RIGHT_CORNERS_FACE = {
+			/*U*/ {Orientation.L, Orientation.B, Orientation.F ,Orientation.R}, 
+			/*R*/ {Orientation.F, Orientation.U, Orientation.D ,Orientation.B},
+			/*F*/ {Orientation.L, Orientation.U, Orientation.D ,Orientation.R},
+			/*D*/ {Orientation.L, Orientation.F, Orientation.B ,Orientation.R},
+			/*L*/ {Orientation.B, Orientation.U, Orientation.D ,Orientation.F},
+			/*B*/ {Orientation.R, Orientation.U, Orientation.D ,Orientation.L} };
 
-	public Colors getCornerLeftColor(Face face, Corner corner) {
+	private Colors getCornerLeftColor(Face face, Corner corner) {
 		Orientation leftFace = LEFT_CORNERS_FACE[face.orientation.getValue()][corner.getValue()];
 		Corner leftCorner = LEFT_CORNERS_CORNER[face.orientation.getValue()][corner.getValue()];
 		
-		return _faces[leftFace.getValue()].getColor(leftCorner.getRow(), leftCorner.getCol());
+		return faces[leftFace.getValue()].getColor(leftCorner.getRow(), leftCorner.getCol());
 	}
 
-	public Colors getCornerRightColor(Face face, Corner corner) {
+	private Colors getCornerRightColor(Face face, Corner corner) {
 		Orientation rightFace = RIGHT_CORNERS_FACE[face.orientation.getValue()][corner.getValue()];
 		Corner rightCorner = RIGHT_CORNERS_CORNER[face.orientation.getValue()][corner.getValue()];
 		
-		return _faces[rightFace.getValue()].getColor(rightCorner.getRow(), rightCorner.getCol());
+		return faces[rightFace.getValue()].getColor(rightCorner.getRow(), rightCorner.getCol());
 	}
 	
 	private enum Corner {
@@ -271,21 +273,14 @@ public class Cube implements ICube {
 			return col;
 		}
 	}
-	
-	private static final Colors[][] RED_ORANGE_CORNERS = {{Colors.YELLOW, Colors.RED, Colors.BLUE},
-															{Colors.WHITE, Colors.RED, Colors.GREEN},
-															{Colors.BLUE, Colors.RED, Colors.WHITE},
-															{Colors.GREEN, Colors.RED, Colors.YELLOW},
-															{Colors.BLUE, Colors.ORANGE, Colors.YELLOW},
-															{Colors.WHITE, Colors.ORANGE, Colors.BLUE},
-															{Colors.YELLOW, Colors.ORANGE, Colors.GREEN},				
-															{Colors.GREEN, Colors.ORANGE, Colors.WHITE}};  
-	
+
 	/**
+	 * @param cube 
 	 * 
 	 */
-	private void fixCorners() {
-		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning cube for RED/ORANGE color error:");
+	void fixCorners() {
+		boolean cubeFixed = false;
+		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning cube for RED/ORANGE corner color error:");
 		for (Orientation orientation : Orientation.values()) {
 			Face face = getFace(orientation);
 			
@@ -299,7 +294,7 @@ public class Cube implements ICube {
 							Colors scannedColor = face.getColor(corner.row, corner.col);
 							Colors cornerColor = cornerColors[1];
 							if (scannedColor != cornerColor) {
-								Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "---> Color error detected at " + face.orientation + "[" + corner.row + "][" + corner.col + "]: fixing " + scannedColor + " to " + cornerColor);
+								Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "---> " + face.orientation + "[" + corner.row + "][" + corner.col + "]: fixing " + scannedColor + " to " + cornerColor);
 								face.setColor(corner.row, corner.col, cornerColor);
 							}
 						}
@@ -307,5 +302,10 @@ public class Cube implements ICube {
 				}
 			}
 		}
+		
+		if (!cubeFixed) {
+			Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "---> No error found!");
+		}
 	}
+
 }

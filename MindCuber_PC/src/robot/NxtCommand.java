@@ -7,25 +7,10 @@ import java.io.OutputStream;
 import application.Logger;
 import application.LoggerGroup;
 import application.LoggerLevel;
-import lejos.nxt.remote.NXTCommand;
 import lejos.pc.comm.NXTConnector;
+import nxt.NxtOperation;
 
-public class NxtOperation {
-
-	/* Operation Types */
-	public final static byte OPERATION_TYPE_MOTOR = (byte) 0x00;
-	public final static byte OPERATION_TYPE_COLOR_SENSOR = (byte) 0x01;
-	public final static byte OPERATION_TYPE_ULTRASONIC_SENSOR = (byte) 0x02;
-	public final static byte OPERATION_TYPE_CLOSE_CONNECTION = (byte) 0x03;
-	
-	/* Operation ID */
-	public final static byte OPERATION_ID_ROTATE = (byte) 0x00;
-	public final static byte OPERATION_ID_ROTATE_TO = (byte) 0x01;
-	public final static byte OPERATION_ID_READ_COLOR = (byte) 0x02;
-	public final static byte OPERATION_ID_RESET_TACHO_COUNT = (byte) 0x03;
-	public final static byte OPERATION_ID_SET_SPEED = (byte) 0x04;
-	public final static byte OPERATION_ID_GET_DISTANCE = (byte) 0x05;
-	public final static byte OPERATION_ID_GET_TACHO_COUNT = (byte) 0x06;
+public class NxtCommand {
 	
 	static NXTConnector connection;
 	
@@ -40,20 +25,14 @@ public class NxtOperation {
 	    return new String(hexChars);
 	}
 	
-	public static void init() throws Exception {			
+	public static void init() {			
 		connection = new NXTConnector();	
-//		
-//		if (!connection.connectTo()){
-//			throw new Exception("No NXT found using USB");
-//		}
-//		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "NXT connection initialized successfully");
-//		NXTCommand command = new NXTCommand(connection.getNXTComm());
-//		command.startProgram("NxtApplication.nxj");		
-//		connection.close();
 		
 		if (!connection.connectTo()){
-			throw new Exception("No NXT found using USB");
+			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Cannot connect to NXT application");
+			System.exit(1);
 		}
+		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "NXT application connected successfully");
 	}
 	
@@ -62,9 +41,9 @@ public class NxtOperation {
 		try {
 			connection.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "NXT application connection failed to close");
 		}
+		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "NXT application connection closed successfully");
 	}
 	
 	public static byte[] sendCommand(byte operationType, int port, byte operationId, int argument, int expectedReturnSize) {			
@@ -77,13 +56,9 @@ public class NxtOperation {
 			/* Send command */
 			out.write(outputBuffer);
 			out.flush();
-			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Send command to NXT: " + bytesToHex(outputBuffer));
 			
 			/* Read returned value */
 			in.read(inputBuffer);
-			if (expectedReturnSize != 0) {
-				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> Response: " + bytesToHex(inputBuffer));
-			}
 			
 			return inputBuffer;
 		} catch (Exception e) {

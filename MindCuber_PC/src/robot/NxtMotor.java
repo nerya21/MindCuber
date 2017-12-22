@@ -1,5 +1,7 @@
 package robot;
 
+import nxt.NxtOperation;
+
 public class NxtMotor {
 	
 	private int id;
@@ -26,23 +28,23 @@ public class NxtMotor {
 	}
 
 	public void setSpeed(int speed) {
-		NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_SET_SPEED, speed, 0);
+		NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_SET_SPEED, speed, 0);
 	}
 	
 	public void rotate(int count) {
-		NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_ROTATE, count, 0);
+		NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_ROTATE, count, 0);
 	}
 	
 	public void rotateTo(int limitAngle) {
-		NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_ROTATE_TO, limitAngle, 0);		
+		NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_ROTATE_TO, limitAngle, 0);		
 	}
 	
 	public void resetTachoCount() {
-		NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_RESET_TACHO_COUNT, 0, 0);
+		NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_RESET_TACHO_COUNT, 0, 0);
 	}
 
 	public int getTachoCount() {
-		byte[] inputBuffer = NxtOperation.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_GET_TACHO_COUNT, 0, 4);
+		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_GET_TACHO_COUNT, 0, 4);
 		int tachoCount = 0;
 		
 		tachoCount |= (((int)inputBuffer[0]) & 0x000000FF) << 0;

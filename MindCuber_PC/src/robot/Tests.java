@@ -6,7 +6,6 @@ import application.LoggerLevel;
 import cube.Orientation;
 import cube.RawColor;
 import lejos.nxt.Button;
-import lejos.nxt.ColorSensor.Color;
 import lejos.nxt.LCD;
 
 /**

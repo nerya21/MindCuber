@@ -7,7 +7,7 @@ import cube.ICube;
 import cube.IFace;
 import cube.Orientation;
 import robot.Colors;
-import robot.NxtOperation;
+import robot.NxtCommand;
 import robot.Robot;
 import twophase.Color;
 import twophase.Move;
@@ -236,15 +236,11 @@ public class PcApplication {
 	 */
 	public static void main(String[] args) {
 		Logger.init(LoggerLevel.DEBUG);
-		try {
-			Robot.init();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+		Robot.init();		
 		
 		run();
 		
-		NxtOperation.close();
+		NxtCommand.close();
 		Logger.close();
 	}
 

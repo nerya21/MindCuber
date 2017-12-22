@@ -17,22 +17,7 @@ import lejos.nxt.comm.NXTConnection;
 import lejos.nxt.comm.USB;
 import lejos.util.Delay;
 
-public class NxtApplication {
-
-	/* Operation Types */
-	public final static byte OPERATION_TYPE_MOTOR = (byte) 0x00;
-	public final static byte OPERATION_TYPE_COLOR_SENSOR = (byte) 0x01;
-	public final static byte OPERATION_TYPE_ULTRASONIC_SENSOR = (byte) 0x02;
-	public final static byte OPERATION_TYPE_CLOSE_CONNECTION = (byte) 0x03;
-	
-	/* Operation ID */
-	public final static byte OPERATION_ID_ROTATE = (byte) 0x00;
-	public final static byte OPERATION_ID_ROTATE_TO = (byte) 0x01;
-	public final static byte OPERATION_ID_READ_COLOR = (byte) 0x02;
-	public final static byte OPERATION_ID_RESET_TACHO_COUNT = (byte) 0x03;
-	public final static byte OPERATION_ID_SET_SPEED = (byte) 0x04;
-	public final static byte OPERATION_ID_GET_DISTANCE = (byte) 0x05;
-	public final static byte OPERATION_ID_GET_TACHO_COUNT = (byte) 0x06;
+public class NxtApplication extends NxtOperation {
 
 	/* Motors */
 	public final static NXTRegulatedMotor[] motors = new NXTRegulatedMotor[3];
@@ -60,18 +45,18 @@ public class NxtApplication {
 	}
 
 	private static void printToLcd(String line0, int delay) {
-		printToLcd(line0, "", "", "", delay, false);
+		printToLcd(line0, "", "", "", delay);
 	}
 
 	private static void printToLcd(String line0, String line1, int delay) {
-		printToLcd(line0, line1, "", "", delay, false);
+		printToLcd(line0, line1, "", "", delay);
 	}
 
 	private static void printToLcd(String line0, String line1, String line2, int delay) {
-		printToLcd(line0, line1, line2, "", delay, false);
+		printToLcd(line0, line1, line2, "", delay);
 	}
 
-	private static void printToLcd(String line0, String line1, String line2, String line3, int delay, boolean clean) {
+	private static void printToLcd(String line0, String line1, String line2, String line3, int delay) {
 		LCD.clear();
 		LCD.drawString(line0, 0, 0);
 		LCD.drawString(line1, 0, 1);
@@ -196,9 +181,8 @@ public class NxtApplication {
 								printToLcd("Unsupported", "ultrasonic", "operation", 10000);
 							}
 						} else if (operationType == OPERATION_TYPE_CLOSE_CONNECTION) {
-							printToLcd("Closing connection", 2000);
+							printToLcd("Closing connection", 0);
 							con.close();
-							//System.exit(0);
 							break;
 						} else {
 							printToLcd("Unsupported", "operation type", 10000);
