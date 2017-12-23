@@ -51,17 +51,17 @@ public class Tests extends Robot {
 	 */
 	public static void bruteForce() {
 		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
-			rotateCube(i % 5 == 0 ? Direction.RIGHT : Direction.NONE);
+			rotateCube(i % 3 == 0 ? Direction.RIGHT : Direction.NONE);
 			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
-			//flipCube(FlipMethod.SINGLE);
-
 			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
 		}
 		Robot.Arm.release();
 	}
 	
 	public static void flipCube() {
-		Robot.flipCube(FlipMethod.SINGLE);
-		Robot.Arm.release();
+		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
+			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
+			Robot.Arm.release();
+		}
 	}
 }

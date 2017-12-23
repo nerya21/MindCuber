@@ -1,5 +1,6 @@
 package application;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import cube.Cube;
@@ -237,11 +238,24 @@ public class PcApplication {
 	public static void main(String[] args) {
 		Logger.init(LoggerLevel.DEBUG);
 		Robot.init();		
+		registerShutdownHandler();
 		
 		run();
 		
-		NxtCommand.close();
 		Logger.close();
+	}
+
+	private static void registerShutdownHandler() {
+		Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            @Override
+            public void run()
+            {
+            	//Robot.close();
+            	NxtCommand.close();
+            }
+        });
+		
 	}
 
 }

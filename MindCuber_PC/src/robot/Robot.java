@@ -25,12 +25,13 @@ public class Robot {
 	private static final int ARM_MOTOR_DEFAULT_SPEED = 550;
 	private static final int ARM_POSITION_HOLD = -157;
 	private static final int ARM_POSITION_HOLD_EXTRA = 10;
-	private static final int ARM_POSITION_TACKLE = ARM_POSITION_HOLD - 47;
+	private static final int ARM_POSITION_TACKLE = ARM_POSITION_HOLD - 43;//47
 	private static final int ARM_POSITION_REST = -0;
 	private static final int ARM_FLIP_DELAY_MS = 100;
 	private static final int SENSOR_MOTOR_SPEED = 400;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
-	private static final int TRAY_MOTOR_DEFAULT_SPEED = 500;
+	private static final int TRAY_MOTOR_DEFAULT_SPEED = 650;
+	private static final int TRAY_MOTOR_EXTRA_ROTATION = 15;
 	private static final int TRAY_MOTOR_SCAN_SPEED = 200;
 	private static final int SENSOR_CENTER_DEFAULT_DEGREE = 170;
 	private static final int SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE = 115;
@@ -48,6 +49,14 @@ public class Robot {
 		Arm.init();
 		Tray.init();
 		ColorDetector.init();
+	}
+	
+	public static void close() {
+		Arm.motor.rotateTo(0);
+		if (Tray.motor.getTachoCount() % (90 * TRAY_MOTOR_ROTATION_FACTOR) != 0) {
+			Tray.motor.rotate(-(Tray.motor.getTachoCount() % (90 * TRAY_MOTOR_ROTATION_FACTOR)));
+		}
+		ColorDetector.motor.rotateTo(0);
 	}
 	
 	/**
@@ -85,6 +94,8 @@ public class Robot {
 			motor.resetTachoCount();
 		}
 
+		
+		
 		/**
 		 * Set the arm to hold position
 		 */
@@ -113,10 +124,11 @@ public class Robot {
 		 */
 		private static void flip(FlipMethod method) {
 			for (int i = 0; i < method.getFlips(); i++) {
+				motor.rotateTo(ARM_POSITION_HOLD+ARM_POSITION_HOLD_EXTRA);
 				motor.rotateTo(ARM_POSITION_HOLD);
 				Delay.msDelay(ARM_FLIP_DELAY_MS);				
 				motor.rotateTo(ARM_POSITION_TACKLE);
-				motor.rotateTo(ARM_POSITION_HOLD+ARM_POSITION_HOLD_EXTRA);
+				//motor.rotateTo(ARM_POSITION_HOLD+ARM_POSITION_HOLD_EXTRA);
 				motor.rotateTo(ARM_POSITION_HOLD);
 			}			
 		}
@@ -327,8 +339,11 @@ public class Robot {
 	 * @param direction Turning direction (LEFT/RIGHT/MIRROR/NONE)
 	 */
 	public static void turnFace(Direction direction) {
-		//Arm.hold();
-		Tray.motor.rotate(direction.getDegree() * TRAY_MOTOR_ROTATION_FACTOR);
+		Arm.motor.rotateTo(ARM_POSITION_HOLD);
+		int extraRotation = direction.getDegree() > 0 ? TRAY_MOTOR_EXTRA_ROTATION : (-TRAY_MOTOR_EXTRA_ROTATION);
+		Tray.motor.rotate((direction.getDegree() + extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
+		Tray.motor.rotate((-extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
+		//Tray.motor.rotate(direction.getDegree() * TRAY_MOTOR_ROTATION_FACTOR);
 	}
 
 	/**
