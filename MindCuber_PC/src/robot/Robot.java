@@ -32,7 +32,8 @@ public class Robot {
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
 	private static final int TRAY_MOTOR_DEFAULT_SPEED = 650;
 	private static final int TRAY_MOTOR_EXTRA_ROTATION = 15;
-	private static final int TRAY_MOTOR_SCAN_SPEED = 200;
+	private static final int TRAY_MOTOR_SCAN_SPEED = 400;
+	protected static final int SENSOR_NUMBER_OF_SAMPLES = 5;
 	private static final int SENSOR_CENTER_DEFAULT_DEGREE = 170;
 	private static final int SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE = 115;
 	private static final int SENSOR_OUTER_CORNER_DEFAULT_DEGREE = 95;
@@ -94,27 +95,11 @@ public class Robot {
 			motor.resetTachoCount();
 		}
 
-		
-		
-		/**
-		 * Set the arm to hold position
-		 */
-		private static void hold() {
-			motor.rotateTo(ARM_POSITION_HOLD);
-		}
-
 		/**
 		 * Set the arm to release position
 		 */
 		static void release() {
 			motor.rotateTo(ARM_POSITION_REST);
-		}
-
-		/**
-		 * Set the arm to tackle position
-		 */
-		private static void tackle() {
-			motor.rotateTo(ARM_POSITION_TACKLE);
 		}
 
 		/**
@@ -128,7 +113,6 @@ public class Robot {
 				motor.rotateTo(ARM_POSITION_HOLD);
 				Delay.msDelay(ARM_FLIP_DELAY_MS);				
 				motor.rotateTo(ARM_POSITION_TACKLE);
-				//motor.rotateTo(ARM_POSITION_HOLD+ARM_POSITION_HOLD_EXTRA);
 				motor.rotateTo(ARM_POSITION_HOLD);
 			}			
 		}
@@ -304,7 +288,7 @@ public class Robot {
 			col = COORDINATE_SCAN_ORDER[coordinate][1];
 			location = coordinate % 2 == 0 ? SensorLocation.ALLIGN : SensorLocation.CORNER;
 			ColorDetector.setMotorLocation(location);
-			rgb = ColorDetector.sensor.readColorRgb(100);
+			rgb = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
 			RawColor rawColor = new RawColor(orientation, row, col, rgb);
 			allColors.add(rawColor);
 			String colorFormatted = orientation + "[" + row + "][" + col + "]: RGB=[" + rawColor.red + "][" + rawColor.green + "][" + rawColor.blue + "] Hue=" + rawColor.hue + " whiteDistance=" + rawColor.whiteDistance;
@@ -316,7 +300,7 @@ public class Robot {
 		col = COORDINATE_SCAN_ORDER[coordinate][1];
 		ColorDetector.setMotorLocation(SensorLocation.CENTER);
 		//faceColors[row][col] = ColorDetector.readColor(SensorLocation.CENTER);
-		rgb = ColorDetector.sensor.readColorRgb(100);
+		rgb = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
 		RawColor rawColor = new RawColor(orientation, row, col, rgb);
 		allColors.add(rawColor);
 		String colorFormatted = orientation + "[" + row + "][" + col + "]: RGB=[" + rawColor.red + "][" + rawColor.green + "][" + rawColor.blue + "] Hue=" + rawColor.hue + " whiteDistance=" + rawColor.whiteDistance;

@@ -12,9 +12,9 @@ import lejos.nxt.LCD;
 import lejos.util.Delay;
 
 /**
- * Calibration Class
- * 
  * This class contains all the robot's calibration routines
+ * 
+ * @see Robot
  */
 public class Calibration extends Robot {
 
@@ -39,25 +39,6 @@ public class Calibration extends Robot {
 			Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "--->  White calibration result: [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
 			
 			Tray.motor.rotateTo(0);
-			
-//			for (SensorLocation location : SensorLocation.values()) {
-//				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "Calibration results for " + location + ":");
-//				if (location == SensorLocation.CORNER) {
-//					ColorDetector.motor.rotateTo(0);
-//					Tray.motor.rotateTo(45 * 3);
-//					ColorDetector.setMotorLocation(SensorLocation.CORNER);
-//				}
-//				for (Colors color : Colors.values()) {
-//					rgb = calibrateColor(color, location);
-//					
-//					for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
-//						calibrationFileStream.writeInt(rgb[rgbIndex]);
-//						ColorDetector.thresholds[location.getValue()][color.getValue()][rgbIndex] = rgb[rgbIndex];
-//					}
-//					Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, "---> " + color + ": [" + rgb[0] + "][" + rgb[1] + "][" + rgb[2] + "]");
-//				}
-//				Tray.motor.rotateTo(0);
-//			}
 			
 		} catch (IOException e) {
 			LCD.clear();

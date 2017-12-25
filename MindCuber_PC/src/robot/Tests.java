@@ -32,7 +32,7 @@ public class Tests extends Robot {
 			int buttons = Button.waitForAnyPress();
 			
 			if ((buttons & Button.ID_ENTER) != 0) {
-				color = ColorDetector.sensor.readColorRgb(1);
+				color = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
 				RawColor rawColor = new RawColor(Orientation.B, 0, 0, color);
 				colorFormatted = "Read color:" + "\tRed: " + rawColor.red + "\tGreen: " + rawColor.green + "\tBlue: " + rawColor.blue + "\tHue: " + rawColor.hue + "\tWhite distance: " + rawColor.whiteDistance;
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, colorFormatted);
