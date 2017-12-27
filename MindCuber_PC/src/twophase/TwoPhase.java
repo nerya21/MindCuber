@@ -1,5 +1,7 @@
 package twophase;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import robot.Direction;
@@ -31,36 +33,28 @@ public class TwoPhase {
 	// IDA* distance do goal estimations
 	static int[] minDistPhase1 = new int[31];
 	static int[] minDistPhase2 = new int[31];
+	
 	/**
-	 * Computes the solver string for a given cube.
-	 * 
-	 * @param facelets
-	 *          is the cube definition string, see {@link Facelet} for the format.
-	 * 
-	 * @param maxDepth
-	 *          defines the maximal allowed maneuver length. For random cubes, a maxDepth of 21 usually will return a
+	 * Finds list of moves for solving received cube with no more than @maxDepth moves 
+	 * @param facelets - array of facelets colors representing the cube to be solved
+	 * @param maxDepth - defines the maximal allowed maneuver length. For random cubes, a maxDepth of 21 usually will return a
 	 *          solution in less than 0.5 seconds. With a maxDepth of 20 it takes a few seconds on average to find a
 	 *          solution, but it may take much longer for specific cubes.
-	 * 
-	 * @param timeOut
-	 *          defines the maximum computing time of the method in seconds. If it does not return with a solution, it returns with
+	 * @param timeOut - defines the maximum computing time of the method in seconds. If it does not return with a solution, it returns with
 	 *          an error code.
-	 * 
-	 * @param useSeparator
-	 *          determines if a " . " separates the phase1 and phase2 parts of the solver string like in F' R B R L2 F .
-	 *          U2 U D for example.<br>
-	 * @return The solution string or an error code:<br>
-	 *         Error 1: There is not exactly one facelet of each color<br>
-	 *         Error 2: Not all 12 edges exist exactly once<br>
-	 *         Error 3: Flip error: One edge has to be flipped<br>
-	 *         Error 4: Not all corners exist exactly once<br>
-	 *         Error 5: Twist error: One corner has to be twisted<br>
-	 *         Error 6: Parity error: Two corners or two edges have to be exchanged<br>
-	 *         Error 7: No solution exists for the given maxDepth<br>
-	 *         Error 8: Timeout, no solution within given time
+	 * @param moves - a list to contain suggested solution moves. If a solution was found, the list is cleared before adding the required
+	 * 			moves to it. Otherwise, the list remains the same.
+	 * @return 0 if a solution was found, and error code otherwise:
+	 *         -1: There is not exactly one facelet of each color<br>
+	 *         -2: Not all 12 edges exist exactly once<br>
+	 *         -3: Flip error: One edge has to be flipped<br>
+	 *         -4: Not all corners exist exactly once<br>
+	 *         -5: Twist error: One corner has to be twisted<br>
+	 *         -6: Parity error: Two corners or two edges have to be exchanged<br>
+	 *         -7: No solution exists for the given maxDepth<br>
+	 *         -8: Timeout, no solution within given time
 	 */
-	public static int findSolution(Color[] facelets, int maxDepth, long timeOut, List<Move> moves) {
-		int status;
+	public static int findSolution(Color[] facelets, int maxDepth, long timeOut, List<Move> moves, String pattern) {
 		//validate input
 		int[] count = new int[6];
 		try {
@@ -74,14 +68,32 @@ public class TwoPhase {
 			if (count[i] != 9)
 				//invalid cube, there is not exactly one facelet of each color
 				return -1;
+		
+		// prepare pattern 
+		CubieCube pattern_cc= new FaceCube(pattern).toCubieCube();
+		int error;
+		if ((error=pattern_cc.verify()) != 0)
+			return Math.abs(error);		
+		
+		//check if cube is already solved
 		FaceCube fc = new FaceCube(facelets);
+		
+		if(fc.to_String().equals(pattern)) {
+			//cube is already solved, no moves required to solve it
+			moves.clear();
+			return 0;
+		}
+		
 		CubieCube cc = fc.toCubieCube();
+		int status;
 		if ((status = cc.verify()) != 0)
 			//invalid cube
 			return status;
 
-		// +++++++++++++++++++++++ initialization +++++++++++++++++++++++++++++++++
-		CoordCube c = new CoordCube(cc);
+		//initialization
+		CubieCube invPattern_cc = pattern_cc.getInvCubieCube();
+		invPattern_cc.multiply(cc);
+		CoordCube c = new CoordCube(invPattern_cc);
 		ax[0] = 0;
 		po[0] = 0;
 		flip[0] = c.flip;
@@ -197,7 +209,9 @@ public class TwoPhase {
 		} while (true);
 	}
 	
-	
+	public static int findSolution(Color[] facelets, int maxDepth, long timeOut, List<Move> moves){
+		return findSolution(facelets, maxDepth, timeOut, moves, "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+	}
 
 	private static void createMovesList(List<Move> moves, int depth) {
 		moves.clear();

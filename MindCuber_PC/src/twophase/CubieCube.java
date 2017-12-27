@@ -3,6 +3,8 @@ package twophase;
 import static twophase.Corner.*;
 import static twophase.Edge.*;
 
+import java.util.Arrays;
+
 /** Cube on the cubie level
  * <br><a href="http://kociemba.org/math/cubielevel.htm">explanation on kociemba's site</a> */
 class CubieCube {
@@ -101,19 +103,6 @@ class CubieCube {
 
 	};
 
-	//TODO: delete
-	CubieCube(Corner[] cp, byte[] co, Edge[] ep, byte[] eo) {
-		this();
-		for (int i = 0; i < 8; i++) {
-			this.cp[i] = cp[i];
-			this.co[i] = co[i];
-		}
-		for (int i = 0; i < 12; i++) {
-			this.ep[i] = ep[i];
-			this.eo[i] = eo[i];
-		}
-	}
-
 	/** n choose k */
 	static int Cnk(int n, int k) {
 		int i, j, s;
@@ -165,17 +154,15 @@ class CubieCube {
 		FaceCube fcRet = new FaceCube();
 		for (Corner c : Corner.values()) {
 			int i = c.ordinal();
-			int j = cp[i].ordinal();// cornercubie with index j is at
-			// cornerposition with index i
-			byte ori = co[i];// Orientation of this cubie
+			int j = cp[i].ordinal(); //corner cubie with index j is at corner position i
+			byte ori = co[i]; //orientation of this cubie
 			for (int n = 0; n < 3; n++)
 				fcRet.facelets[FaceCube.cornerFacelet[i][(n + ori) % 3].ordinal()] = FaceCube.cornerColor[j][n];
 		}
 		for (Edge e : Edge.values()) {
 			int i = e.ordinal();
-			int j = ep[i].ordinal();// edgecubie with index j is at edgeposition
-			// with index i
-			byte ori = eo[i];// Orientation of this cubie
+			int j = ep[i].ordinal(); // edgecubie with index j is at edge position with index i
+			byte ori = eo[i]; //orientation of this cubie
 			for (int n = 0; n < 2; n++)
 				fcRet.facelets[FaceCube.edgeFacelet[i][(n + ori) % 2].ordinal()] = FaceCube.edgeColor[j][n];
 		}
@@ -188,6 +175,7 @@ class CubieCube {
 	 * (on both their permutation and orientation)
 	 * @param b - the cube to multiply by
 	 */
+	//TODO: delete or use for implementing patterns
 	void cornerMultiply(CubieCube b) {
 		Corner[] cPerm = new Corner[8];
 		byte[] cOri = new byte[8];
@@ -231,17 +219,24 @@ class CubieCube {
 		}
 	}
 
-	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	// Multiply this CubieCube with another CubieCube b.
+	/**
+	 * Multiply this CubieCube with another CubieCube b
+	 * @param b - the cube to multiply by
+	 */
 	//TODO: delete or use for implementing patterns
 	void multiply(CubieCube b) {
 		cornerMultiply(b);
+		edgeMultiply(b);
 	}
 
-	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	// Compute the inverse CubieCube
 	//TODO: delete or use for implementing patterns
-	void invCubieCube(CubieCube c) {
+	/**
+	 * Computes the "inverse cube" of current cube.
+	 * This means that if we multiply current cube by the inverse cube, we get the solved cube ("the identity cube")
+	 * @return CubieCube representing the inverse cube of the current CubieCube 
+	 */
+	CubieCube getInvCubieCube() {
+		CubieCube c = new CubieCube();
 		for (Edge edge : Edge.values())
 			c.ep[ep[edge.ordinal()].ordinal()] = edge;
 		for (Edge edge : Edge.values())
@@ -250,15 +245,17 @@ class CubieCube {
 			c.cp[cp[corn.ordinal()].ordinal()] = corn;
 		for (Corner corn : Corner.values()) {
 			byte ori = co[c.cp[corn.ordinal()].ordinal()];
-			if (ori >= 3)// Just for completeness. We do not invert mirrored
-				// cubes in the program.
+			if (ori >= 3)
+				//just for completeness. We do not invert mirrored cubes in the program.
 				c.co[corn.ordinal()] = ori;
-			else {// the standard case
+			else {
+				//the standard case
 				c.co[corn.ordinal()] = (byte) -ori;
 				if (c.co[corn.ordinal()] < 0)
 					c.co[corn.ordinal()] += 3;
 			}
 		}
+		return c;
 	}
 
 	// ********************************************* Get and set coordinates *********************************************
@@ -368,8 +365,9 @@ class CubieCube {
 		Edge[] otherEdge = { UR, UF, UL, UB, DR, DF, DL, DB };
 		int b = idx % 24; // Permutation
 		int a = idx / 24; // Combination
+		//invalidate all edges
 		for (Edge e : Edge.values())
-			ep[e.ordinal()] = DB;// Use UR to invalidate all edges
+			ep[e.ordinal()] = DB;
 		//generate permutation from index b
 		for (int j = 1, k; j < 4; j++) {
 			k = b % (j + 1);
@@ -427,8 +425,9 @@ class CubieCube {
 		Corner[] otherCorner = { DBL, DRB };
 		int b = idx % 720; // Permutation
 		int a = idx / 720; // Combination
+		//invalidate all corners
 		for (Corner c : Corner.values())
-			cp[c.ordinal()] = DRB; //use DRB to invalidate all corners
+			cp[c.ordinal()] = DRB;
 		//generate permutation from index b
 		for (int j = 1, k; j < 6; j++) {
 			k = b % (j + 1);
@@ -443,6 +442,7 @@ class CubieCube {
 				cp[j] = corner6[x];
 				a -= Cnk(j, x-- + 1);
 			}
+		//set the remaining corners DBL and DRB
 		x = 0;
 		for (int j = URF.ordinal(); j <= DRB.ordinal(); j++)
 			if (cp[j] == DRB)
@@ -570,17 +570,19 @@ class CubieCube {
 		Edge[] edge3 = { UR, UF, UL };
 		int b = idx % 6; // Permutation
 		int a = idx / 6; // Combination
+		//invalidate all edges
 		for (Edge e : Edge.values())
-			ep[e.ordinal()] = BR;// Use BR to invalidate all edges
-
-		for (int j = 1, k; j < 3; j++)// generate permutation from index b
+			ep[e.ordinal()] = BR;
+		//generate permutation from index b
+		for (int j = 1, k; j < 3; j++)
 		{
 			k = b % (j + 1);
 			b /= j + 1;
 			while (k-- > 0)
 				rotateRight(edge3, 0, j);
 		}
-		x = 2;// generate combination and set edges
+		//generate combination and set edges
+		x = 2;
 		for (int j = BR.ordinal(); j >= 0; j--)
 			if (a - Cnk(j, x + 1) >= 0) {
 				ep[j] = edge3[x];
@@ -625,94 +627,24 @@ class CubieCube {
 		Edge[] edge3 = { UB, DR, DF };
 		int b = idx % 6; // Permutation
 		int a = idx / 6; // Combination
+		//invalidate all edges
 		for (Edge e : Edge.values())
-			ep[e.ordinal()] = BR;// Use BR to invalidate all edges
-
-		for (int j = 1, k; j < 3; j++)// generate permutation from index b
+			ep[e.ordinal()] = BR;
+		//generate permutation from index b
+		for (int j = 1, k; j < 3; j++)
 		{
 			k = b % (j + 1);
 			b /= j + 1;
 			while (k-- > 0)
 				rotateRight(edge3, 0, j);
 		}
-		x = 2;// generate combination and set edges
+		//generate combination and set edges
+		x = 2;
 		for (int j = BR.ordinal(); j >= 0; j--)
 			if (a - Cnk(j, x + 1) >= 0) {
 				ep[j] = edge3[x];
 				a -= Cnk(j, x-- + 1);
 			}
-	}
-
-	//TODO: delete. not in use
-	int getURFtoDLB2() {
-		Corner[] perm = new Corner[8];
-		int b = 0;
-		for (int i = 0; i < 8; i++)
-			perm[i] = cp[i];
-		for (int j = 7; j > 0; j--)// compute the index b < 8! for the permutation in perm
-		{
-			int k = 0;
-			while (perm[j].ordinal() != j) {
-				rotateLeft(perm, 0, j);
-				k++;
-			}
-			b = (j + 1) * b + k;
-		}
-		return b;
-	}
-
-	/**
-	 * Sets all corners according to coordinate
-	 * @param idx - corners permutation coordinate
-	 */
-	void setURFtoDLB(int idx) {
-		Corner[] perm = { URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB };
-		int k;
-		for (int j = 1; j < 8; j++) {
-			k = idx % (j + 1);
-			idx /= j + 1;
-			while (k-- > 0)
-				rotateRight(perm, 0, j);
-		}
-		int x = 7;// set corners
-		for (int j = 7; j >= 0; j--)
-			cp[j] = perm[x--];
-	}
-
-	//TODO: delete. not in use
-	int getURtoBR() {
-		Edge[] perm = new Edge[12];
-		int b = 0;
-		for (int i = 0; i < 12; i++)
-			perm[i] = ep[i];
-		for (int j = 11; j > 0; j--)// compute the index b < 12! for the permutation in perm
-		{
-			int k = 0;
-			while (perm[j].ordinal() != j) {
-				rotateLeft(perm, 0, j);
-				k++;
-			}
-			b = (j + 1) * b + k;
-		}
-		return b;
-	}
-
-	/**
-	 * Sets all edges according to coordinate
-	 * @param idx - edged permutation coordinate
-	 */
-	void setURtoBR(int idx) {
-		Edge[] perm = { UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR };
-		int k;
-		for (int j = 1; j < 12; j++) {
-			k = idx % (j + 1);
-			idx /= j + 1;
-			while (k-- > 0)
-				rotateRight(perm, 0, j);
-		}
-		int x = 11;// set edges
-		for (int j = 11; j >= 0; j--)
-			ep[j] = perm[x--];
 	}
 
 	/** Validate received cube (check that it is a valid one)
@@ -753,10 +685,19 @@ class CubieCube {
 			sum += co[i];
 		if (sum % 3 != 0)
 			return -5;
-		//check that 
+		//check that the parity of edges and corners are the same
 		if ((edgeParity() ^ cornerParity()) != 0)
 			return -6;// parity error
 
-		return 0;// cube ok
+		return 0;// cube is solvable
+	}
+
+	//TODO: DELETE!!!!!
+	public String toString() {
+		//twist	flip	cornerParity	edgeParity	FRtoBR	URFtoDLF	URtoDF	URtoUL	UBtoDF
+		return String.format("%d	%d	%d	%d	%d	%d	%d	%d	%d	%d	%s	%s	%s	%s",
+				getTwist(), getFlip(), cornerParity(),
+				getFRtoBR(), getURFtoDLF(), getURtoDF(), getURtoUL(), getUBtoDF(),
+				Arrays.toString(cp), Arrays.toString(co), Arrays.toString(ep), Arrays.toString(eo));
 	}
 }

@@ -73,6 +73,7 @@ public class PcApplication {
 		TextMenu mainMenu = new TextMenu(MainMenu.getItems(), 1, MainMenu.getTitle());
 		TextMenu testsMenu = new TextMenu(TestsMenu.getItems(), 1, TestsMenu.getTitle());
 		TextMenu calibrationMenu = new TextMenu(CalibrationMenu.getItems(), 1, CalibrationMenu.getTitle());
+		TextMenu patternMenu = new TextMenu(PatternMenu.getItems(), 1, PatternMenu.getTitle());
 
 		int selection;
 		for (;;) {
@@ -109,6 +110,21 @@ public class PcApplication {
 						break;
 					}
 				}
+			} else if (selection == MainMenu.PATTERN.getValue()) {
+				for (;;){
+					selection = waitForUserSelection(patternMenu);
+					if (selection == PatternMenu.CROSS_4.getValue()) {
+						solveCube(PatternMenu.CROSS_4.getPattern());
+					} else if (selection == PatternMenu.PLUS_MINUS.getValue()) {
+						solveCube(PatternMenu.PLUS_MINUS.getPattern());
+					} else if (selection == PatternMenu.CUBE_CUBE.getValue()) {
+						solveCube(PatternMenu.CUBE_CUBE.getPattern());
+					} else if (selection == PatternMenu.CUBE_CUBE_CUBE.getValue()) {
+						solveCube(PatternMenu.CUBE_CUBE_CUBE.getPattern());
+					} else if (selection == CalibrationMenu.BACK.getValue() || selection == -1) {
+						break;
+					}
+				}
 			} else if (selection == MainMenu.EXIT.getValue() || selection == -1) {
 				return;
 			}
@@ -118,20 +134,12 @@ public class PcApplication {
 	/**
 	 * Solve the cube
 	 */
-	private static void solveCube() {
+	private static void solveCube(String pattern) {
+		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube started");
 		ICube cube = new Cube();
 		//Robot.waitForCube();
 		cube.setColors();
 		
-//		Colors[][] front = {{Colors.RED, Colors.RED, Colors.WHITE}, {Colors.GREEN, Colors.GREEN, Colors.BLUE}, {Colors.ORANGE, Colors.WHITE, Colors.WHITE}};
-//		Colors[][] right = {{Colors.BLUE, Colors.YELLOW, Colors.ORANGE}, {Colors.YELLOW, Colors.ORANGE, Colors.WHITE}, {Colors.GREEN, Colors.ORANGE, Colors.WHITE}};
-//		Colors[][] back = {{Colors.YELLOW, Colors.YELLOW, Colors.YELLOW}, {Colors.BLUE, Colors.BLUE, Colors.GREEN}, {Colors.BLUE, Colors.WHITE, Colors.BLUE}};
-//		Colors[][] up = {{Colors.GREEN, Colors.GREEN, Colors.GREEN}, {Colors.ORANGE, Colors.YELLOW, Colors.RED}, {Colors.WHITE, Colors.BLUE, Colors.ORANGE}};
-//		Colors[][] left = {{Colors.RED, Colors.YELLOW, Colors.GREEN}, {Colors.RED, Colors.RED, Colors.ORANGE}, {Colors.YELLOW, Colors.WHITE, Colors.BLUE}};
-//		Colors[][] down = {{Colors.YELLOW, Colors.RED, Colors.ORANGE}, {Colors.GREEN, Colors.WHITE, Colors.BLUE}, {Colors.RED, Colors.ORANGE, Colors.RED}};
-//		
-//		cube.setColorsManual(up, down, front, back, left, right);
-//		
 		//map colors to face colors
 		IFace face;
 		
@@ -160,62 +168,57 @@ public class PcApplication {
 				}
 			}			
 		}
-
-		String s = "";
-		for (int k =0; k<54;k++) {
-			if (facelets[k] == Color.U) {
-				s+="U";
-			}
-			if (facelets[k] == Color.B) {
-				s+="B";
-			}
-			if (facelets[k] == Color.F) {
-				s+="F";
-			}
-			if (facelets[k] == Color.R) {
-				s+="R";
-			}
-			if (facelets[k] == Color.L) {
-				s+="L";
-			}
-			if (facelets[k] == Color.D) {
-				s+="D";
-			}
-		}
-		//String s = "ULUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDUDLLLDLLLLLBBBBBBBBB";
-		for (int l = 0; l<54; l++) {
-			if (s.charAt(l) == 'U')
-				facelets[l] = Color.U;
-			else if (s.charAt(l) == 'R')
-				facelets[l] = Color.R;
-			else if (s.charAt(l) == 'L')
-				facelets[l] = Color.L;
-			else if (s.charAt(l) == 'D')
-				facelets[l] = Color.D;
-			else if (s.charAt(l) == 'F')
-				facelets[l] = Color.F;
-			else if (s.charAt(l) == 'B')
-				facelets[l] = Color.B;
-		}
 		
 		List<Move> moves = new ArrayList<>();
 		int depth = 24;
 		int status;
 		do {
-			status = TwoPhase.findSolution(facelets, depth, 120, moves);
-			
-			depth = moves.size() - 1;
-			
-		} while (status == 0);
+			status = TwoPhase.findSolution(facelets, depth - 1, 120, moves, pattern);
+			depth = moves.size();
+		} while (status == 0 && depth > 0);
 		
-		
-		if(moves.size() != 0) {
+		//if found a solution (status = 0 when the cube is already solved)
+		if(moves.size() != 0 || status == 0) {
 			handleSolution(cube, moves);
 		}
 		else {
-			//handle error
+			String result = "";
+			switch (Math.abs(status)){
+				case 1:
+					result = "There are not exactly nine facelets of each color!";
+					break;
+				case 2:
+					result = "Not all 12 edges exist exactly once!";
+					break;
+				case 3:
+					result = "Flip error: One edge has to be flipped!";
+					break;
+				case 4:
+					result = "Not all 8 corners exist exactly once!";
+					break;
+				case 5:
+					result = "Twist error: One corner has to be twisted!";
+					break;
+				case 6:
+					result = "Parity error: Two corners or two edges have to be exchanged!";
+					break;
+				case 7:
+					result = "No solution exists for the given maximum move number!";
+					break;
+				case 8:
+					result = "Timeout, no solution found within given maximum time!";
+					break;
+			}
+			
+			Logger.log(LoggerLevel.ERROR, LoggerGroup.ALGORITHM, ((status > 0) ? "Pattern error: " : "Cube error") + result);
 		}
+		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube finished");
 		Robot.finish();
+	}
+	
+	private static void solveCube(){
+		solveCube("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
 	}
 
 	/**

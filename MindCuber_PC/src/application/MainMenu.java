@@ -10,7 +10,9 @@ public enum MainMenu{
 	RCONSOLE(1, "RConsole"),
 	TESTS(2, "Tests"),
 	CALIBRATION(3, "Calibration"),
-	EXIT(4, "Exit");
+	PATTERN(4, "Patterns"),
+	EXIT(5, "Exit");
+	
 	
 	private final static String title = "MindCuber";
 	private final int value;
@@ -31,7 +33,7 @@ public enum MainMenu{
     }
     
     public static String[] getItems() {
-    	return new String[]{SOLVE.toString(), RCONSOLE.toString(), TESTS.toString(), CALIBRATION.toString(), EXIT.toString()};
+    	return new String[]{SOLVE.toString(), RCONSOLE.toString(), TESTS.toString(), CALIBRATION.toString(), PATTERN.toString() ,EXIT.toString()};
     }
 
 	public static String getTitle() {
