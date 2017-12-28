@@ -42,7 +42,7 @@ public class TwoPhase {
 	 *          an error code.
 	 * @param moves - a list to contain suggested solution moves. If a solution was found, the list is cleared before adding the required
 	 * 			moves to it. Otherwise, the list remains the same.
-	 * @return 0 if a solution was found, and error code otherwise:
+	 * @return 0 if a solution was found, and error code otherwise:<br>
 	 *         -1: There is not exactly one facelet of each color<br>
 	 *         -2: Not all 12 edges exist exactly once<br>
 	 *         -3: Flip error: One edge has to be flipped<br>

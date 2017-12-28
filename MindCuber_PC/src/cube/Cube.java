@@ -13,7 +13,7 @@ import robot.Robot;
 
 public class Cube implements ICube {
 
-	private ColorCorrector data = new ColorCorrector();
+	protected Face[] faces;
 	private Action[] actions;
 
 	private static final Orientation[][] ORIENTATION_MAT = {
@@ -26,9 +26,9 @@ public class Cube implements ICube {
 
 	public Cube() {
 		
-		data.faces = new Face[6];
+		faces = new Face[6];
 		for (Orientation orientation : Orientation.values()) {
-			data.faces[orientation.getValue()] = new Face(orientation);
+			faces[orientation.getValue()] = new Face(orientation);
 		}
 		
 		actions = new Action[6];
@@ -41,13 +41,13 @@ public class Cube implements ICube {
 	}
 
 	public Face getFace(Orientation orientation) {
-		return data.faces[orientation.getValue()];
+		return faces[orientation.getValue()];
 	}
 
 	private void updateOrientations(Orientation orientation) {
 		Orientation[] newOrientations = ORIENTATION_MAT[orientation.getValue()];
 		for (int i = 0; i < 6; i++) {
-			data.faces[i].dynamicOrientation = newOrientations[data.faces[i].dynamicOrientation.getValue()];
+			faces[i].dynamicOrientation = newOrientations[faces[i].dynamicOrientation.getValue()];
 		}
 	}
 
@@ -103,7 +103,7 @@ public class Cube implements ICube {
 		for (Orientation orientation: Orientation.values()) {
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col< 3; col++) {
-					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, orientation + "[" + row + "][" + col + "]: " + data.faces[orientation.getValue()].getColor(row, col));
+					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, orientation + "[" + row + "][" + col + "]: " + faces[orientation.getValue()].getColor(row, col));
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public class Cube implements ICube {
 		Collections.sort(allColors, RawColor.whiteComparator);
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			data.faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.WHITE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.WHITE);
 			allColors.remove(0);
 		}
 	}
@@ -123,38 +123,38 @@ public class Cube implements ICube {
 		Collections.sort(allColors, RawColor.hueComparator);
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			data.faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.RED);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.RED);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			data.faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.ORANGE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.ORANGE);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			data.faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.YELLOW);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.YELLOW);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			data.faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.GREEN);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.GREEN);
 			allColors.remove(0);
 		}
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
 			RawColor color = allColors.get(0);
-			data.faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.BLUE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.BLUE);
 			allColors.remove(0);
 		}
 	}
 	
 	public void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
-		data.faces[Orientation.U.getValue()].colors = up;
-		data.faces[Orientation.D.getValue()].colors = down;
-		data.faces[Orientation.R.getValue()].colors = right;
-		data.faces[Orientation.L.getValue()].colors = left;
-		data.faces[Orientation.F.getValue()].colors = front;
-		data.faces[Orientation.B.getValue()].colors = back;
+		faces[Orientation.U.getValue()].colors = up;
+		faces[Orientation.D.getValue()].colors = down;
+		faces[Orientation.R.getValue()].colors = right;
+		faces[Orientation.L.getValue()].colors = left;
+		faces[Orientation.F.getValue()].colors = front;
+		faces[Orientation.B.getValue()].colors = back;
 	}
 	
 	public class Face implements IFace {
@@ -237,14 +237,14 @@ public class Cube implements ICube {
 		Orientation leftFace = LEFT_CORNERS_FACE[face.orientation.getValue()][corner.getValue()];
 		Corner leftCorner = LEFT_CORNERS_CORNER[face.orientation.getValue()][corner.getValue()];
 		
-		return data.faces[leftFace.getValue()].getColor(leftCorner.getRow(), leftCorner.getCol());
+		return faces[leftFace.getValue()].getColor(leftCorner.getRow(), leftCorner.getCol());
 	}
 
 	private Colors getCornerRightColor(Face face, Corner corner) {
 		Orientation rightFace = RIGHT_CORNERS_FACE[face.orientation.getValue()][corner.getValue()];
 		Corner rightCorner = RIGHT_CORNERS_CORNER[face.orientation.getValue()][corner.getValue()];
 		
-		return data.faces[rightFace.getValue()].getColor(rightCorner.getRow(), rightCorner.getCol());
+		return faces[rightFace.getValue()].getColor(rightCorner.getRow(), rightCorner.getCol());
 	}
 	
 	private enum Corner {
