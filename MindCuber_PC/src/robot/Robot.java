@@ -1,5 +1,3 @@
-
-
 package robot;
 
 import java.io.DataInputStream;
@@ -15,17 +13,22 @@ import cube.Orientation;
 import cube.RawColor;
 import lejos.nxt.LCD;
 import lejos.util.Delay;
+import lejos.util.Stopwatch;
+import nxt.NxtOperation;
 
 /**
- * Robot Class
- * 
  * Implements simple API for cube manipulation on NXT2.0
+ * 
+ * @see NxtOperation
+ * @see NxtCommand
  */
 public class Robot {
+	
+	private static final int SHOW_OFF_TIME_MS = 5000;
 	private static final int ARM_MOTOR_DEFAULT_SPEED = 550;
 	private static final int ARM_POSITION_HOLD = -157;
 	private static final int ARM_POSITION_HOLD_EXTRA = 10;
-	private static final int ARM_POSITION_TACKLE = ARM_POSITION_HOLD - 43;//47
+	private static final int ARM_POSITION_TACKLE = ARM_POSITION_HOLD - 43;
 	private static final int ARM_POSITION_REST = -0;
 	private static final int ARM_FLIP_DELAY_MS = 100;
 	private static final int SENSOR_MOTOR_SPEED = 400;
@@ -45,6 +48,10 @@ public class Robot {
 	protected static final String CALIBRATION_FILE_COLOR_SENSOR = "sensor.dat";
 	protected static final String CALIBRATION_FILE_COLOR_MOTOR = "color_motor.dat";
 	
+	/**
+	 * Initialize robot (open connection to NXT, load calibration
+	 * data from previous calibrations and reset motors location)
+	 */
 	public static void init() {
 		NxtCommand.init();
 		Arm.init();
@@ -52,7 +59,10 @@ public class Robot {
 		ColorDetector.init();
 	}
 	
-	public static void close() {
+	/**
+	 * Reset motors location
+	 */
+	private static void reset() {
 		Arm.motor.rotateTo(0);
 		if (Tray.motor.getTachoCount() % (90 * TRAY_MOTOR_ROTATION_FACTOR) != 0) {
 			Tray.motor.rotate(-(Tray.motor.getTachoCount() % (90 * TRAY_MOTOR_ROTATION_FACTOR)));
@@ -61,12 +71,10 @@ public class Robot {
 	}
 	
 	/**
-	 * Tray Class
-	 * 
 	 * Represents the motor which controls the cube tray
 	 */
 	public static class Tray {
-		final static NxtMotor motor = new NxtMotor(0); //A
+		final static NxtMotor motor = new NxtMotor(0);
 
 		private static void init() {
 			motor.resetTachoCount();
@@ -80,12 +88,10 @@ public class Robot {
 	}
 
 	/**
-	 * Arm Class
-	 * 
 	 * Represents the motor responsible for holding and flipping the cube
 	 */
 	protected static class Arm {
-		final static NxtMotor motor = new NxtMotor(1); //B
+		final static NxtMotor motor = new NxtMotor(1);
 		
 		/**
 		 * Initialization
@@ -105,28 +111,27 @@ public class Robot {
 		/**
 		 * Flip the cube
 		 *
-		 * @param method Flip method (SINGLE/DOUBLE/NONE)
+		 * @param method Flip method
+		 * @see FlipMethod
 		 */
 		private static void flip(FlipMethod method) {
 			for (int i = 0; i < method.getFlips(); i++) {
-				motor.rotateTo(ARM_POSITION_HOLD+ARM_POSITION_HOLD_EXTRA);
+				motor.rotateTo(ARM_POSITION_HOLD + ARM_POSITION_HOLD_EXTRA);
 				motor.rotateTo(ARM_POSITION_HOLD);
-				Delay.msDelay(ARM_FLIP_DELAY_MS);				
+				Delay.msDelay(ARM_FLIP_DELAY_MS);
 				motor.rotateTo(ARM_POSITION_TACKLE);
 				motor.rotateTo(ARM_POSITION_HOLD);
-			}			
+			}		
 		}
 
 	}
 
 	/**
-	 * ColorDetector Class
-	 * 
 	 * Represents the color detector unit, both motor and sensor
 	 */
 	public static class ColorDetector {
-		final static NxtMotor motor = new NxtMotor(2); //C
-		final static NxtSensor sensor = new NxtSensor(0); //1
+		final static NxtMotor motor = new NxtMotor(2);
+		final static NxtSensor sensor = new NxtSensor();
 
 		public static int[] whiteThreshold = new int[3];
 		static int centerDegree;
@@ -143,12 +148,20 @@ public class Robot {
 			loadDegrees();
 		}
 
+		/**
+		 * Set the color sensor's motor default degrees
+		 */
 		protected static void setMotorDefaultDegrees() {
 			setMotorDegree(SensorLocation.CENTER, SENSOR_CENTER_DEFAULT_DEGREE);
 			setMotorDegree(SensorLocation.ALLIGN, SENSOR_OUTER_ALLIGN_DEFAULT_DEGREE);
 			setMotorDegree(SensorLocation.CORNER, SENSOR_OUTER_CORNER_DEFAULT_DEGREE);
 		}
 		
+		/**
+		 * Rotate the color sensor motor to required location
+		 * 
+		 * @param location The location to rotate to
+		 */
 		protected static void setMotorLocation(SensorLocation location) {
 			int degree;
 			
@@ -168,6 +181,15 @@ public class Robot {
 			motor.rotateTo(degree);
 		}
 		
+		/**
+		 * Set the color sensor motor degree, called when calibrating the
+		 * sensor's motor or setting it to default
+		 * 
+		 * @param location The location to set degree of
+		 * @param degree The degree to set
+		 * @see #loadDegrees()
+		 * @see #setMotorDefaultDegrees()
+		 */
 		protected static void setMotorDegree(SensorLocation location, int degree) {
 			switch (location) {
 			case CENTER:
@@ -184,7 +206,9 @@ public class Robot {
 		}
 		
 		/**
-		 * Load thresholds from existing file
+		 * Load calibrated color sensor white threshold from existing file
+		 * <p>In case of calibration file not exist or error while reading - 
+		 * default thresholds will be loaded
 		 */
 		public static void loadThresholds() {
 			File calibrationFile;
@@ -213,7 +237,9 @@ public class Robot {
 		}
 
 		/**
-		 * Load degrees from existing file
+		 * Load calibrated color sensor degrees from existing file
+		 * <p>In case of calibration file not exist or error while reading - 
+		 * default thresholds will be loaded
 		 */
 		public static void loadDegrees() {
 			File calibrationFile;
@@ -245,7 +271,7 @@ public class Robot {
 		}
 		
 		/**
-		 * Set thresholds to defaults 
+		 * Set white thresholds to default
 		 */
 		public static void setDefaultThresholds() {
 			Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "Setting default thresholds. Note: those thresholds are not optimised, please run the calibration routine from the menu");
@@ -256,18 +282,22 @@ public class Robot {
 	}
 
 	/**
-	 * ProximitySensor Class
-	 * 
-	 * Represents the proximity sensor unit
+	 * This class represents the proximity sensor unit
 	 */
 	protected static class ProximitySensor {
-		final static NxtSensor sensor = new NxtSensor(2); //3
+		final static NxtSensor sensor = new NxtSensor();
 	}	
 
+	/**
+	 * Set robot's tray to scanning speed
+	 */
 	public static void setTrayScanSpeed() {
 		Tray.motor.setSpeed(TRAY_MOTOR_SCAN_SPEED);
 	}
 	
+	/**
+	 * Set robot's tray to default speed
+	 */
 	public static void setTrayDefaultSpeed() {
 		Tray.motor.setSpeed(TRAY_MOTOR_DEFAULT_SPEED);
 	}
@@ -277,11 +307,13 @@ public class Robot {
 	 * 
 	 * @param allColors List of all scanned colors 
 	 * @param orientation Current cube orientation
+	 * @see Orientation
 	 */
 	public static void scanFace(ArrayList<RawColor> allColors, Orientation orientation) {
 		int coordinate, row, col;
 		int[] rgb;
 		SensorLocation location;
+		
 		Arm.release();
 		for (coordinate = 0; coordinate < 8; coordinate++) {
 			row = COORDINATE_SCAN_ORDER[coordinate][0];
@@ -299,7 +331,6 @@ public class Robot {
 		row = COORDINATE_SCAN_ORDER[coordinate][0];
 		col = COORDINATE_SCAN_ORDER[coordinate][1];
 		ColorDetector.setMotorLocation(SensorLocation.CENTER);
-		//faceColors[row][col] = ColorDetector.readColor(SensorLocation.CENTER);
 		rgb = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
 		RawColor rawColor = new RawColor(orientation, row, col, rgb);
 		allColors.add(rawColor);
@@ -311,16 +342,18 @@ public class Robot {
 	/**
 	 * Flip the cube
 	 *
-	 * @param method Flip method (SINGLE/DOUBLE/NONE)
+	 * @param method Flip method
+	 * @see FlipMethod
 	 */
 	public static void flipCube(FlipMethod method) {
 		Arm.flip(method);
 	}
 
 	/**
-	 * Rotate the face currently pointing down
+	 * Rotate the face currently facing down
 	 *
-	 * @param direction Turning direction (LEFT/RIGHT/MIRROR/NONE)
+	 * @param direction Turning direction
+	 * @see Direction
 	 */
 	public static void turnFace(Direction direction) {
 		Arm.motor.rotateTo(ARM_POSITION_HOLD);
@@ -331,9 +364,10 @@ public class Robot {
 	}
 
 	/**
-	 * Rotate the entire cube
+	 * Rotate entire cube
 	 *
-	 * @param direction Rotate direction (LEFT/RIGHT/MIRROR/NONE)
+	 * @param direction Rotate direction
+	 * @see Direction
 	 */
 	public static void rotateCube(Direction direction) {
 		if (direction != Direction.NONE) {
@@ -370,7 +404,20 @@ public class Robot {
 		Delay.msDelay(2000);
 	}
 
-	public static void finish() {
-		Robot.Arm.release();
+	/**
+	 * Show off routine, called once the cube is solved
+	 */
+	public static void finishSolve() {
+		Arm.release();
+		
+		Stopwatch showOffStopwatch = new Stopwatch();
+		showOffStopwatch.reset();
+		
+		Tray.motor.forward();		
+		while (showOffStopwatch.elapsed() < SHOW_OFF_TIME_MS) {
+			ColorDetector.sensor.readColorRgb(1);			
+		}
+		
+		reset();
 	}
 }

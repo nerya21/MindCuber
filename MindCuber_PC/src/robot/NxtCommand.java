@@ -9,6 +9,7 @@ import application.LoggerGroup;
 import application.LoggerLevel;
 import lejos.pc.comm.NXTConnector;
 import nxt.NxtOperation;
+import nxt.NxtApplication;
 
 /**
  * This class implements a connection to the NXT application.

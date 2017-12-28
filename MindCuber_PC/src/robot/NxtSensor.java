@@ -1,21 +1,26 @@
 package robot;
 
+import nxt.NxtApplication;
 import nxt.NxtOperation;
 
+/**
+ * Represents NXT's sensors in the PC project
+ * <p>Each operation sent to sensors performed
+ * by NxtApplication thru NxtCommand
+ * 
+ * @see NxtCommand
+ * @see NxtApplication
+ */
 public class NxtSensor {
-	
-	private int id;
-	
-	public NxtSensor(int id) {
-		this.id = id;
-	}
-	
-	public final int getId() {
-		return id;
-	}
 
+	/**
+	 * Read color from sensor
+	 * 
+	 * @param numberOfSamples Number of reading to perform
+	 * @return RGB array, each value between 0 to 255
+	 */
 	public int[] readColorRgb(int numberOfSamples) {
-		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_COLOR_SENSOR, id, NxtOperation.OPERATION_ID_READ_COLOR, numberOfSamples, 3);
+		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_COLOR_SENSOR, 0, NxtOperation.OPERATION_ID_READ_COLOR, numberOfSamples, 3);
 		int[] colorRgb = new int[3];
 		
 		colorRgb[0] = ((int)inputBuffer[0]) & 0x000000FF;
@@ -25,8 +30,13 @@ public class NxtSensor {
 		return colorRgb;
 	}
 	
+	/**
+	 * Get current distance read from the proximity sensor
+	 * 
+	 * @return Current distance
+	 */
 	public int getDistance() {
-		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_ULTRASONIC_SENSOR, id, NxtOperation.OPERATION_ID_GET_DISTANCE, 0, 4);
+		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_ULTRASONIC_SENSOR, 0, NxtOperation.OPERATION_ID_GET_DISTANCE, 0, 4);
 		int distance = 0;
 		
 		distance |= (((int)inputBuffer[0]) & 0x000000FF) << 0;

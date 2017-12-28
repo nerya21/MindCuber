@@ -1,5 +1,10 @@
 package application;
 
+/**
+ * Represents the logger's severity level
+ * 
+ * @see Logger
+ */
 public enum LoggerLevel{
 	DEBUG(0, "Debug"), ERROR(1, "Error"), WARNING(2, "Warning"), INFO(3, "Info");
 	

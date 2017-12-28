@@ -1,7 +1,14 @@
 package robot;
 
+/**
+ * Represents the possible rotation (of cube) 
+ * and turning (of cube's face) direction 
+ */
 public enum Direction {
-	NONE(0),RIGHT(90),MIRROR(180),LEFT(-90);
+	NONE(0),
+	RIGHT(90),
+	MIRROR(180),
+	LEFT(-90);
 
     private final int degree;
     private Direction(int degree) {

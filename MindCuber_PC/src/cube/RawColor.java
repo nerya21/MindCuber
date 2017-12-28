@@ -7,11 +7,19 @@ import application.LoggerGroup;
 import application.LoggerLevel;
 import robot.Robot;
 
+/**
+ * This class supports the color detector method
+ */
 public class RawColor {
 
-	static final int[] WHITE_DEFAULT_RGB_CALIBRATION = { 255, 255, 255 };
-	static int[] whiteRgbCalibration = WHITE_DEFAULT_RGB_CALIBRATION;
-
+	/** 
+	 * Create new raw color from RGB sample
+	 * 
+	 * @param orientation Current cube orientation which the color belongs to
+	 * @param row Row of the color
+	 * @param col Column of the color
+	 * @param rawColor Raw RGB reading
+	 */
 	public RawColor(Orientation orientation, int row, int col, int[] rawColor) {
 		this.orientation = orientation;
 		this.row = row;
@@ -43,6 +51,9 @@ public class RawColor {
 
 	public int whiteDistance;
 
+	/**
+	 * Comparator by white distance
+	 */
 	public static Comparator<RawColor> whiteComparator = new Comparator<RawColor>() {
 
 		public int compare(RawColor color1, RawColor color2) {
@@ -50,6 +61,9 @@ public class RawColor {
 		}
 	};
 
+	/**
+	 * Comparator by hue value
+	 */
 	public static Comparator<RawColor> hueComparator = new Comparator<RawColor>() {
 
 		public int compare(RawColor color1, RawColor color2) {
@@ -58,6 +72,13 @@ public class RawColor {
 		}
 	};
 	
+	/**
+	 * Calculate distance between two colors represented as RGB
+	 * 
+	 * @param rgb1 1st color
+	 * @param rgb2 2nd color
+	 * @return Distance between 1st to 2nd color
+	 */
 	private static int calcRgbDistance(int[] rgb1, int[] rgb2) {
 		int distance = 0;
 		for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
@@ -67,6 +88,12 @@ public class RawColor {
 		return distance;
 	}
 
+	/**
+	 * Convert RGB color to HSV representation
+	 * 
+	 * @param rgb RGB color reading
+	 * @return HSV representation of the color
+	 */
 	private static double[] rgbToHsv(int[] rgb) {
 		double[] rgbNorm = { (double) rgb[0] / 255, (double) rgb[1] / 255, (double) rgb[2] / 255 };
 		double cMax = 0, cMin = 1;
@@ -95,7 +122,6 @@ public class RawColor {
 			hue = 60 * (((rgbNorm[0] - rgbNorm[1]) / cDelta) + 4);
 		} else {
 			hue = 0;
-			// handle error
 		}
 
 		/* Calc Saturation */
@@ -111,7 +137,7 @@ public class RawColor {
 
 		/* Handle error */
 		if (hue == 0 || saturation == 0 || value == 0) {
-			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "HSV calculation error");
+			Logger.log(LoggerLevel.WARNING, LoggerGroup.ROBOT, "HSV calculation error, probably while scanning white color");
 		}
 
 		return new double[] { hue, saturation, value };

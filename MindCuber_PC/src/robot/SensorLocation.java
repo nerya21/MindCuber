@@ -1,10 +1,12 @@
 package robot;
 
 /**
- * Represents the Color Sensor location, 
+ * Represents the color sensor location
  */
 public enum SensorLocation {
-	CENTER(0), ALLIGN(1), CORNER(2);
+	CENTER(0),
+	ALLIGN(1), 
+	CORNER(2);
 
 	private final int value;
 

@@ -12,7 +12,7 @@ import lejos.nxt.LCD;
 import lejos.util.Delay;
 
 /**
- * This class contains all the robot's calibration routines
+ * This class contains all of the robot's calibration routines
  * 
  * @see Robot
  */
@@ -57,10 +57,8 @@ public class Calibration extends Robot {
 	}
 
 	/**
-	 * Helper method for colorSensor()
+	 * Calibrate single color
 	 *
-	 * @param color the color calibrated
-	 * @param location TODO
 	 * @return the color average reading
 	 */
 	private static int[] calibrateColor() {
@@ -92,10 +90,27 @@ public class Calibration extends Robot {
 		calibrateMotor(Tray.motor, true);
 	}
 
+	/**
+	 * Motor calibration
+	 * 
+	 * @param motor The motor to calibrate
+	 * @param reset Should the method reset the motor location upon pressing ENTER 
+	 * @return The current motor location
+	 * @see tray()
+	 */
 	private static int calibrateMotor(NxtMotor motor, boolean reset) {
 		return calibrateMotor(motor, reset, null);
 	}
 
+	/**
+	 * Motor calibration
+	 * 
+	 * @param motor The motor to calibrate
+	 * @param reset Should the method reset the motor location upon pressing ENTER 
+	 * @param sensor Sensor to activate while calibrating the motor
+	 * @return The current motor location
+	 * @see colorMotor()
+	 */
 	private static int calibrateMotor(NxtMotor motor, boolean reset, NxtSensor sensor) {
 		Delay.msDelay(200);
 		
@@ -135,6 +150,9 @@ public class Calibration extends Robot {
 		}
 	}
 
+	/**
+	 * Color sensor motor calibration
+	 */
 	public static void colorMotor() {
 		File calibrationFile = null;
 		DataOutputStream calibrationFileStream = null;

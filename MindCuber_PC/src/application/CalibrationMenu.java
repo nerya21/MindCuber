@@ -1,9 +1,10 @@
 package application;
 
 /**
- * CalibrationMenu Enum
- * 
  * Represents the calibration sub-menu
+ * <p>Used for executing calibration routines
+ * 
+ * @see MainMenu
  */
 public enum CalibrationMenu {
 	SENSOR(0, "Color Sensor"),

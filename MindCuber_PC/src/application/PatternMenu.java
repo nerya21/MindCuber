@@ -1,11 +1,10 @@
 package application;
 
-import java.util.regex.Pattern;
-
 /**
- * CalibrationMenu Enum
+ * Represents the pattern sub-menu
+ * <p>Used for solving the cube to unique pattern
  * 
- * Represents the calibration sub-menu
+ * @see MainMenu
  */
 public enum PatternMenu {
 	PLUS_MINUS(0, "Plus minus", "UUUUUUUUULLLRRRLLLBFBFFFBFBDDDDDDDDDRRRLLLRRRFBFBBBFBF"),

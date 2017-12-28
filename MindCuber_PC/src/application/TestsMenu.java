@@ -1,9 +1,10 @@
 package application;
 
 /**
- * TestsMenu Enum
- * 
  * Represents the tests sub-menu
+ * <p>Used for executing test routines
+ * 
+ * @see MainMenu
  */
 public enum TestsMenu {
 	BRUTEFORCE(0, "Brute Force"),

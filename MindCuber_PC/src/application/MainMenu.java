@@ -1,17 +1,18 @@
 package application;
 
 /**
- * MainMenu Enum
- * 
  * Represents the main application menu
+ * 
+ * @see TestsMenu
+ * @see CalibrationMenu
+ * @see PatternMenu
  */
 public enum MainMenu{
 	SOLVE(0, "Solve Cube"),
-	RCONSOLE(1, "RConsole"),
-	TESTS(2, "Tests"),
-	CALIBRATION(3, "Calibration"),
-	PATTERN(4, "Patterns"),
-	EXIT(5, "Exit");
+	TESTS(1, "Tests"),
+	CALIBRATION(2, "Calibration"),
+	PATTERN(3, "Patterns"),
+	EXIT(4, "Exit");
 	
 	
 	private final static String title = "MindCuber";
@@ -33,7 +34,7 @@ public enum MainMenu{
     }
     
     public static String[] getItems() {
-    	return new String[]{SOLVE.toString(), RCONSOLE.toString(), TESTS.toString(), CALIBRATION.toString(), PATTERN.toString() ,EXIT.toString()};
+    	return new String[]{SOLVE.toString(), TESTS.toString(), CALIBRATION.toString(), PATTERN.toString() ,EXIT.toString()};
     }
 
 	public static String getTitle() {

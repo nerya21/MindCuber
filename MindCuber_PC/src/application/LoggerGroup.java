@@ -1,5 +1,10 @@
 package application;
 
+/**
+ * Represents the logger's group
+ * 
+ * @see Logger
+ */
 public enum LoggerGroup{											
 	ALGORITHM("Algorithm"), CUBE("Cube"), ROBOT("Robot"), APPLICATION("App  ");
 	

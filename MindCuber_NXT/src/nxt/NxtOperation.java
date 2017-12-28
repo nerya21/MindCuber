@@ -3,7 +3,6 @@ package nxt;
 /**
  * This class lists the supported operations by the NXT application
  * 
- * @see NxtCommand
  * @see NxtApplication
  */
 public class NxtOperation {
@@ -22,5 +21,6 @@ public class NxtOperation {
 	public final static byte OPERATION_ID_SET_SPEED = (byte) 0x04;
 	public final static byte OPERATION_ID_GET_DISTANCE = (byte) 0x05;
 	public final static byte OPERATION_ID_GET_TACHO_COUNT = (byte) 0x06;
+	public final static byte OPERATION_ID_FORWARD = (byte) 0x07;
 
 }

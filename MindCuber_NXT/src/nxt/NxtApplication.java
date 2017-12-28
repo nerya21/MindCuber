@@ -17,17 +17,28 @@ import lejos.nxt.comm.NXTConnection;
 import lejos.nxt.comm.USB;
 import lejos.util.Delay;
 
+/**
+ * The main application of the <i>NXT project</i>
+ * <p>The application receives commands from the PC application
+ * and act upon them
+ */
 public class NxtApplication extends NxtOperation {
 
 	/* Motors */
-	public final static NXTRegulatedMotor[] motors = new NXTRegulatedMotor[3];
+	private final static NXTRegulatedMotor[] motors = new NXTRegulatedMotor[3];
 
 	/* Sensors */
-	public final static ColorSensor colorSensor = new ColorSensor(SensorPort.S2);
-	public final static UltrasonicSensor ultrasonicSensor = new UltrasonicSensor(SensorPort.S3);
+	private final static ColorSensor colorSensor = new ColorSensor(SensorPort.S2);
+	private final static UltrasonicSensor ultrasonicSensor = new UltrasonicSensor(SensorPort.S3);
 
 	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
+	/**
+	 * Convert byte array to Hexadecimal
+	 * 
+	 * @param bytes The byte array to print as Hexadecimal
+	 * @return Hexadecimal representation of the bytes array
+	 */
 	public static String bytesToHex(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];
 		for (int j = 0; j < bytes.length; j++) {
@@ -38,24 +49,57 @@ public class NxtApplication extends NxtOperation {
 		return new String(hexChars);
 	}
 
+	/**
+	 * Initialize NXT's motors
+	 */
 	private static void initMotors() {
 		motors[0] = new NXTRegulatedMotor(MotorPort.A);
 		motors[1] = new NXTRegulatedMotor(MotorPort.B);
 		motors[2] = new NXTRegulatedMotor(MotorPort.C);
 	}
 
+	/**
+	 * Print to LCD
+	 * 
+	 * @param line0 1st line to print
+	 * @param delay Delay time in MS after the print
+	 */
 	private static void printToLcd(String line0, int delay) {
 		printToLcd(line0, "", "", "", delay);
 	}
 
+	/**
+	 * Print to LCD
+	 * 
+	 * @param line0 1st line to print
+	 * @param line1 2nd line to print
+	 * @param delay Delay time in MS after the print
+	 */
 	private static void printToLcd(String line0, String line1, int delay) {
 		printToLcd(line0, line1, "", "", delay);
 	}
 
+	/**
+	 * Print to LCD
+	 * 
+	 * @param line0 1st line to print
+	 * @param line1 2nd line to print
+	 * @param line2 3rd line to print
+	 * @param delay Delay time in MS after the print
+	 */
 	private static void printToLcd(String line0, String line1, String line2, int delay) {
 		printToLcd(line0, line1, line2, "", delay);
 	}
 
+	/**
+	 * Print to LCD
+	 * 
+	 * @param line0 1st line to print
+	 * @param line1 2nd line to print
+	 * @param line2 3rd line to print
+	 * @param line3 4th line to print
+	 * @param delay Delay time in MS after the print
+	 */
 	private static void printToLcd(String line0, String line1, String line2, String line3, int delay) {
 		LCD.clear();
 		LCD.drawString(line0, 0, 0);
@@ -65,6 +109,25 @@ public class NxtApplication extends NxtOperation {
 		Delay.msDelay(delay);
 	}
 
+	/**
+	 * Ass listener to the ESC button
+	 */
+	private static void addEscButtonListener() {
+		Button.ESCAPE.addButtonListener(new ButtonListener() {
+		      public void buttonPressed(Button b) {
+		    	  System.exit(0);
+		      }
+
+		      public void buttonReleased(Button b) { }
+		    });
+	}
+	
+	/**
+	 * Read color from sensor
+	 * 
+	 * @param numberOfSamples Number of reading to perform
+	 * @return RGB array, each value between 0 to 255
+	 */
 	public static int[] readRgbAverage(int numberOfSamples) {
 		int[] rgb = { 0, 0, 0 };
 		int actualNumberOfSamples = 0;
@@ -72,16 +135,13 @@ public class NxtApplication extends NxtOperation {
 
 		for (int i = 0; i < numberOfSamples; i++) {
 			color = colorSensor.getColor();
-			//printToLcd(""+color.getRed(), ""+color.getGreen(), ""+color.getBlue(), 1000);
 			if (color.getRed() == 0 && color.getGreen() == 0 && color.getBlue() == 0) {
 				continue;
 			}
-			//if (color.getRed() != 0 && color.getGreen() != 0 && color.getBlue() != 0) {
-				rgb[0] += color.getRed() > 255 ? 255 : color.getRed();
-				rgb[1] += color.getGreen()> 255 ? 255 : color.getGreen();
-				rgb[2] += color.getBlue()> 255 ? 255 : color.getBlue();
-				actualNumberOfSamples++;
-			//}
+			rgb[0] += color.getRed() > 255 ? 255 : color.getRed();
+			rgb[1] += color.getGreen()> 255 ? 255 : color.getGreen();
+			rgb[2] += color.getBlue()> 255 ? 255 : color.getBlue();
+			actualNumberOfSamples++;
 		}
 
 		if (actualNumberOfSamples == 0) {
@@ -93,21 +153,14 @@ public class NxtApplication extends NxtOperation {
 			rgb[rgbIndex] /= actualNumberOfSamples;
 		}
 		
-		//printToLcd(""+rgb[0], ""+rgb[1], ""+rgb[2], 1000);
 		return rgb;
 	}
 
-	public static void main(String[] args) {
-		Button.ESCAPE.addButtonListener(new ButtonListener() {
-		      public void buttonPressed(Button b) {
-		    	  System.exit(0);
-		      }
-
-		      public void buttonReleased(Button b) { }
-		    });
-		// Logger.init(LoggerLevel.DEBUG);
-		initMotors();
-
+	/**
+	 * Run the main loop waiting for command from PC
+	 * <p>This function exits upon pressing the ESC button on the NXT
+	 */
+	private static void runCommandListener() {
 		for (;;) {
 			printToLcd("Waiting for", "connection", 0);
 			NXTConnection con = USB.waitForConnection();
@@ -121,6 +174,10 @@ public class NxtApplication extends NxtOperation {
 			for (;;) {
 				try {
 					if ((inputBufferLength = in.read(inputBuffer)) > 0) {
+						if (inputBufferLength != 7) {
+							printToLcd("Unknown data", "received", 10000);
+							continue;
+						}
 						printToLcd("Command recieved:", bytesToHex(inputBuffer), 0);
 						byte operationType = inputBuffer[0];
 						int port = (int) inputBuffer[1];
@@ -152,6 +209,9 @@ public class NxtApplication extends NxtOperation {
 								outputBuffer[1] = (byte) (tachoCount >> 8);
 								outputBuffer[2] = (byte) (tachoCount >> 16);
 								outputBuffer[3] = (byte) (tachoCount >> 24);
+								break;
+							case OPERATION_ID_FORWARD:
+								motors[port].forward();
 								break;
 							default:
 								printToLcd("Unsupported", "motor", "operation", 10000);
@@ -194,7 +254,15 @@ public class NxtApplication extends NxtOperation {
 					e.printStackTrace();
 				}
 			}
-
 		}
+	}
+
+	/**
+	 * Main function of the NXT application
+	 */
+	public static void main(String[] args) {
+		addEscButtonListener();		
+		initMotors();
+		runCommandListener();
 	}
 }
