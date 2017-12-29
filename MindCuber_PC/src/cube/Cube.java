@@ -11,11 +11,19 @@ import robot.Direction;
 import robot.FlipMethod;
 import robot.Robot;
 
+/**
+ * 
+ * TODO Elad
+ *
+ */
 public class Cube implements ICube {
 
 	protected Face[] faces;
 	private Action[] actions;
 
+	/**
+	 * TODO Elad
+	 */
 	private static final Orientation[][] ORIENTATION_MAT = {
 			{ Orientation.D, Orientation.L, Orientation.F, Orientation.U, Orientation.R, Orientation.B },
 			{ Orientation.L, Orientation.D, Orientation.B, Orientation.R, Orientation.U, Orientation.F },
@@ -24,6 +32,11 @@ public class Cube implements ICube {
 			{ Orientation.L, Orientation.U, Orientation.F, Orientation.R, Orientation.D, Orientation.B },
 			{ Orientation.L, Orientation.B, Orientation.U, Orientation.R, Orientation.F, Orientation.D } };
 
+	Colors[] COLORS_ORDERERD_BY_HUE = {Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.BLUE};
+	
+	/**
+	 * TODO Elad
+	 */
 	public Cube() {
 		
 		faces = new Face[6];
@@ -40,10 +53,19 @@ public class Cube implements ICube {
 		actions[Orientation.B.getValue()] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
 	}
 
+	/**
+	 * TODO Elad
+	 * 
+	 * @param orientation
+	 */
 	public Face getFace(Orientation orientation) {
 		return faces[orientation.getValue()];
 	}
 
+	/**
+	 * 
+	 * @param orientation
+	 */
 	private void updateOrientations(Orientation orientation) {
 		Orientation[] newOrientations = ORIENTATION_MAT[orientation.getValue()];
 		for (int i = 0; i < 6; i++) {
@@ -51,12 +73,30 @@ public class Cube implements ICube {
 		}
 	}
 
-	private void changePosition(FlipMethod cube_flips, Direction direction, Orientation orientation) {
+	/**
+	 * TODO Elad
+	 * 
+	 * @param cubeFlips
+	 * @param direction
+	 * @param orientation
+	 */
+	private void changePosition(FlipMethod cubeFlips, Direction direction, Orientation orientation) {
 		Robot.rotateCube(direction);
-		Robot.flipCube(cube_flips);
+		Robot.flipCube(cubeFlips);
 		updateOrientations(orientation);
 	}
 
+	/**
+	 * Scan and set the cube colors.
+	 * 
+	 * <p>The method is first to scan all of the cube's colors in RGB mode,
+	 * and calculate their HSV representation as well as their distance from
+	 * the calibrated white RGB.
+	 * <br>Second, sort all the colors by their white distance (since white doesn't have
+	 * meaningful Hue value), and place them on the cube.
+	 * <br>Last, sort all the colors by their Hue value and place them on the cube
+	 * according to their Hue value.
+	 */
 	public void setColors() {
 		ArrayList<RawColor> allColors = new ArrayList<RawColor>();
 		
@@ -92,24 +132,13 @@ public class Cube implements ICube {
 		calcAndSetColors(allColors);
 	}
 	
-	private void calcAndSetColors(ArrayList<RawColor> allColors) {
-		setWhitesByDistance(allColors);
-		setNonWhitesByHue(allColors);
-		fixCorners();
-		printCubeColorsToLogger(allColors);
-	}
-
-	private void printCubeColorsToLogger(ArrayList<RawColor> allColors) {
-		for (Orientation orientation: Orientation.values()) {
-			for (int row = 0; row < 3; row++) {
-				for (int col = 0; col< 3; col++) {
-					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, orientation + "[" + row + "][" + col + "]: " + faces[orientation.getValue()].getColor(row, col));
-				}
-			}
-		}
-		
-	}
-
+	/**
+	 * Place all white colors on the cube according to their
+	 * distance from the calibrated white RGB
+	 * 
+	 * @param allColors All scanned colors
+	 * @see #setColors()
+	 */
 	private void setWhitesByDistance(ArrayList<RawColor> allColors) {
 		Collections.sort(allColors, RawColor.whiteComparator);
 		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
@@ -119,35 +148,60 @@ public class Cube implements ICube {
 		}
 	}
 	
+	/**
+	 * Place all non-white colors on the cube according to their
+	 * Hue value
+	 * 
+	 * @param allColors All scanned colors
+	 * @see #setColors()
+	 */
 	private void setNonWhitesByHue(ArrayList<RawColor> allColors) {
 		Collections.sort(allColors, RawColor.hueComparator);
-		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
+		
+		for (int colorIndex = 0; colorIndex < 45; colorIndex++) {
 			RawColor color = allColors.get(0);
-			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.RED);
-			allColors.remove(0);
-		}
-		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
-			RawColor color = allColors.get(0);
-			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.ORANGE);
-			allColors.remove(0);
-		}
-		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
-			RawColor color = allColors.get(0);
-			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.YELLOW);
-			allColors.remove(0);
-		}
-		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
-			RawColor color = allColors.get(0);
-			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.GREEN);
-			allColors.remove(0);
-		}
-		for (int colorIndex = 0; colorIndex < 9; colorIndex++) {
-			RawColor color = allColors.get(0);
-			faces[color.orientation.getValue()].setColor(color.row, color.col, Colors.BLUE);
+			faces[color.orientation.getValue()].setColor(color.row, color.col, COLORS_ORDERERD_BY_HUE[colorIndex / 9]);
 			allColors.remove(0);
 		}
 	}
 	
+	/**
+	 * Place all scanned colors on the cube, fix red/orange corners
+	 * and print result to logger 
+	 * 
+	 * @param allColors All scanned colors
+	 */
+	private void calcAndSetColors(ArrayList<RawColor> allColors) {
+		setWhitesByDistance(allColors);
+		setNonWhitesByHue(allColors);
+		ColorCorrector.fixCorners(faces);
+		printCubeColorsToLogger();
+	}
+
+	/**
+	 * Print all cube's colors to logger
+	 */
+	private void printCubeColorsToLogger() {
+		for (Orientation orientation: Orientation.values()) {
+			for (int row = 0; row < 3; row++) {
+				for (int col = 0; col< 3; col++) {
+					Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, 
+							orientation + "[" + row + "][" + col + "]: " + faces[orientation.getValue()].getColor(row, col));
+				}
+			}
+		}		
+	}
+	
+	/**
+	 * TODO Elad
+	 * 
+	 * @param up
+	 * @param down
+	 * @param front
+	 * @param back
+	 * @param left
+	 * @param right
+	 */
 	public void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
 		faces[Orientation.U.getValue()].colors = up;
 		faces[Orientation.D.getValue()].colors = down;
@@ -157,27 +211,53 @@ public class Cube implements ICube {
 		faces[Orientation.B.getValue()].colors = back;
 	}
 	
+	/**
+	 * TODO Elad
+	 *
+	 */
 	public class Face implements IFace {
 		
 		final Orientation orientation;
 		private Colors[][] colors;		
 		private Orientation dynamicOrientation;
 
+		/**
+		 * TODO elad
+		 * 
+		 * @param orientation
+		 */
 		public Face(Orientation orientation) {
 			this.orientation = orientation;
 			this.dynamicOrientation = orientation;
 			this.colors = new Colors[3][3];
 		}
  
+		/**
+		 * TODO Elad
+		 * 
+		 * @param row
+		 * @param col
+		 */
 		@Override
-		public Colors getColor(int i, int j) {
-			return colors[i][j];
+		public Colors getColor(int row, int col) {
+			return colors[row][col];
 		}
 
-		void setColor(int i, int j, Colors color) {
-			colors[i][j] = color;
+		/**
+		 * TODO Elad
+		 * 
+		 * @param row
+		 * @param col
+		 */
+		void setColor(int row, int col, Colors color) {
+			colors[row][col] = color;
 		}
 		
+		/**
+		 * TODO Elad
+		 * 
+		 * @param direction
+		 */
 		@Override
 		public void turn(Direction direction) {
 			
@@ -187,126 +267,6 @@ public class Cube implements ICube {
 			changePosition(cubeFlips, cubeRotation, dynamicOrientation);
 			
 			Robot.turnFace(direction);
-		}
-	}
-
-	
-	private static final Colors[][] RED_ORANGE_CORNERS = {
-			{Colors.YELLOW, Colors.RED, Colors.BLUE},
-			{Colors.WHITE, Colors.RED, Colors.GREEN},
-			{Colors.BLUE, Colors.RED, Colors.WHITE},
-			{Colors.GREEN, Colors.RED, Colors.YELLOW},
-			{Colors.BLUE, Colors.ORANGE, Colors.YELLOW},
-			{Colors.WHITE, Colors.ORANGE, Colors.BLUE},
-			{Colors.YELLOW, Colors.ORANGE, Colors.GREEN},				
-			{Colors.GREEN, Colors.ORANGE, Colors.WHITE} };	
-	
-	private static final Corner[][] LEFT_CORNERS_CORNER = {
-			/*U*/ {Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT}, 
-			/*R*/ {Corner.LOWER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT},
-			/*F*/ {Corner.LOWER_LEFT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.UPPER_RIGHT},
-			/*D*/ {Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT},
-			/*L*/ {Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.UPPER_LEFT},
-			/*B*/ {Corner.UPPER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_LEFT} };
-	
-	private static final Orientation[][] LEFT_CORNERS_FACE = {
-			/*U*/ {Orientation.B, Orientation.R, Orientation.L ,Orientation.F}, 
-			/*R*/ {Orientation.U, Orientation.B, Orientation.F ,Orientation.D},
-			/*F*/ {Orientation.U, Orientation.R, Orientation.L ,Orientation.D},
-			/*D*/ {Orientation.F, Orientation.R, Orientation.L ,Orientation.B},
-			/*L*/ {Orientation.U, Orientation.F, Orientation.B ,Orientation.D},
-			/*B*/ {Orientation.U, Orientation.L, Orientation.R ,Orientation.D} };
-	
-	private static final Corner[][] RIGHT_CORNERS_CORNER = {
-			/*U*/ {Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.UPPER_LEFT, Corner.UPPER_LEFT}, 
-			/*R*/ {Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.UPPER_RIGHT, Corner.LOWER_LEFT},
-			/*F*/ {Corner.UPPER_RIGHT, Corner.LOWER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_LEFT},
-			/*D*/ {Corner.LOWER_RIGHT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT, Corner.LOWER_RIGHT},
-			/*L*/ {Corner.UPPER_RIGHT, Corner.LOWER_LEFT, Corner.LOWER_LEFT, Corner.LOWER_LEFT},
-			/*B*/ {Corner.UPPER_RIGHT, Corner.UPPER_LEFT, Corner.LOWER_RIGHT, Corner.LOWER_LEFT} };
-
-	private static final Orientation[][] RIGHT_CORNERS_FACE = {
-			/*U*/ {Orientation.L, Orientation.B, Orientation.F ,Orientation.R}, 
-			/*R*/ {Orientation.F, Orientation.U, Orientation.D ,Orientation.B},
-			/*F*/ {Orientation.L, Orientation.U, Orientation.D ,Orientation.R},
-			/*D*/ {Orientation.L, Orientation.F, Orientation.B ,Orientation.R},
-			/*L*/ {Orientation.B, Orientation.U, Orientation.D ,Orientation.F},
-			/*B*/ {Orientation.R, Orientation.U, Orientation.D ,Orientation.L} };
-
-	private Colors getCornerLeftColor(Face face, Corner corner) {
-		Orientation leftFace = LEFT_CORNERS_FACE[face.orientation.getValue()][corner.getValue()];
-		Corner leftCorner = LEFT_CORNERS_CORNER[face.orientation.getValue()][corner.getValue()];
-		
-		return faces[leftFace.getValue()].getColor(leftCorner.getRow(), leftCorner.getCol());
-	}
-
-	private Colors getCornerRightColor(Face face, Corner corner) {
-		Orientation rightFace = RIGHT_CORNERS_FACE[face.orientation.getValue()][corner.getValue()];
-		Corner rightCorner = RIGHT_CORNERS_CORNER[face.orientation.getValue()][corner.getValue()];
-		
-		return faces[rightFace.getValue()].getColor(rightCorner.getRow(), rightCorner.getCol());
-	}
-	
-	private enum Corner {
-		UPPER_LEFT(0, 0, 0), 
-		UPPER_RIGHT(1, 0, 2),
-		LOWER_LEFT(2, 2, 0),
-		LOWER_RIGHT(3, 2, 2);
-		
-		private final int value;
-		private final int row;
-		private final int col;
-		
-		private Corner(int value, int row, int col) {
-			this.value = value;
-			this.row = row;
-			this.col = col;
-		}
-
-		public int getValue() {
-			return value;
-		}
-		
-		public int getRow() {
-			return row;
-		}
-		
-		public int getCol() {
-			return col;
-		}
-	}
-
-	/**
-	 * @param cube 
-	 * 
-	 */
-	void fixCorners() {
-		boolean cubeFixed = false;
-		Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "Scanning cube for RED/ORANGE corner color error:");
-		for (Orientation orientation : Orientation.values()) {
-			Face face = getFace(orientation);
-			
-			for (Corner corner : Corner.values()) {
-				if (face.getColor(corner.row, corner.col) == Colors.RED || face.getColor(corner.row, corner.col) == Colors.ORANGE) {
-					Colors left = getCornerLeftColor(face, corner);
-					Colors right = getCornerRightColor(face, corner);
-					
-					for (Colors[] cornerColors : RED_ORANGE_CORNERS) {
-						if (left == cornerColors[0] && right == cornerColors[2]) {
-							Colors scannedColor = face.getColor(corner.row, corner.col);
-							Colors cornerColor = cornerColors[1];
-							if (scannedColor != cornerColor) {
-								Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "---> " + face.orientation + "[" + corner.row + "][" + corner.col + "]: fixing " + scannedColor + " to " + cornerColor);
-								face.setColor(corner.row, corner.col, cornerColor);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		if (!cubeFixed) {
-			Logger.log(LoggerLevel.INFO, LoggerGroup.CUBE, "---> No error found!");
 		}
 	}
 

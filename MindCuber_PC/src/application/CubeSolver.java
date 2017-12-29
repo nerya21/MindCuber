@@ -27,6 +27,7 @@ public class CubeSolver {
 	 * 
 	 * @param pattern The desired cube pattern 
 	 * @see PatternMenu
+	 * @see TwoPhase
 	 */
 	public static void solveCube(String pattern) {
 		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube started");
@@ -63,6 +64,7 @@ public class CubeSolver {
 			}			
 		}
 		
+		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Start calculating moves to solution");
 		List<Move> moves = new ArrayList<>();
 		int depth = 24;
 		int status;
@@ -73,9 +75,13 @@ public class CubeSolver {
 		
 		//if found a solution (status = 0 when the cube is already solved)
 		if(moves.size() != 0 || status == 0) {
+			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Finish calculating moves, start solving");
 			handleSolution(cube, moves);
+			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube finished");
+			Robot.finishSolve();
 		}
 		else {
+			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Error calculating moves:");
 			String result = "";
 			switch (Math.abs(status)){
 				case 1:
@@ -104,11 +110,8 @@ public class CubeSolver {
 					break;
 			}
 			
-			Logger.log(LoggerLevel.ERROR, LoggerGroup.ALGORITHM, ((status > 0) ? "Pattern error: " : "Cube error") + result);
+			Logger.log(LoggerLevel.ERROR, LoggerGroup.ALGORITHM, "---> " + ((status > 0) ? "Pattern error: " : "Cube error: ") + result);
 		}
-		
-		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube finished");
-		Robot.finishSolve();
 	}
 	
 	/**

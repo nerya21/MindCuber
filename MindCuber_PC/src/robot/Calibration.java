@@ -96,7 +96,7 @@ public class Calibration extends Robot {
 	 * @param motor The motor to calibrate
 	 * @param reset Should the method reset the motor location upon pressing ENTER 
 	 * @return The current motor location
-	 * @see tray()
+	 * @see #tray()
 	 */
 	private static int calibrateMotor(NxtMotor motor, boolean reset) {
 		return calibrateMotor(motor, reset, null);
@@ -109,7 +109,7 @@ public class Calibration extends Robot {
 	 * @param reset Should the method reset the motor location upon pressing ENTER 
 	 * @param sensor Sensor to activate while calibrating the motor
 	 * @return The current motor location
-	 * @see colorMotor()
+	 * @see #colorMotor()
 	 */
 	private static int calibrateMotor(NxtMotor motor, boolean reset, NxtSensor sensor) {
 		Delay.msDelay(200);

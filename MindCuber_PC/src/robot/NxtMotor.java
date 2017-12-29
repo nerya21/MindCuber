@@ -41,7 +41,7 @@ public class NxtMotor {
 	
 	/**
 	 * Rotate motor to specified location
-	 * @param count Degrees limit to rotate
+	 * @param limitAngle Degrees limit to rotate
 	 */
 	public void rotateTo(int limitAngle) {
 		NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_ROTATE_TO, limitAngle, 0);		

@@ -12,7 +12,7 @@ import nxt.NxtOperation;
 import nxt.NxtApplication;
 
 /**
- * This class implements a connection to the NXT application.
+ * This class implements a connection to the NXT application
  * 
  * <p>The class allows sending commands to the NXT in order to control the motors and sensors. 
  * The NXT application must be running before initializing the class.

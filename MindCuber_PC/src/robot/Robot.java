@@ -73,7 +73,7 @@ public class Robot {
 	/**
 	 * Represents the motor which controls the cube tray
 	 */
-	public static class Tray {
+	protected static class Tray {
 		final static NxtMotor motor = new NxtMotor(0);
 
 		private static void init() {
@@ -129,7 +129,7 @@ public class Robot {
 	/**
 	 * Represents the color detector unit, both motor and sensor
 	 */
-	public static class ColorDetector {
+	protected static class ColorDetector {
 		final static NxtMotor motor = new NxtMotor(2);
 		final static NxtSensor sensor = new NxtSensor();
 
@@ -287,7 +287,16 @@ public class Robot {
 	protected static class ProximitySensor {
 		final static NxtSensor sensor = new NxtSensor();
 	}	
-
+	
+	/**
+	 * Get the calibrated white threshold
+	 * 
+	 * @return The calibrated white threshold
+	 */
+	public static int[] getCalibratedWhiteRgb() {
+		return ColorDetector.whiteThreshold;
+	}
+	
 	/**
 	 * Set robot's tray to scanning speed
 	 */

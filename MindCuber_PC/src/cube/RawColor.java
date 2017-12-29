@@ -34,7 +34,7 @@ public class RawColor {
 		saturation = hsv[1];
 		value = hsv[2];
 
-		whiteDistance = calcRgbDistance(Robot.ColorDetector.whiteThreshold, rawColor);
+		whiteDistance = calcRgbDistance(Robot.getCalibratedWhiteRgb(), rawColor);
 	}
 
 	Orientation orientation;
