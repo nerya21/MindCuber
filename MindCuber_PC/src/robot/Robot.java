@@ -24,7 +24,7 @@ import nxt.NxtOperation;
  */
 public class Robot {
 	
-	private static final int SHOW_OFF_TIME_MS = 5000;
+	private static final int SHOW_OFF_TIME_MS = 3000;
 	private static final int ARM_MOTOR_DEFAULT_SPEED = 550;
 	private static final int ARM_POSITION_HOLD = -157;
 	private static final int ARM_POSITION_HOLD_EXTRA = 10;
@@ -422,6 +422,7 @@ public class Robot {
 		Stopwatch showOffStopwatch = new Stopwatch();
 		showOffStopwatch.reset();
 		
+		ColorDetector.setMotorLocation(SensorLocation.ALLIGN);
 		Tray.motor.forward();		
 		while (showOffStopwatch.elapsed() < SHOW_OFF_TIME_MS) {
 			ColorDetector.sensor.readColorRgb(1);			
