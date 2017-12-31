@@ -137,7 +137,7 @@ public class Calibration extends Robot {
 	}
 	
 	/**
-	 * Proximity sensor calibration
+	 * Proximity sensor calibration (show only)
 	 */
 	public static void proximitySensor() {
 		LCD.clear();
@@ -150,6 +150,26 @@ public class Calibration extends Robot {
 		}
 	}
 
+	/**
+	 * Color sensor background light calibration (show only)
+	 */
+	public static void colorSensorLight() {
+		int currentRead;
+		LCD.clear();
+		LCD.drawString("Background", 0, 0);
+		LCD.drawString("light calib.", 0, 1);
+		
+		Delay.msDelay(200);
+		ColorDetector.setMotorLocation(SensorLocation.ALLIGN);
+		while (!Button.ENTER.isDown() && !Button.ESCAPE.isDown()) {
+			currentRead = ProximitySensor.sensor.readColorRgb(1)[3];
+			LCD.drawString("Current read: " + currentRead + "   ", 0, 3);
+			LCD.drawString((currentRead < SENSOR_LIGHT_THRESHOLD) ? "Good to go!   " : "Too much light", 0, 4);
+			Delay.msDelay(50);
+		}
+		ColorDetector.motor.rotateTo(0);
+	}
+	
 	/**
 	 * Color sensor motor calibration
 	 */

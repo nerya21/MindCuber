@@ -32,6 +32,7 @@ public class Robot {
 	private static final int ARM_POSITION_REST = -0;
 	private static final int ARM_FLIP_DELAY_MS = 100;
 	private static final int SENSOR_MOTOR_SPEED = 400;
+	protected static final int SENSOR_LIGHT_THRESHOLD = 80;
 	private static final int TRAY_MOTOR_ROTATION_FACTOR = 3;
 	private static final int TRAY_MOTOR_DEFAULT_SPEED = 650;
 	private static final int TRAY_MOTOR_EXTRA_ROTATION = 15;

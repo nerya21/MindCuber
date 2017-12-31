@@ -72,6 +72,8 @@ public class PcApplication {
 						Calibration.tray();
 					} else if (selection == CalibrationMenu.PROXIMITY.getValue()) {
 						Calibration.proximitySensor();
+					} else if (selection == CalibrationMenu.COLOR_LIGHT.getValue()) {
+						Calibration.colorSensorLight();
 					} else if (selection == CalibrationMenu.BACK.getValue() || selection == -1) {
 						break;
 					}

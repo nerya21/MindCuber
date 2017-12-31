@@ -11,7 +11,8 @@ public enum CalibrationMenu {
 	COLOR_MOTOR(1, "Color Motor"),
 	TRAY(2, "Cube Tray"),
 	PROXIMITY(3, "Proximity"),
-	BACK(4, "Back");
+	COLOR_LIGHT(4, "Color Light"),
+	BACK(5, "Back");
 
 	private final static String title = "Calibration";
 	private final int value;
@@ -32,7 +33,7 @@ public enum CalibrationMenu {
 	}
 
 	public static String[] getItems() {
-		return new String[] { SENSOR.toString(), COLOR_MOTOR.toString(), TRAY.toString(), PROXIMITY.toString(), BACK.toString() };
+		return new String[] { SENSOR.toString(), COLOR_MOTOR.toString(), TRAY.toString(), PROXIMITY.toString(), COLOR_LIGHT.toString(), BACK.toString() };
 	}
 
 	public static String getTitle() {
