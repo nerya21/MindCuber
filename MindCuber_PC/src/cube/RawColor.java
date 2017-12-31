@@ -28,7 +28,8 @@ public class RawColor {
 		this.red = rawColor[0];
 		this.green = rawColor[1];
 		this.blue = rawColor[2];
-
+		this.background = rawColor[3];
+		
 		double[] hsv = rgbToHsv(rawColor);
 		hue = hsv[0] + 60;
 		saturation = hsv[1];
@@ -44,7 +45,7 @@ public class RawColor {
 	public int red;
 	public int green;
 	public int blue;
-
+	public int background;
 	public double hue;
 	public double saturation;
 	public double value;

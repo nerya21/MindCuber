@@ -322,7 +322,7 @@ public class Robot {
 		int coordinate, row, col;
 		int[] rgb;
 		SensorLocation location;
-		
+		 
 		Arm.release();
 		for (coordinate = 0; coordinate < 8; coordinate++) {
 			row = COORDINATE_SCAN_ORDER[coordinate][0];

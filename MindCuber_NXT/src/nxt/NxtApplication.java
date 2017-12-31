@@ -126,10 +126,10 @@ public class NxtApplication extends NxtOperation {
 	 * Read color from sensor
 	 * 
 	 * @param numberOfSamples Number of reading to perform
-	 * @return RGB array, each value between 0 to 255
+	 * @return RGB array, each of the first three values between 0 to 255, last value is background
 	 */
 	public static int[] readRgbAverage(int numberOfSamples) {
-		int[] rgb = { 0, 0, 0 };
+		int[] rgb = { 0, 0, 0, 0 };
 		int actualNumberOfSamples = 0;
 		Color color;
 
@@ -141,15 +141,16 @@ public class NxtApplication extends NxtOperation {
 			rgb[0] += color.getRed() > 255 ? 255 : color.getRed();
 			rgb[1] += color.getGreen()> 255 ? 255 : color.getGreen();
 			rgb[2] += color.getBlue()> 255 ? 255 : color.getBlue();
+			rgb[3] += color.getBackground();
 			actualNumberOfSamples++;
 		}
 
 		if (actualNumberOfSamples == 0) {
 			printToLcd("Fatal color", "sensor error", 2000);
-			return new int[] { 0, 0, 0 };
+			return new int[] { 0, 0, 0, 0 };
 		}
 
-		for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
+		for (int rgbIndex = 0; rgbIndex < 4; rgbIndex++) {
 			rgb[rgbIndex] /= actualNumberOfSamples;
 		}
 		
@@ -223,7 +224,7 @@ public class NxtApplication extends NxtOperation {
 								outputBuffer[0] = (byte) rgb[0];
 								outputBuffer[1] = (byte) rgb[1];
 								outputBuffer[2] = (byte) rgb[2];
-								outputBuffer[3] = (byte) 0;
+								outputBuffer[3] = (byte) rgb[3];
 								break;
 							case OPERATION_ID_READ_COLOR_ID:								
 								int colorId = colorSensor.getColorID();

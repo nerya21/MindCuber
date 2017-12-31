@@ -34,7 +34,7 @@ public class Tests extends Robot {
 				color = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
 				colorId = ColorDetector.sensor.readColorId();
 				RawColor rawColor = new RawColor(Orientation.B, 0, 0, color);
-				colorFormatted = "Read color: ID: " + colorId + "\tRed: " + rawColor.red + "\tGreen: " + rawColor.green + "\tBlue: " + rawColor.blue + "\tHue: " + rawColor.hue + "\tWhite distance: " + rawColor.whiteDistance;
+				colorFormatted = "Read color: ID: " + colorId + "\tRed: " + rawColor.red + "\tGreen: " + rawColor.green + "\tBlue: " + rawColor.blue + "\tBackground: " + rawColor.background + "\tHue: " + rawColor.hue + "\tWhite distance: " + rawColor.whiteDistance;
 				Logger.log(LoggerLevel.DEBUG, LoggerGroup.ROBOT, colorFormatted);
 			}
 			

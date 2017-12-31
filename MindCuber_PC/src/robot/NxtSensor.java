@@ -17,15 +17,16 @@ public class NxtSensor {
 	 * Read color from sensor
 	 * 
 	 * @param numberOfSamples Number of reading to perform
-	 * @return RGB array, each value between 0 to 255
+	 * @return RGB array, each of the first three values between 0 to 255, last value is background
 	 */
 	public int[] readColorRgb(int numberOfSamples) {
-		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_COLOR_SENSOR, 0, NxtOperation.OPERATION_ID_READ_COLOR, numberOfSamples, 3);
-		int[] colorRgb = new int[3];
+		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_COLOR_SENSOR, 0, NxtOperation.OPERATION_ID_READ_COLOR, numberOfSamples, 4);
+		int[] colorRgb = new int[4];
 		
 		colorRgb[0] = ((int)inputBuffer[0]) & 0x000000FF;
 		colorRgb[1] = ((int)inputBuffer[1]) & 0x000000FF;
 		colorRgb[2] = ((int)inputBuffer[2]) & 0x000000FF;
+		colorRgb[3] = ((int)inputBuffer[3]) & 0x000000FF;
 		
 		return colorRgb;
 	}
