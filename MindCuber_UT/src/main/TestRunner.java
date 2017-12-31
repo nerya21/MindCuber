@@ -5,6 +5,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import twophase.CubieCubeTest;
+import twophase.FaceCubeTest;
 import twophase.SearchTest;
 
 public class TestRunner {
@@ -19,14 +20,26 @@ public class TestRunner {
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}
-		System.out.println(result.wasSuccessful());
+		if(result.wasSuccessful()) {
+			System.out.println("CubieCube class tests finished successfully");
+		}
+		System.out.println("Running FaceCube class tests");
+		result = JUnitCore.runClasses(FaceCubeTest.class);
+		for (Failure failure : result.getFailures()) {
+			System.out.println(failure.toString());
+		}
+		if(result.wasSuccessful()) {
+			System.out.println("FaceCube class tests finished successfully");
+		}
 		
 		System.out.println("Running Search class tests");
 		result = JUnitCore.runClasses(SearchTest.class);
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}
-		System.out.println(result.wasSuccessful());
+		if(result.wasSuccessful()) {
+			System.out.println("Search class tests finished successfully");
+		}
 		
 		System.out.println("Finished...");
 	}
