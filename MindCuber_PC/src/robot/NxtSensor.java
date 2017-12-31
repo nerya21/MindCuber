@@ -31,6 +31,25 @@ public class NxtSensor {
 	}
 	
 	/**
+	 * Read color ID from sensor
+	 * 
+	 * @return Color ID
+	 * @see lejos.nxt.ColorSensor#getColorID()
+	 * @see lejos.robotics.Color
+	 */
+	public int readColorId() {
+		byte[] inputBuffer = NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_COLOR_SENSOR, 0, NxtOperation.OPERATION_ID_READ_COLOR_ID, 0, 4);
+		int colorId = 0;
+		
+		colorId |= (((int)inputBuffer[0]) & 0x000000FF) << 0;
+		colorId |= (((int)inputBuffer[1]) & 0x000000FF) << 8;
+		colorId |= (((int)inputBuffer[2]) & 0x000000FF) << 16;
+		colorId |= (((int)inputBuffer[3]) & 0x000000FF) << 24;
+		
+		return colorId;
+	}
+	
+	/**
 	 * Get current distance read from the proximity sensor
 	 * 
 	 * @return Current distance

@@ -225,6 +225,13 @@ public class NxtApplication extends NxtOperation {
 								outputBuffer[2] = (byte) rgb[2];
 								outputBuffer[3] = (byte) 0;
 								break;
+							case OPERATION_ID_READ_COLOR_ID:								
+								int colorId = colorSensor.getColorID();
+								outputBuffer[0] = (byte) (colorId >> 0);
+								outputBuffer[1] = (byte) (colorId >> 8);
+								outputBuffer[2] = (byte) (colorId >> 16);
+								outputBuffer[3] = (byte) (colorId >> 24);
+								break;
 							default:
 								printToLcd("Unsupported", "color sensor", "operation", 10000);
 							}

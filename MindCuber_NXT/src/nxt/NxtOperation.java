@@ -22,5 +22,6 @@ public class NxtOperation {
 	public final static byte OPERATION_ID_GET_DISTANCE = (byte) 0x05;
 	public final static byte OPERATION_ID_GET_TACHO_COUNT = (byte) 0x06;
 	public final static byte OPERATION_ID_FORWARD = (byte) 0x07;
+	public final static byte OPERATION_ID_READ_COLOR_ID = (byte) 0x08;
 
 }
