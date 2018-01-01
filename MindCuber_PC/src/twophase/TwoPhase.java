@@ -32,9 +32,18 @@ public class TwoPhase {
 	static int[] minDistPhase1 = new int[31];
 	static int[] minDistPhase2 = new int[31];
 	
+	//string representation of a standard solved cube
+	private static final String SOVED_CUBE = "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB";
+	
 	/**
-	 * Finds list of moves for solving received cube with no more than @maxDepth moves 
-	 * @param cube - the cube definition string. see {@link Facelet} for the format
+	 * Finds list of moves for solving received cube with no more than @maxDepth moves.
+	 * This function allows to select the destination cube using the pattern parameter.
+	 * @param cube - the cube definition string.
+	 * 			The format is a 54 long string containing the characters U, R, F, D, L and B
+	 * 			where each char corresponds to the color of a facelet.
+	 * 			Faceletes colors should appear in the following order:
+	 * 			U1 U2 ... U9 R1 R2 ... R9 F1 F2 ... F9 D1 D2 ... D9 L1 L2 ... L9 B1 B2 ... B9
+	 * 			see {@link Facelet} for more info about the format.
 	 * @param maxDepth - defines the maximal allowed maneuver length. For random cubes, a maxDepth of 21 usually will return a
 	 *          solution in less than 0.5 seconds. With a maxDepth of 20 it takes a few seconds on average to find a
 	 *          solution, but it may take much longer for specific cubes.
@@ -42,8 +51,11 @@ public class TwoPhase {
 	 *          an error code.
 	 * @param moves - a list to contain suggested solution moves. If a solution was found, the list is cleared before adding the required
 	 * 			moves to it. Otherwise, the list remains the same.
+	 * @param pattern - the desired pattern definition string.
+	 * 			The returned list of moves can bring entered cube to this pattern (and not to the standard solved cube).
+	 * 			The format should be like cube's foramt.
 	 * @return 0 if a solution was found, and error code otherwise:<br>
-	 *         -1: There is not exactly one facelet of each color<br>
+	 *         -1: There are not exactly 9 facelets of each color<br>
 	 *         -2: Not all 12 edges exist exactly once<br>
 	 *         -3: Flip error: One edge has to be flipped<br>
 	 *         -4: Not all corners exist exactly once<br>
@@ -51,47 +63,38 @@ public class TwoPhase {
 	 *         -6: Parity error: Two corners or two edges have to be exchanged<br>
 	 *         -7: No solution exists for the given maxDepth<br>
 	 *         -8: Timeout, no solution within given time
+	 *          1: There are not exactly 9 facelets of each color in pattern<br>
+	 *          2: Not all 12 edges exist exactly once in pattern<br>
+	 *          3: Flip error: One edge has to be flipped in pattern<br>
+	 *          4: Not all corners exist exactly once in pattern<br>
+	 *          5: Twist error: One corner has to be twisted in pattern<br>
+	 *          6: Parity error: Two corners or two edges have to be exchanged in pattern<br>
 	 */
 	public static int findSolution(String cube, int maxDepth, long timeOut, List<Move> moves, String pattern) {
-		//validate input
-		int[] count = new int[6];
-		try {
-			for (int i = 0; i < 54; i++)
-				count[Color.valueOf(cube.substring(i, i + 1)).ordinal()]++;
-		} catch (Exception e) {
-			//invalid cube, there is not exactly one facelet of each color
-			return -1;
-		}
-		for (int i = 0; i < 6; i++)
-			if (count[i] != 9)
-				//invalid cube, there is not exactly one facelet of each color
-				return -1;
-		
-		// prepare pattern 
-		CubieCube pattern_cc= new FaceCube(pattern).toCubieCube();
-		int error;
-		if ((error=pattern_cc.verify()) != 0)
-			return Math.abs(error);		
-		
+		CubieCube cubieCube = new CubieCube();
+		//validate cube
+		int errorCode = validateCubeString(cube, cubieCube);
+		if(errorCode != 0)
+			//invalid cube
+			return errorCode;
+		//validate pattern		
+		CubieCube patternCubieCube = new CubieCube();
+		errorCode = validateCubeString(pattern, patternCubieCube);
+		if(errorCode != 0)
+			//invalid pattern
+			return Math.abs(errorCode);
 		//check if cube is already solved
-		FaceCube fc = new FaceCube(cube);
-		
-		if(fc.to_String().equals(pattern)) {
+		if(cube.equals(pattern)) {
 			//cube is already solved, no moves required to solve it
 			moves.clear();
 			return 0;
 		}
-		
-		CubieCube cc = fc.toCubieCube();
-		int status;
-		if ((status = cc.verify()) != 0)
-			//invalid cube
-			return status;
+		//create new cubieCube to be solved to achieve pattern
+		CubieCube cubieCubeToSolve = patternCubieCube.getInvCubieCube();
+		cubieCubeToSolve.multiply(cubieCube);
 
 		//initialization
-		CubieCube invPattern_cc = pattern_cc.getInvCubieCube();
-		invPattern_cc.multiply(cc);
-		CoordCube c = new CoordCube(invPattern_cc);
+		CoordCube c = new CoordCube(cubieCubeToSolve);
 		ax[0] = 0;
 		po[0] = 0;
 		flip[0] = c.flip;
@@ -207,18 +210,89 @@ public class TwoPhase {
 		} while (true);
 	}
 	
+	/**
+	 * Finds list of moves for solving received cube with no more than @maxDepth moves.
+	 * @param cube - the cube definition string.
+	 * 			The format is a 54 long string containing the characters U, R, F, D, L and B
+	 * 			where each char corresponds to the color of a facelet.
+	 * 			Faceletes colors should appear in the following order:
+	 * 			U1 U2 ... U9 R1 R2 ... R9 F1 F2 ... F9 D1 D2 ... D9 L1 L2 ... L9 B1 B2 ... B9
+	 * 			see {@link Facelet} for more info about the format.
+	 * @param maxDepth - defines the maximal allowed maneuver length. For random cubes, a maxDepth of 21 usually will return a
+	 *          solution in less than 0.5 seconds. With a maxDepth of 20 it takes a few seconds on average to find a
+	 *          solution, but it may take much longer for specific cubes.
+	 * @param timeOut - defines the maximum computing time of the method in seconds. If it does not return with a solution, it returns with
+	 *          an error code.
+	 * @param moves - a list to contain suggested solution moves. If a solution was found, the list is cleared before adding the required
+	 * 			moves to it. Otherwise, the list remains the same.
+	 * @return 0 if a solution was found, and error code otherwise:<br>
+	 *         -1: There is not exactly one facelet of each color<br>
+	 *         -2: Not all 12 edges exist exactly once<br>
+	 *         -3: Flip error: One edge has to be flipped<br>
+	 *         -4: Not all corners exist exactly once<br>
+	 *         -5: Twist error: One corner has to be twisted<br>
+	 *         -6: Parity error: Two corners or two edges have to be exchanged<br>
+	 *         -7: No solution exists for the given maxDepth<br>
+	 *         -8: Timeout, no solution within given time
+	 */
 	public static int findSolution(String cube, int maxDepth, long timeOut, List<Move> moves){
-		return findSolution(cube, maxDepth, timeOut, moves, "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+		return findSolution(cube, maxDepth, timeOut, moves, SOVED_CUBE);
 	}
-
+	
+	/**
+	 * Validates input cube string and returns a corresponding error code.
+	 * If the string represents a valid cube, entered cubieCube will contain cube's cubie representation
+	 * @param cube - the cube string to validate
+	 * @param cubieCube - cubie representation of the cube represented by the string (valid only when string is valid)
+	 * @return 0 in case of a valid string, and error code otherwise:<br>
+	 * 			-1: There is not exactly one facelet of each color<br>
+	 *         -2: Not all 12 edges exist exactly once<br>
+	 *         -3: Flip error: One edge has to be flipped<br>
+	 *         -4: Not all corners exist exactly once<br>
+	 *         -5: Twist error: One corner has to be twisted<br>
+	 *         -6: Parity error: Two corners or two edges have to be exchanged
+	 */
+	private static int validateCubeString(String cube, CubieCube cubieCube) {
+		//validates that there are exactly 9 facelets of each color
+		int[] count = new int[6];
+		try {
+			for (int i = 0; i < 54; i++)
+				count[Color.valueOf(cube.substring(i, i + 1)).ordinal()]++;
+		} catch (Exception e) {
+			//invalid cube, there are not exactly 9 facelets of each color
+			return -1;
+		}
+		for (int i = 0; i < 6; i++)
+			if (count[i] != 9)
+				//invalid cube, there are not exactly 9 facelets of each color
+				return -1;
+		//create face and cubie level representations
+		FaceCube fc = new FaceCube(cube);
+		CubieCube cc = fc.toCubieCube();
+		//verify cubie level
+		int errorCode = cc.verify();
+		if(errorCode == 0) {
+			//cube is valid
+			//copy cubieCube representation to entered cube
+			cubieCube.cp = cc.cp;
+			cubieCube.co = cc.co;
+			cubieCube.ep = cc.ep;
+			cubieCube.eo = cc.eo;
+		}
+		return errorCode;
+	}
+	
+	/**
+	 * Creates the list of moves that was found for solving the cube 
+	 * @param moves - the list to contain the moves for solving the cube
+	 * @param depth - the depth of the solution that was found (number of moves)
+	 */
 	private static void createMovesList(List<Move> moves, int depth) {
 		moves.clear();
 		for(int i = 0; i < depth; i++) {
 			moves.add(new Move(Orientation.values()[ax[i]], Direction.values()[po[i]]));
 		}
 	}
-
-
 
 	/**
 	 * Apply phase2 of algorithm and return the combined phase1 and phase2 depth.
@@ -227,7 +301,7 @@ public class TwoPhase {
 	 * @param maxDepth defines the maximal allowed maneuver length
 	 * @return total maneuver length
 	 */
-	static int totalDepth(int depthPhase1, int maxDepth) {
+	private static int totalDepth(int depthPhase1, int maxDepth) {
 		int mv; //the move to make - axis + power (face + rotation degrees)
 		maxDepth = Math.min(10, maxDepth - depthPhase1); //allow only max 10 moves in phase2
 		//initialize phase2 coordinates for all the moves in phase1
