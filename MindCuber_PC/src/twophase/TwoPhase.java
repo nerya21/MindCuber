@@ -34,7 +34,7 @@ public class TwoPhase {
 	
 	/**
 	 * Finds list of moves for solving received cube with no more than @maxDepth moves 
-	 * @param facelets - array of facelets colors representing the cube to be solved
+	 * @param cube - the cube definition string. see {@link Facelet} for the format
 	 * @param maxDepth - defines the maximal allowed maneuver length. For random cubes, a maxDepth of 21 usually will return a
 	 *          solution in less than 0.5 seconds. With a maxDepth of 20 it takes a few seconds on average to find a
 	 *          solution, but it may take much longer for specific cubes.
@@ -52,12 +52,12 @@ public class TwoPhase {
 	 *         -7: No solution exists for the given maxDepth<br>
 	 *         -8: Timeout, no solution within given time
 	 */
-	public static int findSolution(Color[] facelets, int maxDepth, long timeOut, List<Move> moves, String pattern) {
+	public static int findSolution(String cube, int maxDepth, long timeOut, List<Move> moves, String pattern) {
 		//validate input
 		int[] count = new int[6];
 		try {
 			for (int i = 0; i < 54; i++)
-				count[facelets[i].ordinal()]++;
+				count[Color.valueOf(cube.substring(i, i + 1)).ordinal()]++;
 		} catch (Exception e) {
 			//invalid cube, there is not exactly one facelet of each color
 			return -1;
@@ -74,7 +74,7 @@ public class TwoPhase {
 			return Math.abs(error);		
 		
 		//check if cube is already solved
-		FaceCube fc = new FaceCube(facelets);
+		FaceCube fc = new FaceCube(cube);
 		
 		if(fc.to_String().equals(pattern)) {
 			//cube is already solved, no moves required to solve it
@@ -207,8 +207,8 @@ public class TwoPhase {
 		} while (true);
 	}
 	
-	public static int findSolution(Color[] facelets, int maxDepth, long timeOut, List<Move> moves){
-		return findSolution(facelets, maxDepth, timeOut, moves, "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+	public static int findSolution(String cube, int maxDepth, long timeOut, List<Move> moves){
+		return findSolution(cube, maxDepth, timeOut, moves, "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
 	}
 
 	private static void createMovesList(List<Move> moves, int depth) {

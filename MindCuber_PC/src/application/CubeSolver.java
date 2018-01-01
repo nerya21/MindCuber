@@ -47,10 +47,10 @@ public class CubeSolver {
 		}
 		
 		//build cube representation for the algorithm
-		Color[] facelets = new Color[54];
+		StringBuilder cubeString = new StringBuilder(54);
 		Colors realColor;
 		Orientation orientation;
-		int i,j,c = 0;
+		int i,j;
 		
 		for(Color faceColor : Color.values()) {
 			orientation = convertFaceColor2Orientation(faceColor);
@@ -59,7 +59,7 @@ public class CubeSolver {
 			for (i = 0; i < 3; i++) {				
 				for (j = 0; j < 3; j++) {					
 					realColor = face.getColor(i, j);
-					facelets[c++] = colors2FaceColors[realColor.getValue()];
+					cubeString.append(colors2FaceColors[realColor.getValue()].toString());
 				}
 			}			
 		}
@@ -69,7 +69,7 @@ public class CubeSolver {
 		int depth = 24;
 		int status;
 		do {
-			status = TwoPhase.findSolution(facelets, depth - 1, 120, moves, pattern);
+			status = TwoPhase.findSolution(cubeString.toString(), depth - 1, 120, moves, pattern);
 			depth = moves.size();
 		} while (status == 0 && depth > 0);
 		

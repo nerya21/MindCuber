@@ -51,10 +51,8 @@ public class SearchTest {
 			//iterate through all cubes for test
 			while(scanner.hasNextLine()) {				
 				String[] params = scanner.nextLine().split("\t");
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(params[0]);
 				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(params[0], 24, 1000, solution);
 				//translate solution to string
 				String solutionString = generateSolutionString(solution);
 				//assert result
@@ -82,77 +80,56 @@ public class SearchTest {
 			String cubeString;
 			//check if reached next section
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code should be 0 for cube %s", cubeString),
 						0, errorCode);
 			}
 			
 			//test cubes that not all edges exists exactly ones
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code should be -2 (Not all 12 edges exist exactly once) for cube %s", cubeString),
 						-2, errorCode);
 			}
 			
 			//test cubes that has a flippedd edge
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code should be -3 (Flip error: One edge has to be flipped) for cube %s", cubeString),
 						-3, errorCode);
 			}
 			
 			//test cubes that not all corners exists exactly ones
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code should be -4 (Not all corners exist exactly once) for cube %s", cubeString),
 						-4, errorCode);
 			}
 			
 			//test cubes that has a twisted corner
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code should be -5 (twisted corner) for cube %s", cubeString),
 						-5, errorCode);
 			}
 			
 			//test cubes that two corners or two edges exchanged
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code  should be -6 (exchanged two corners or two edges) for cube %s", cubeString),
 						-6, errorCode);
 			}
 			
 			//test cubes that don't have exactly one facelet of each color
 			while(!(cubeString = scanner.nextLine()).startsWith("--")) {
-				//create facelets array
-				Color[] facelets = TwoPhaseTestUtils.parseColorsArray(cubeString);
-				//call tested function
-				errorCode = TwoPhase.findSolution(facelets, 24, 1000, solution);
+				errorCode = TwoPhase.findSolution(cubeString, 24, 1000, solution);
 				assertEquals(String.format("Error code  should be -1 (There is not exactly one facelet of each color) for cube %s", cubeString),
 						-1, errorCode);
 			}
 			
 			//test max depth limitation
-			Color[] facelets = TwoPhaseTestUtils.parseColorsArray("RLRUURDLFUFDBRLFRBLFRFFDDLUFULRDUDFLUBFRLULBRBDBBBDUDB");
-			errorCode = TwoPhase.findSolution(facelets, 10, 1000, solution);
+			cubeString = "RLRUURDLFUFDBRLFRBLFRFFDDLUFULRDUDFLUBFRLULBRBDBBBDUDB";
+			errorCode = TwoPhase.findSolution(cubeString, 10, 1000, solution);
 			assertEquals("Error code  should be -7 (No solution exists for the given maxDepth)",
 					-7, errorCode);
 			
