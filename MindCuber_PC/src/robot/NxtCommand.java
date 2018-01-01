@@ -3,6 +3,7 @@ package robot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import application.Logger;
 import application.LoggerGroup;
@@ -23,6 +24,8 @@ import nxt.NxtApplication;
 public class NxtCommand {
 	
 	static NXTConnector connection;
+	static boolean isMock = false;
+	static ArrayList<byte[]> mockCommands;
 	
 	/**
 	 * Initialize connection to the NXT
@@ -37,6 +40,23 @@ public class NxtCommand {
 		}
 		
 		Logger.log(LoggerLevel.INFO, LoggerGroup.ROBOT, "NXT application connected successfully");
+	}
+	
+	/**
+	 * Initialize mock version of NXT
+	 */
+	public static void initMock() {			
+		isMock = true;
+		mockCommands = new ArrayList<byte[]>();
+	}
+	
+	/**
+	 * Get mocked commands
+	 * 
+	 * @return List of mocked commands since init
+	 */
+	public static ArrayList<byte[]> getMockedCommands() {			
+		return mockCommands;
 	}
 	
 	/**
@@ -62,27 +82,33 @@ public class NxtCommand {
 	 * @param expectedReturnSize The expected return size of the operation (bytes)
 	 * @return Response from the NXT if supported by the command
 	 */
-	public static byte[] sendCommand(byte operationType, int port, byte operationId, int argument, int expectedReturnSize) {			
-		try {
-			OutputStream out = connection.getOutputStream();
-			InputStream in = connection.getInputStream();
-			byte[] outputBuffer = {operationType, (byte)port, operationId, (byte)(argument >> 24), (byte)(argument >> 16), (byte)(argument >> 8), (byte)(argument >> 0)};
-			byte[] inputBuffer = new byte[4];
-			
-			/* Send command */
-			out.write(outputBuffer);
-			out.flush();
-			
-			/* Read returned value */
-			if (in.read(inputBuffer) == -1) {
-				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Cannot send NXT operation: NXT connection closed");
+	public static byte[] sendCommand(byte operationType, int port, byte operationId, int argument, int expectedReturnSize) {
+		if (!isMock) {
+			try {
+				OutputStream out = connection.getOutputStream();
+				InputStream in = connection.getInputStream();
+				byte[] outputBuffer = {operationType, (byte)port, operationId, (byte)(argument >> 24), (byte)(argument >> 16), (byte)(argument >> 8), (byte)(argument >> 0)};
+				byte[] inputBuffer = new byte[4];
+				
+				/* Send command */
+				out.write(outputBuffer);
+				out.flush();
+				
+				/* Read returned value */
+				if (in.read(inputBuffer) == -1) {
+					Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Cannot send NXT operation: NXT connection closed");
+				}
+				
+				return inputBuffer;
+			} catch (Exception e) {
+				Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Cannot send NXT operation");
+				e.printStackTrace();
+				return null;
 			}
-			
-			return inputBuffer;
-		} catch (Exception e) {
-			Logger.log(LoggerLevel.ERROR, LoggerGroup.ROBOT, "Cannot send NXT operation");
-			e.printStackTrace();
+		} else {
+			byte[] command = {operationType, (byte)port, operationId, (byte)(argument >> 24), (byte)(argument >> 16), (byte)(argument >> 8), (byte)(argument >> 0)};
+			mockCommands.add(command);
 			return null;
-		} 
+		}
 	}
 }
