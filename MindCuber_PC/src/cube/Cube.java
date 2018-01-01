@@ -13,8 +13,8 @@ import robot.Robot;
 
 /**
  * 
- * TODO Elad
- *
+ * This class represent the Rubik's cube itself as an object.
+ *<br>It has 6 objects of the type Face and a the Action suitable for every face.
  */
 public class Cube implements ICube {
 
@@ -22,7 +22,18 @@ public class Cube implements ICube {
 	private Action[] actions;
 
 	/**
-	 * TODO Elad
+	 This is a static orientation matrix that represent the new position of every face
+	 *<br> whenever any face is brought to be at the bottom (DOWN orientation).
+	 *<br>The faces are listed in the following order:
+	 *<br>0- Up, 1- Right, 2- Front, 3- Down, 4- Left, 5- Back
+	 *<br> Example of use:
+	 *<br> Suppose we need to bring the current FRONT face to the bottom (to be the DOWN face),
+	 *<br> in order to know how this action affects the other faces, we should go to the 2nd row of
+	 *<br> the matrix (as listed above: 2- FRONT), and we will have the new positions of the other faces:
+	 *<br> position 0 has the value L -> indicates that the UP face (0 = UP) becomes the LEFT face.
+	 *<br> position 1 has the value F -> indicates that the RIGHT face (1 = RIGHT) becomes the FRONT face, etc.
+	 *<br> in conclusion we got these transforms: U->L , R->F , F->D , D->R, L->B , B->U
+	 *<br> this matrix help us to determine the positions of the faces in any transition.
 	 */
 	private static final Orientation[][] ORIENTATION_MAT = {
 			{ Orientation.D, Orientation.L, Orientation.F, Orientation.U, Orientation.R, Orientation.B },
@@ -35,7 +46,13 @@ public class Cube implements ICube {
 	Colors[] COLORS_ORDERERD_BY_HUE = {Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.BLUE};
 	
 	/**
-	 * TODO Elad
+	 * Constructor of an object of the type Cube.
+	 * <br>It initializes the faces with all the orientations, and initializes the table of actions.
+	 * <br> Table of actions: represents the actions needed to do in order to bring some face to
+	 * <br> the bottom (to be the DOWN face).
+	 * <br> Example: in order to bring the FRONT face to the bottom,
+	 * <br> we have to rotate it to the left, and then perform a flip.
+	 * <br> This action is stored on the actions array at position 2 (2 = FRONT)
 	 */
 	public Cube() {
 		
@@ -54,19 +71,20 @@ public class Cube implements ICube {
 	}
 
 	/**
-	 * TODO Elad
+	 * returns the face which is currently in the orientation requested
 	 * 
-	 * @param orientation
+	 * @param orientation The dynamic orientation, the face that currently in this orientation
 	 */
 	public Face getFace(Orientation orientation) {
 		return faces[orientation.getValue()];
 	}
 
 	/**
-	 * 
-	 * @param orientation
+	 * Updates the new orientations of the faces after a transition of the cube.
+	 * <br>It uses the static matrix ORIENTATION_MAT in order to get the new orientations.
+	 * @param orientation The current orientation of the face we bring to the bottom (to be the DOWN face)
 	 */
-	private void updateOrientations(Orientation orientation) {
+	void updateOrientations(Orientation orientation) {
 		Orientation[] newOrientations = ORIENTATION_MAT[orientation.getValue()];
 		for (int i = 0; i < 6; i++) {
 			faces[i].dynamicOrientation = newOrientations[faces[i].dynamicOrientation.getValue()];
@@ -74,11 +92,11 @@ public class Cube implements ICube {
 	}
 
 	/**
-	 * TODO Elad
+	 * Move the face from its current orientation to the bottom (to be the DOWN face).
 	 * 
-	 * @param cubeFlips
-	 * @param direction
-	 * @param orientation
+	 * @param cubeFlips The number of flips the robot should perform
+	 * @param direction The direction the robot should rotate the cube
+	 * @param orientation The orientation of the face that goes to the bottom (to be the DOWN face)
 	 */
 	private void changePosition(FlipMethod cubeFlips, Direction direction, Orientation orientation) {
 		Robot.rotateCube(direction);
@@ -193,14 +211,14 @@ public class Cube implements ICube {
 	}
 	
 	/**
-	 * TODO Elad
+	 * Set the colors of every face of the cube manually
 	 * 
-	 * @param up
-	 * @param down
-	 * @param front
-	 * @param back
-	 * @param left
-	 * @param right
+	 * @param up A matrix of colors represents the UP face
+	 * @param down A matrix of colors represents the DOWN face
+	 * @param front A matrix of colors represents the FRONT face
+	 * @param back A matrix of colors represents the BACK face
+	 * @param left A matrix of colors represents the LEFT face
+	 * @param right A matrix of colors represents the RIGHT face
 	 */
 	public void setColorsManual(Colors[][] up, Colors[][] down, Colors[][] front, Colors[][] back, Colors[][] left, Colors[][] right){
 		faces[Orientation.U.getValue()].colors = up;
@@ -212,19 +230,22 @@ public class Cube implements ICube {
 	}
 	
 	/**
-	 * TODO Elad
-	 *
+	 * This class represents a face of the Rubik's cube.
+	 * <br>An object of this class has an initial orientation which is final,
+	 * <br> a dynamic orientation which can change every transition,
+	 * <br> and a matrix of colors represent the colors on this face in the initial state.
 	 */
 	public class Face implements IFace {
 		
 		final Orientation orientation;
 		private Colors[][] colors;		
-		private Orientation dynamicOrientation;
+		Orientation dynamicOrientation;
 
 		/**
-		 * TODO elad
+		 * Constructor of an object of the type face.
+		 * <br>It initializes the final and dynamic orientation and the matrix of colors.
 		 * 
-		 * @param orientation
+		 * @param orientation The initial orientation of the face
 		 */
 		public Face(Orientation orientation) {
 			this.orientation = orientation;
@@ -233,10 +254,10 @@ public class Cube implements ICube {
 		}
  
 		/**
-		 * TODO Elad
+		 * Returns the color of a position in a face
 		 * 
-		 * @param row
-		 * @param col
+		 * @param row Row in a face
+		 * @param col Column in a face
 		 */
 		@Override
 		public Colors getColor(int row, int col) {
@@ -244,19 +265,22 @@ public class Cube implements ICube {
 		}
 
 		/**
-		 * TODO Elad
+		 * Sets a color to a position in a face
 		 * 
-		 * @param row
-		 * @param col
+		 * @param row Row in a face
+		 * @param col Column in a face
 		 */
 		void setColor(int row, int col, Colors color) {
 			colors[row][col] = color;
 		}
 		
 		/**
-		 * TODO Elad
+		 * Represents a turn of the face in a desired direction.
+		 * <br> It uses the dynamic orientation and the actions table to derive
+		 * <br> the number of flips and rotation needed in order to bring this face to the bottom.
+		 * <br> after this face is brought to the bottom, it is turn in the desired direction.
 		 * 
-		 * @param direction
+		 * @param direction The direction that the face should turn
 		 */
 		@Override
 		public void turn(Direction direction) {

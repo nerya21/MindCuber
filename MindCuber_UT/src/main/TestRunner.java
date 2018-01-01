@@ -4,6 +4,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import cube.CubeTest;
 import twophase.CubieCubeTest;
 import twophase.FaceCubeTest;
 import twophase.SearchTest;
@@ -40,6 +41,12 @@ public class TestRunner {
 		if(result.wasSuccessful()) {
 			System.out.println("Search class tests finished successfully");
 		}
+		
+		//cube
+		CubeTest ct = new CubeTest();
+		ct.testCube();
+		ct.testUpdateOrientations();
+		System.out.println("Cube class tests finished successfully");
 		
 		System.out.println("Finished...");
 	}
