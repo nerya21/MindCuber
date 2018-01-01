@@ -3,8 +3,6 @@ package twophase;
 import static twophase.Corner.*;
 import static twophase.Edge.*;
 
-import java.util.Arrays;
-
 /** Cube on the cubie level
  * <br><a href="http://kociemba.org/math/cubielevel.htm">explanation on kociemba's site</a> */
 class CubieCube {
@@ -175,7 +173,6 @@ class CubieCube {
 	 * (on both their permutation and orientation)
 	 * @param b - the cube to multiply by
 	 */
-	//TODO: delete or use for implementing patterns
 	void cornerMultiply(CubieCube b) {
 		Corner[] cPerm = new Corner[8];
 		byte[] cOri = new byte[8];
@@ -223,13 +220,11 @@ class CubieCube {
 	 * Multiply this CubieCube with another CubieCube b
 	 * @param b - the cube to multiply by
 	 */
-	//TODO: delete or use for implementing patterns
 	void multiply(CubieCube b) {
 		cornerMultiply(b);
 		edgeMultiply(b);
 	}
 
-	//TODO: delete or use for implementing patterns
 	/**
 	 * Computes the "inverse cube" of current cube.
 	 * This means that if we multiply current cube by the inverse cube, we get the solved cube ("the identity cube")
@@ -690,14 +685,5 @@ class CubieCube {
 			return -6;// parity error
 
 		return 0;// cube is solvable
-	}
-
-	//TODO: DELETE!!!!!
-	public String toString() {
-		//twist	flip	cornerParity	edgeParity	FRtoBR	URFtoDLF	URtoDF	URtoUL	UBtoDF
-		return String.format("%d	%d	%d	%d	%d	%d	%d	%d	%d	%d	%s	%s	%s	%s",
-				getTwist(), getFlip(), cornerParity(),
-				getFRtoBR(), getURFtoDLF(), getURtoDF(), getURtoUL(), getUBtoDF(),
-				Arrays.toString(cp), Arrays.toString(co), Arrays.toString(ep), Arrays.toString(eo));
 	}
 }
