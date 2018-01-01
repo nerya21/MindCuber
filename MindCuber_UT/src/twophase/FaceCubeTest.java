@@ -1,7 +1,6 @@
 package twophase;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -16,7 +15,6 @@ import twophase.FaceCube;
 public class FaceCubeTest {
 	
 	private static final String TO_CUBIE_CUBE_TEST_FILE = TwoPhaseTestUtils.TEST_FILES_DIR + "/cubesWithData.txt";
-	private static final String TO_STRING_TEST_FILE = TwoPhaseTestUtils.TEST_FILES_DIR + "/cubesWithData.txt";
 
 	/**
 	 * Tests FaceCube constructor
@@ -43,12 +41,6 @@ public class FaceCubeTest {
 				Color.U, Color.D, Color.D, Color.F, Color.L, Color.L, Color.R, Color.R, Color.B,
 				Color.R, Color.L, Color.L, Color.L, Color.B, Color.R, Color.D, Color.D, Color.F };
 		c = new FaceCube("BBURUDBFUFFFRRFUUFLULUFUDLRRDBBDBDBLUDDFLLRRBRLLLBRDDF");
-		assertArrayEquals(expected2, c.facelets);
-		
-		//test constructor that receives array of colors
-		c = new FaceCube(expected);
-		assertArrayEquals(expected, c.facelets);
-		c = new FaceCube(expected2);
 		assertArrayEquals(expected2, c.facelets);
 	}
 	
@@ -97,27 +89,6 @@ public class FaceCubeTest {
 			}
 		} catch (IOException e) {
 			System.out.printf("Error opening test file %s %n", TO_CUBIE_CUBE_TEST_FILE);
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Tests to_String function
-	 */
-	@Test
-	public void testToString() {
-		try (Scanner scanner = new Scanner(Paths.get(TO_STRING_TEST_FILE))) {
-			//read first line
-			scanner.nextLine();
-			//iterate through all cubes for test
-			while(scanner.hasNextLine()) {				
-				String[] params = scanner.nextLine().split("\t");
-				//create facecube
-				FaceCube faceCube = new FaceCube(params[0]);
-				assertEquals("String representation is not as expected", params[0], faceCube.to_String());
-			}
-		} catch (IOException e) {
-			System.out.printf("Error opening test file %s %n", TO_STRING_TEST_FILE);
 			e.printStackTrace();
 		}
 	}

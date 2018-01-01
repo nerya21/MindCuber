@@ -52,19 +52,6 @@ class FaceCube {
 		for (int i = 0; i < cubeString.length(); i++)
 			facelets[i] = Color.valueOf(cubeString.substring(i, i + 1));
 	}
-	
-	FaceCube(Color[] facelets) {
-		this.facelets = facelets;
-	}
-
-	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	// Gives string representation of a facelet cube
-	String to_String() {
-		String s = "";
-		for (int i = 0; i < 54; i++)
-			s += facelets[i].toString();
-		return s;
-	}
 
 	/**
 	 * Returns a CubieCube instance which is the cubie level representation of the given cube.
