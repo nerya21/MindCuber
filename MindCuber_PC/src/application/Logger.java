@@ -16,6 +16,7 @@ public class Logger {
 	private static final String LOG_FILE_NAME = "log.csv";
 	private static final char CONSOLE_DELIMITER = '\t';
 
+	private static boolean isInit = false;
 	private static File logFile;
 	private static DataOutputStream logFileStream;
 	private static Stopwatch timeSincePower;
@@ -27,6 +28,7 @@ public class Logger {
 	 * @param level The logger's severity level
 	 */
 	public static void init(LoggerLevel level) {
+		isInit = true;
 		timeSincePower = new Stopwatch();
 		timeSincePower.reset();
 		Logger.level = level;
@@ -54,10 +56,12 @@ public class Logger {
 	 * @see LoggerGroup
 	 */
 	public static void log(LoggerLevel level, LoggerGroup group, String text) {
-		if (level.getValue() >= Logger.level.getValue()) {
-			writeToConsole(level, group, text);
-		}
-		writeToLogFile(level, group, text);		
+		if (isInit) {
+			if (level.getValue() >= Logger.level.getValue()) {
+				writeToConsole(level, group, text);
+			}
+			writeToLogFile(level, group, text);
+		}		
 	}
 
 	/**
@@ -97,6 +101,9 @@ public class Logger {
 	public static void close() {
 		try {
 			logFileStream.close();
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		} finally {
+			isInit = false;
+		}
 	}
 }

@@ -370,7 +370,6 @@ public class Robot {
 		int extraRotation = direction.getDegree() > 0 ? TRAY_MOTOR_EXTRA_ROTATION : (-TRAY_MOTOR_EXTRA_ROTATION);
 		Tray.motor.rotate((direction.getDegree() + extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
 		Tray.motor.rotate((-extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
-		//Tray.motor.rotate(direction.getDegree() * TRAY_MOTOR_ROTATION_FACTOR);
 	}
 
 	/**
