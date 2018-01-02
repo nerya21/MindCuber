@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-language" content="en">
+    <meta name="DC.Language" scheme="RFC1766" content="English">
+    <meta name="distribution" content="global">
+    <meta name="resource-type" content="document">
+
+    <title>Rubik's Cube Robot</title>
+    <link rel="stylesheet" href="./Resources/RubiksCubeRobot.css" type="text/css">
+    <script src="./Resources/RubiksCubeRobot.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="./Resources/lejos-tutorial.css" type="text/css">
+</head>
+
+<body>
+<!-- The Dr. Shahar Maoz Header-->
+<div style="margin-left: 100px"><img style="width: 100%" src="./Resources/title.PNG"></div>
+
+<!------------------------ The side navigation bar ----------------------------->
+<div class="sidenav">
+    <img width="100" src="./Resources/cube.png">
+    <a href="#PageTitle">Cube Solving Robot</a>
+    <a href="#description">System Description</a>
+    <a href="#nxtRobot">NXT Robot</a>
+    <a href="#devEnv">Dev Environment</a>
+    <a href="#architecture">Project Architecture</a>
+    <a href="#robotClass">Robot Class</a>
+    <a href="#cubeClass">Cube Class</a>
+    <a href="#algorithm">Solving Algorithm</a>
+    <a href="#unitTesting">Overall Unit Tests</a>
+    <a href="#generalRemarks">General Remarks</a>
+    <a href="#gallery">Gallery</a>
+    <!-- A "Top" button to jump to the website beginning -->
+    <button id="topBtn" title="Go back to top" onclick="topFunction()">Top<img align="top" width="18" src="./Resources/up.png"></button>
+</div>
+
+<!------------------------- The Site Contents ---------------------------------->
+<div class="contents">
+    <table cellpadding="0" cellspacing="0" class="n2t1">
+        <tbody>
+        <td>
+            <!-- CONTENT AREA --> <!-- CONTENT TITLE -->
+            <div id="PageTitle">The Rubik's Cube Solving Robot</div>
+            <p>The Robot is a MindCuber for LEGO MINDSTORMS NXT 2.0 which was designed for solving Rubik's cube
+            <br>The Robot's NXT computer is able to run different kinds of cube solving algorithms written with Java
+            <br>There's much to say on this amazing little Lego Robot,
+                but a picture is worth a thousand words
+                <br>and a <b>full Cube Solving video is worth a million...</b>
+            </p>
+            <video controls>
+                <source src="./Resources/RobotDemos/CubeFlips.mp4" type="video/mp4">
+                <source src="./Resources/RobotDemos/CubeFlips.mp4" type="video/ogg">
+                Your browser does not support HTML5 video.
+            </video>
+            <a href="./Resources/RobotDemos/CubeFlips.mp4" target="_blank">Full Cube Solving Demo</a>
+
+            <a name="description"><h4 class="midTitle">System description</h4></a>
+            <p>We now give an informal description of the robot and its tasks...</p>
+            <a name="requirements"><h5>Requirements</h5></a>
+            <ol>
+                <TODO>TODO...</TODO>
+            </ol>
+            <a name="assumptions"><h5>Assumptions</h5></a>
+            <ol>
+                <TODO>TODO...</TODO>
+            </ol>
+
+            <a name="nxtRobot"></a>
+            <h4 class="midTitle">The NXT Robot</h4>
+            <img width="200" src="./Resources/robot.jpg"><br>
+            <p>The robot is built from a LEGO® MINDSTORMS® NXT 2.0 set designed to solve the Rubik's Cube®
+                <br>The building instructions are available <a href="http://mindcuber.com/mindcuber/mindcuber.html">here</a></p>
+
+            <a name="devEnv"><h4 class="midTitle">The Development Environment</h4></a>
+            <TODO>TODO...</TODO>
+            <p>
+                Eclipse with Java
+                <br>open source libraries?
+                <br> The algorithm code?,
+                <br> LEGO MINDSTORMS NXT ® and LeJOS NXJ ...</p>
+            <p>For more information see: <a href="http://smlab.cs.tau.ac.il/projects/13/legocmp/">Guide for LEGO
+                MINDSTORMS NXT</a></p>
+
+            <a name="architecture"></a>
+            <h4 class="midTitle">The Project Architecture</h4>
+            <p>The Project is divided into the following main modules:</p>
+            <ul>
+                <li>The Algorithm: receives the cube representation and calculates the required solving steps (to be
+                    executed by the robot)
+                </li>
+                <li>The Cube: creating a Java class which holds the cube’s representation and relevant data (passed as
+                    an input to the algorithm)
+                </li>
+                <li>The Robot: creating our own friendly API for scanning and manipulating the cube</li>
+                <li>Unit Testing: Extensive, comprehensive and specific tests for each important component of the project</li>
+            </ul>
+
+            <a name="robotClass"></a>
+            <h4 class="midTitle">The Robot Class</h4>
+            <a name="actions"><h5>Actions</h5></a>
+            <p>The Robot supports the following actions for the Cube's usage:</p>
+            <ul>
+                <li> Robot.flipCube(...)  &nbsp; &nbsp;  // performs 0, 1 or 2 Cube BackFlips as requested</li>
+                <li> Robot.rotateCube(...)&nbsp;         // performs Full Cube Rotations to the LEFT, RIGHT, or 180 degrees</li>
+                <li> Robot.turnFace(...)  &nbsp; &nbsp;  // Specific Cube Face Rotation to the LEFT, RIGHT, or 180 degrees</li>
+                <li> Robot.scanFace(...)  &nbsp; &nbsp;  // scans all colors in the given cube's face</li>
+                <li> More operations...</li>
+            </ul>
+            <p>The following video demonstrates some of the Robot's actions:</p>
+            <video controls>
+                <source src="./Resources/RobotDemos/CubeFlips.mp4" type="video/mp4">
+                <source src="./Resources/RobotDemos/CubeFlips.mp4" type="video/ogg">
+                Your browser does not support HTML5 video.
+            </video>
+            <a href="./Resources/RobotDemos/CubeFlips.mp4" target="_blank">Robot Actions</a>
+
+<p>Following is the Flip method, which flips the cube according to the flipMethod enum parameter -  SINGLE(1), DOUBLE(2), NONE(0):
+<pre class="CodeBox"><code>
+    private static void flip(FlipMethod method) {
+        for (int i = 0; i < method.getFlips(); i++) {
+            motor.rotateTo(ARM_POSITION_HOLD + ARM_POSITION_HOLD_EXTRA);
+            motor.rotateTo(ARM_POSITION_HOLD);
+            Delay.msDelay(ARM_FLIP_DELAY_MS);
+            motor.rotateTo(ARM_POSITION_TACKLE);
+            motor.rotateTo(ARM_POSITION_HOLD);
+    }
+}
+</code></pre></p>
+
+
+<p>Following is the 'turnFace' method,
+    which turns the currently facing down face selected face according to the turning direction argument:
+<pre class="CodeBox"><code>
+public static void turnFace(Direction direction) {
+    Arm.motor.rotateTo(ARM_POSITION_HOLD);
+    int extraRotation =
+            direction.getDegree() > 0 ? TRAY_MOTOR_EXTRA_ROTATION : (-TRAY_MOTOR_EXTRA_ROTATION);
+    Tray.motor.rotate((direction.getDegree() + extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
+    Tray.motor.rotate((-extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
+}
+</code></pre></p>
+
+<p>Following is the 'rotateCube' method,
+    which Rotates the entire cube according to the direction argument:
+<pre class="CodeBox"><code>
+public static void rotateCube(Direction direction) {
+    if (direction != Direction.NONE) {
+        Arm.release();
+        Tray.rotate(direction.getDegree());
+    }
+}
+</code></pre></p>
+
+
+
+            <a name="colorScan"><h5>Color Scan</h5></a>
+            <p>The Robot begins it's operation on the cube with the cube color-Scanning phase.<br>
+                Following are the steps performed in the color-Scanning phase to achieve a reliable image of all the
+                cube faces colors:
+            </p>
+            <ul>
+                <li>Scan current face -> Flip the Cube -> Scan next face</li>
+                <li>Do Some Nerya magic</li>
+                <li>Some more of Nerya's magic</li>
+            </ul>
+            <p>The following video demonstrates the Robot's scanning phase:</p>
+            <video controls>
+                <source src="./Resources/RobotDemos/FaceScan.mp4" type="video/mp4">
+                <source src="./Resources/RobotDemos/FaceScan.mp4" type="video/ogg">
+                Your browser does not support HTML5 video.
+            </video>
+            <a href="./Resources/RobotDemos/FaceScan.mp4" target="_blank">Robot Color Scanning</a>
+
+<p>Following is the method responsible for Scanning each cube's face
+<br>@param allColors: List of all scanned colors
+<br>@param orientation Current cube orientation
+<pre class="CodeBox"><code>
+public static void scanFace(ArrayList allColors, Orientation orientation) {
+    int coordinate, row, col;
+    int[] rgb;
+    SensorLocation location;
+
+    Arm.release();
+    for (coordinate = 0; coordinate < 8; coordinate++) {
+        row = COORDINATE_SCAN_ORDER[coordinate][0];
+        col = COORDINATE_SCAN_ORDER[coordinate][1];
+        location = coordinate % 2 == 0 ? SensorLocation.ALLIGN : SensorLocation.CORNER;
+        ColorDetector.setMotorLocation(location);
+        rgb = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
+        RawColor rawColor = new RawColor(orientation, row, col, rgb);
+        allColors.add(rawColor);
+        Tray.motor.rotate(TRAY_SCAN_STEP_DEGREE);
+    }
+
+    row = COORDINATE_SCAN_ORDER[coordinate][0];
+    col = COORDINATE_SCAN_ORDER[coordinate][1];
+    ColorDetector.setMotorLocation(SensorLocation.CENTER);
+    rgb = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
+    RawColor rawColor = new RawColor(orientation, row, col, rgb);
+    allColors.add(rawColor);
+    ColorDetector.motor.rotateTo(0);
+}
+</code></pre></p>
+
+            <a name="colorCorrector"><h4 class="midTitle">The Color Corrector Class</h4></a>
+            <p>
+                <code><b>public class ColorCorrector</b></code><br>
+                An essential component in the process of solving a cube by robot,
+                is achieving a reliable image of the cube's colors. <br>
+                The ColorCorrector class is intended to do exactly that! It corrects color scanning errors
+                (which often occur due to the sensitive and unideal color sensors)
+                and provides a highly reliable description of the cube's colors (to be safely used by the algorithm).<br>
+                The NXT's color sensor has difficulties to distinguish between Red and Orange colors. <br>
+                Since we are able to determine the colors at each of the cube's corners by it's neighbors,
+                we can detect and correct any Red/Orange mix up at the corners.
+                This is how the class represents the corner:
+            <pre>
+                     +--------+--------+
+                     |        |        |
+                     | corner | right  |
+                     |        |        |
+                     |        |        |
+                     +--------+--------+
+                     |        |
+                     |  left  |
+                     |        |
+                     |        |
+                     +--------+
+            </pre>
+            Whereas each of the squares above belong to another cube's face.
+            </p>
+<p>The following enumeration represent all corners of cube's face:</p>
+<pre class="CodeBox" style="width: 400px"><code>
+private enum Corner {
+    UPPER_LEFT(0, 0, 0),
+    UPPER_RIGHT(1, 0, 2),
+    LOWER_LEFT(2, 2, 0),
+    LOWER_RIGHT(3, 2, 2);
+}
+</code></pre>
+            <pre>
+                  +--------+--------+--------+
+                  |        |        |        |
+                  | UPPER  |        | UPPER  |
+                  | LEFT   |        | RIGHT  |
+                  |        |        |        |
+                  +--------+--------+--------+
+                  |        |        |        |
+                  |        |        |        |
+                  |        |        |        |
+                  |        |        |        |
+                  +--------+--------+--------+
+                  |        |        |        |
+                  | LOWER  |        | LOWER  |
+                  | LEFT   |        | RIGHT  |
+                  |        |        |        |
+                  +--------+--------+--------+
+            </pre>
+            <p>
+                The following 'fixCorners' method is responsible for the fix routine:<br>
+                Iterates over all the cube's Red/Orange corners and fix them according to their neighbors.
+            </p>
+<pre class="CodeBox"><code>
+static void fixCorners(Face[] faces) {
+    boolean cubeFixed = false;
+    for (Orientation orientation : Orientation.values()) {
+        Face face = faces[orientation.getValue()];
+
+        for (Corner corner : Corner.values()) {
+            if (face.getColor(corner.row, corner.col) == Colors.RED
+                            || face.getColor(corner.row, corner.col) == Colors.ORANGE) {
+                Colors left = getCornerLeftColor(faces, face, corner);
+                Colors right = getCornerRightColor(faces, face, corner);
+
+                for (Colors[] cornerColors : RED_ORANGE_CORNERS) {
+                    if (left == cornerColors[0] && right == cornerColors[2]) {
+                        Colors scannedColor = face.getColor(corner.row, corner.col);
+                        Colors cornerColor = cornerColors[1];
+                        if (scannedColor != cornerColor) {
+                            face.setColor(corner.row, corner.col, cornerColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+
+            <a name="cubeClass"></a>
+            <h4 class="midTitle">The Cube Class</h4>
+            <p>
+                Provides a smart and compact Cube object which holds the cube’s data: Faces, colors and
+                orientations<br>
+                Managing changes in the cube’s orientations caused by rotations and flips (performed by the robot)
+            </p>
+
+            <a name="middleMan"><h5>The Middle Man...</h5></a>
+            <p>
+                The Cube.java class acts as the "middle man" between the Robot and the Algorithm:
+                <br>The main.java program creates the Cube object and passes it on to the Algorithm.
+                <br>The algorithm utilizes the Cube's functionality to read the Cube's colors and manipulate the Cube's
+                faces, while the Cube transforms these requests to Robot actions.
+                <br>The advantage is the Cube's ability to keep track of the changing orientations whenever the Robot
+                rotates and flips the Cube.
+            </p>
+
+            <a name="interfaces"><h5>Public Interfaces</h5></a>
+            <p>The following 'ICube' and 'IFace' interfaces expose the public methods of the cube,
+            <br>which provide a safe and efficient way to manipulate the cube while tracking state changes.</p>
+            <p>The public methods were carefully planned to expose only the exact functionality required for the client (namely
+                the Algorithm class)
+                <br>while keeping things 'simple' as possible.</p>
+<p>The IFace interface, which represents each of the six cube faces:
+<pre class="CodeBox"><code>
+public interface IFace {
+   /*
+    * Returns the color of a position (row, col) in a face
+    */
+    public Colors getColor(int i, int j);
+
+    /*
+     * Represents a turn of the face in a desired direction.
+     * It uses the dynamic orientation and the actions table to derive
+     * the number of flips and rotation needed in order to bring this face to the bottom.
+     * after this face is brought to the bottom, it is turn in the desired direction.
+     * @param direction The direction that the face should turn
+     */
+    public void turn(Direction direction);
+}
+</code></pre></p>
+<p>The ICube interface, which represents the entire cube:
+<pre class="CodeBox"><code>
+public interface ICube {
+/*
+ * returns the face which is currently in the orientation requested (UP, DOWN, LEFT, ...)
+ */
+IFace getFace(Orientation orientation);
+
+/*
+ * Scan and set the cube colors.
+ * The method is first to scan all of the cube's colors in RGB mode,
+ * and calculate their HSV representation as well as their distance from
+ * the calibrated white RGB.
+ * Second, sort all the colors by their white distance (since white doesn't have
+ * meaningful Hue value), and place them on the cube.
+ * Last, sort all the colors by their Hue value and place them on the cube
+ * according to their Hue value.
+ */
+void setColors();
+
+}
+</code></pre></p>
+
+
+            <a name="representation"><h5>Cube Representation</h5></a>
+            <p>
+                The Cube object is the representation of the Rubik's Cube as provided to the Algorithm class
+                for calculating the required steps to reach a full solution.<br>
+                A Cube object is consisted of six Face objects, where each one provides the functionality of a 'face turn'
+                as well as the option of reading all face's colors.<br>
+                One of the interesting challenges regarding the manipulations of the cube,
+                arises from the fact that the robot can only rotate the bottom cube's face (placed on it's tray),
+                while the algorithm may instruct to turn any of the cube's faces at each step.
+                As consequence, the Robot often flips and rotates the whole cube in order to position the selected face
+                as the bottom face.
+                To bridge this gap, we let the algorithm act as if the cube is static (initial orientations never change),
+                while translating each 'static' face orientation selection (Up, Down, etc.) to the 'dynamic' actual
+                orientation of the selected face.<br>
+                This process is implemented efficiently by the Cube class, by using an Orientations matrix and an Actions array
+                which help keeping track of the 'dynamic' orientation of each of the cube's faces.
+            </p>
+
+            <a name="orientations"><h5>Cube Orientations</h5></a>
+            <br><img width="200" src="./Resources/rubikFlat.png"><br>
+
+<p>The Orientations Matrix:
+    <br> Following every rotation and flip of the cube executed by the robot, the cube's orientations change (i.e. 'UP' face may become 'DOWN', etc.)
+    <br> The Orientations Matrix is a static matrix which represent the new position of every face
+    <br> once any face is set to be the bottom face ('DOWN' orientation).
+    <br> The faces are listed in the following order: 0 = Up, 1 = Right, 2 = Front, 3 = Down, 4 = Left, 5 = Back
+    <br> <u>Example of use:</u>
+    <br> Suppose we need to set the current 'FRONT' face to be the bottom ('DOWN') face,
+    <br> in order to know how this action affects the other faces, we should go to the 2nd row of
+    <br> the matrix (as listed above: 2 = FRONT), and we will find the new positions of the other faces:
+    <br> position 0 has the value L -> indicates that the UP face (0 = UP) becomes the LEFT face.
+    <br> position 1 has the value F -> indicates that the RIGHT face (1 = RIGHT) becomes the FRONT face, etc.
+    <br> in conclusion we got these transforms: U->L , R->F , F->D , D->R, L->B , B->U
+    <br> this matrix help us to determine the positions of the faces in any transition.
+<pre class="CodeBox"><code>
+private static final Orientation[][] ORIENTATION_MAT = {
+{ Orientation.D, Orientation.L, Orientation.F, Orientation.U, Orientation.R, Orientation.B },
+{ Orientation.L, Orientation.D, Orientation.B, Orientation.R, Orientation.U, Orientation.F },
+{ Orientation.L, Orientation.F, Orientation.D, Orientation.R, Orientation.B, Orientation.U },
+{ Orientation.U, Orientation.R, Orientation.F, Orientation.D, Orientation.L, Orientation.B },
+{ Orientation.L, Orientation.U, Orientation.F, Orientation.R, Orientation.D, Orientation.B },
+{ Orientation.L, Orientation.B, Orientation.U, Orientation.R, Orientation.F, Orientation.D } };
+</code></pre></p>
+
+            <p>
+                Thanks to the 'Orientations Matrix' the routine of updating the new orientations of the faces after
+                a transition of the cube, becomes a simple quick task -
+                <br>The following method receives the current orientation of the face that was just set to the bottom,
+                and performs required orientations updates to all six faces:
+<pre class="CodeBox"><code>
+void updateOrientations(Orientation orientation) {
+Orientation[] newOrientations = ORIENTATION_MAT[orientation.getValue()];
+    for (int i = 0; i < 6; i++) {
+        faces[i].dynamicOrientation = newOrientations[faces[i].dynamicOrientation.getValue()];
+    }
+}
+</code></pre></p>
+
+            <p>The Action class, holds the required cube flips and turns
+    to set a selected face as the bottom face:
+<pre class="CodeBox"><code>
+public class Action {
+
+    public FlipMethod flips;
+    public Direction direction;
+
+    public Action(FlipMethod flips, Direction direction) {
+    this.flips = flips;
+    this.direction = direction;
+    }
+}
+</code></pre></p>
+
+<p>The 'Actions' Array:<br>
+    specifies the flips and rotations that the robot should execute on the cube,
+    to set the selected face as the bottom face (the only face that can be turned):
+    <br>For instance, in order to turn the 'UP' face by 90 degrees clockwise, the Robot must first flip the cube twice
+    to set the 'UP' face as the bottom, and then turn the face by 90 degrees counterclockwise.
+    <br> Another example: in order to set the FRONT face as the bottom,
+    the Robot should rotate the cube left and then perform a flip.
+    <br>This action is stored on the actions array at position 2 (since 2 = FRONT): {FlipMethod.SINGLE, Direction.LEFT}
+<pre class="CodeBox"><code>
+actions[Orientation.U.getValue()] = new Action(FlipMethod.DOUBLE, Direction.NONE);
+actions[Orientation.D.getValue()] = new Action(FlipMethod.NONE, Direction.NONE);
+actions[Orientation.F.getValue()] = new Action(FlipMethod.SINGLE, Direction.LEFT);
+actions[Orientation.B.getValue()] = new Action(FlipMethod.SINGLE, Direction.RIGHT);
+actions[Orientation.R.getValue()] = new Action(FlipMethod.SINGLE, Direction.MIRROR);
+actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE);
+</code></pre></p>
+
+
+
+            <a name="algorithm"></a>
+            <h4 class="midTitle">The Solving Algorithm</h4>
+            <a name="choosingAlgo"><h5>Choosing the algorithm</h5></a>
+            <TODO>TODO...</TODO>
+            <p>Present the considerations that led to the two-phase algorithm</p>
+            <p>Following our research on Rubik’s cube solving algorithms, we chose the following two-phase
+                algorithm.</p>
+            <a name="twoPhaseAlgo"><h5>2-Phase Algorithm</h5></a>
+            <p>
+                We are using the two-phase algorithm, introduced by Herbert Kociemba in 1991-1992.
+                <img style="float: right; margin-right: 300px" width="80"
+                     src="https://www.speedsolving.com/interviews/interview-herbertk.jpg"><br>
+                The problem of solving the cube is translated into a shortest path in a graph problem, <br>
+                where the nodes are the different states of the cube, and there is an edge between two nodes <br>
+                if one state can be reached from the other by turning one face of the cube.
+            </p>
+            <a name="algoRep"><h5>Cube Representation</h5></a>
+            <p>
+                Cube’s state is represented using a set of coordinates, driven from it's corners and edges permutations
+                and orientation compared to a solved cube.<br>
+                This representation tells us how to move and rotate each corner and how to move and flip each edge
+                in order to reach a given cube from a solved cube.<br>
+                In this way, a cube representation c can be interpreted as a function f. Given an initial cube state,
+                the algorithm implicitly finds the inverse cube\function to it.
+            </p>
+            <a name="solution"><h5>Searching For Solution</h5></a>
+            <p>Searching for the solution is done in two phases:</p>
+            <ol>
+                <li>The algorithm first tries to find a path from cube’s initial state to one of the states that can be
+                    reached
+                    from a solved cube using only the following moves: U, D, R2, L2 F2, B2.
+                </li>
+                <li>Once we found a path, the algorithm tries to find a path from the current state to the solved cube,
+                    using only the moves mentioned above.
+                </li>
+            </ol>
+            <p>
+                The path search in the graph is done using the IDA* algorithm. Finding a shortest path in a graph can be
+                done using a BFS-like tree search, but it requires a lot of memory. Using DFS-like tree search will help
+                us finding a path, but not the shortest one. Therefore, the two-phase algorithm uses an iterative
+                deepening search. Iterative deepening (ID) means a DFS search is performed iteratively for a growing
+                tree depth. The search uses a heuristic function to stop searching in a specific branch when the
+                solution cannot be found with the given state and depth. The heuristic function gives a lower bound on
+                the number of moves required to reach from a state to the goal state.
+            </p>
+            <a name="implementation"><h5>The Implementation</h5></a>
+            <p>
+                Our implementation is based on Kociemba’s implementation for this algorithm, which he published in his
+                site:
+                <a href="http://kociemba.org/cube.htm">http://kociemba.org/cube.htm</a><br>
+                It implements the two-phase algorithm in a simple form, and does not use
+                symmetry for better performance. <br>Moreover, the implementation is not finding the shortest solution.
+                It
+                finds a short solution for the first phase, and then tries to find a short solution from current state
+                to the solved cube, so the combination of the two is not necessarily the shortest solution.
+            </p>
+
+            <a name="modifications"><h5>Our Modifications</h5></a>
+            <p>We also added the ability to select a pattern, so that preforming the set of moves returned by the
+                algorithm will produce a cube with the selected pattern.
+                To allow the pattern ability, we calculate the inverse cube of the pattern, multiply it by the given
+                cube and then find a solution for the result cube.
+                (You can think of multiplying cube A by B like taking a set of moves that transform a solved cube into B
+                cube and perform them on A cube).
+                The algorithm finds a solution for the resulted cube, which is a set
+                of moves to create its reverse cube from a solved cube. This reverse cube is the multiplication of the
+                reverse of the original cube and the pattern, so applying the resulted set of moves on the cube brings
+                us from the initial cube to a solved cube and then to the patterned cube (this is not done one after the
+                other, this is just an easier way to understand what happens).
+                Exploring and understanding the algorithm was one of the major parts of our project, and we believe it
+                was quite educational (and most definitely fun).
+            </p>
+
+            <a name="unitTesting"></a>
+            <h4 class="midTitle">Overall Unit Testing</h4>
+            <TODO>TODO...</TODO>
+
+            <a name="generalRemarks"></a>
+            <h4 class="midTitle">General Remarks</h4>
+            <TODO>TODO...</TODO>
+
+            <a name="gallery"></a>
+            <h4 class="midTitle">Gallery</h4>
+            <TODO>TODO...</TODO>
+            <br><br><img width="400" src="./Resources/RubiksVariations.jpg"><br>
+
+        </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

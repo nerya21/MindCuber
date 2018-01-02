@@ -1,0 +1,95 @@
+.contents {
+    margin-left: 170px;
+}
+
+p {
+    width: 800px;
+    line-height: 150%;
+}
+
+video {
+    width: 600px;
+}
+
+TODO {
+    color: #0000ff;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.midTitle {
+    text-decoration: underline
+}
+
+.CodeBox {
+
+}
+
+.CodeBox {
+    width: 700px;
+}
+
+.CodeBox:hover {
+    /*font-weight: bold;*/
+    color: white;
+    background-color: grey;
+    line-height: 200%;
+    cursor: pointer;
+    font-size: 15px;
+    width: 800px;
+}
+
+.sidenav {
+    /*border-radius: 25px;*/
+    /*background: #b9b9b9;*/
+    width: 160px;
+    position: fixed;
+    top: 10px;
+    left: 5px;
+    z-index: 1;
+    overflow-x: hidden;
+    padding: 4px 0;
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 15px;
+    font-family: sans-serif;
+    color: #0000ff;
+    display: block;
+}
+
+.sidenav a:hover {
+    /*font-weight: bold;*/
+    color: #E76F00;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+#topBtn {
+    display: none;
+    position: fixed;
+    /*bottom: 10px;*/
+    left: 20px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    /*border-radius: 10px;*/
+    background-color: transparent;
+
+    text-decoration: none;
+    font-size: 15px;
+    font-family: sans-serif;
+    color: #0000ff;
+}
+
+#topBtn:hover {
+    color: #E76F00;
+}
