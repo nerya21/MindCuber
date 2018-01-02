@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import application.Logger;
 import application.LoggerGroup;
@@ -12,7 +13,6 @@ import application.LoggerLevel;
 import cube.Orientation;
 import cube.RawColor;
 import lejos.nxt.LCD;
-import lejos.util.Delay;
 import lejos.util.Stopwatch;
 import nxt.NxtOperation;
 
@@ -69,6 +69,20 @@ public class Robot {
 			Tray.motor.rotate(-(Tray.motor.getTachoCount() % (90 * TRAY_MOTOR_ROTATION_FACTOR)));
 		}
 		ColorDetector.motor.rotateTo(0);
+	}	
+
+	/**
+	 * Delay wrapper
+	 * 
+	 * @param delay Delay time in millisec
+	 */
+	static void delayMillisec(int delay) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(delay);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	/**
@@ -108,7 +122,7 @@ public class Robot {
 		static void release() {
 			motor.rotateTo(ARM_POSITION_REST);
 		}
-
+		
 		/**
 		 * Flip the cube
 		 *
@@ -119,7 +133,7 @@ public class Robot {
 			for (int i = 0; i < method.getFlips(); i++) {
 				motor.rotateTo(ARM_POSITION_HOLD + ARM_POSITION_HOLD_EXTRA);
 				motor.rotateTo(ARM_POSITION_HOLD);
-				Delay.msDelay(ARM_FLIP_DELAY_MS);
+				delayMillisec(ARM_FLIP_DELAY_MS);
 				motor.rotateTo(ARM_POSITION_TACKLE);
 				motor.rotateTo(ARM_POSITION_HOLD);
 			}		
@@ -410,7 +424,7 @@ public class Robot {
 		LCD.drawString("Cube detected,", 0, 0);
 		LCD.drawString("Please wait", 0, 1);
 		
-		Delay.msDelay(2000);
+		delayMillisec(2000);
 	}
 
 	/**

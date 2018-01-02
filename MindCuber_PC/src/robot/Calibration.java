@@ -112,7 +112,7 @@ public class Calibration extends Robot {
 	 * @see #colorMotor()
 	 */
 	private static int calibrateMotor(NxtMotor motor, boolean reset, NxtSensor sensor) {
-		Delay.msDelay(200);
+		delayMillisec(200);
 		
 		for (;;) {
 			if (sensor != null) {
@@ -143,10 +143,10 @@ public class Calibration extends Robot {
 		LCD.clear();
 		LCD.drawString("Proximity diag.", 0, 0);
 
-		Delay.msDelay(200);
+		delayMillisec(200);
 		while (!Button.ENTER.isDown() && !Button.ESCAPE.isDown()) {
 			LCD.drawString("Current dis: " + ProximitySensor.sensor.getDistance() + "   ", 0, 2);
-			Delay.msDelay(50);
+			delayMillisec(50);
 		}
 	}
 
@@ -159,13 +159,13 @@ public class Calibration extends Robot {
 		LCD.drawString("Background", 0, 0);
 		LCD.drawString("light calib.", 0, 1);
 		
-		Delay.msDelay(200);
+		delayMillisec(200);
 		ColorDetector.setMotorLocation(SensorLocation.ALLIGN);
 		while (!Button.ENTER.isDown() && !Button.ESCAPE.isDown()) {
 			currentRead = ProximitySensor.sensor.readColorRgb(1)[3];
 			LCD.drawString("Current read: " + currentRead + "   ", 0, 3);
 			LCD.drawString((currentRead < SENSOR_LIGHT_THRESHOLD) ? "Good to go!   " : "Too much light", 0, 4);
-			Delay.msDelay(50);
+			delayMillisec(50);
 		}
 		ColorDetector.motor.rotateTo(0);
 	}

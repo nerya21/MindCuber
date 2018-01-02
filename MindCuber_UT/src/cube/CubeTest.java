@@ -1,15 +1,9 @@
 package cube;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Scanner;
 
 import org.junit.Test;
 
-import twophase.TwoPhaseTestUtils;
-import cube.Cube;
 import robot.Direction;
 import robot.NxtCommand;
 
@@ -165,9 +159,9 @@ public class CubeTest {
 				throw new Exception();
 			
 			//UP face
-			//c.getFace(Orientation.U).turn(Direction.RIGHT);
-			//if (c.getFace(Orientation.U).dynamicOrientation != Orientation.D)
-				//throw new Exception();
+			c.getFace(Orientation.U).turn(Direction.RIGHT);
+			if (c.getFace(Orientation.U).dynamicOrientation != Orientation.D)
+				throw new Exception();
 			
 		}
 		catch (Exception e) {
