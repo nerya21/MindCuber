@@ -32,7 +32,7 @@ public class Calibration extends Robot {
 			calibrationFileStream = new DataOutputStream(new FileOutputStream(calibrationFile));
 			
 			rgb = calibrateColor();			
-			for (int rgbIndex = 0; rgbIndex < rgb.length; rgbIndex++) {
+			for (int rgbIndex = 0; rgbIndex < 3; rgbIndex++) {
 				calibrationFileStream.writeInt(rgb[rgbIndex]);
 				ColorDetector.whiteThreshold[rgbIndex] = rgb[rgbIndex];
 			}

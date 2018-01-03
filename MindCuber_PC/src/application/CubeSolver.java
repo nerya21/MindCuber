@@ -26,10 +26,11 @@ public class CubeSolver {
 	 * Solve the cube
 	 * 
 	 * @param pattern The desired cube pattern 
+	 * @return Status - 0 for success, otherwise error as specified below
 	 * @see PatternMenu
 	 * @see TwoPhase
 	 */
-	public static void solveCube(String pattern) {
+	public static int solveCube(String pattern) {
 		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube started");
 		ICube cube = new Cube();
 		//Robot.waitForCube();
@@ -112,15 +113,18 @@ public class CubeSolver {
 			
 			Logger.log(LoggerLevel.ERROR, LoggerGroup.ALGORITHM, "---> " + ((status > 0) ? "Pattern error: " : "Cube error: ") + result);
 		}
+		
+		return status;
 	}
 	
 	/**
 	 * Solve the cube to standard pattern (each face different color)
-	 *  
+	 * 
+	 * @return Status - 0 for success, otherwise error
 	 * @see #solveCube(String pattern)
 	 */
-	public static void solveCube(){
-		solveCube("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+	public static int solveCube(){
+		return solveCube("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
 	}
 	
 	/**
