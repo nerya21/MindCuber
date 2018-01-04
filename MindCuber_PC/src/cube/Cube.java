@@ -14,7 +14,7 @@ import robot.Robot;
 /**
  * 
  * This class represent the Rubik's cube itself as an object.
- *<br>It has 6 objects of the type Face and a the Action suitable for every face.
+ * <br>It has 6 objects of the type Face and a the Action suitable for every face.
  */
 public class Cube implements ICube {
 
@@ -22,18 +22,18 @@ public class Cube implements ICube {
 	private Action[] actions;
 
 	/**
-	 This is a static orientation matrix that represent the new position of every face
-	 *<br> whenever any face is brought to be at the bottom (DOWN orientation).
-	 *<br>The faces are listed in the following order:
-	 *<br>0- Up, 1- Right, 2- Front, 3- Down, 4- Left, 5- Back
-	 *<br> Example of use:
-	 *<br> Suppose we need to bring the current FRONT face to the bottom (to be the DOWN face),
-	 *<br> in order to know how this action affects the other faces, we should go to the 2nd row of
-	 *<br> the matrix (as listed above: 2- FRONT), and we will have the new positions of the other faces:
-	 *<br> position 0 has the value L -> indicates that the UP face (0 = UP) becomes the LEFT face.
-	 *<br> position 1 has the value F -> indicates that the RIGHT face (1 = RIGHT) becomes the FRONT face, etc.
-	 *<br> in conclusion we got these transforms: U->L , R->F , F->D , D->R, L->B , B->U
-	 *<br> this matrix help us to determine the positions of the faces in any transition.
+	 * This is a static orientation matrix that represent the new position of every face
+	 * <br> whenever any face is brought to be at the bottom (DOWN orientation).
+	 * <br>The faces are listed in the following order:
+	 * <br>0- Up, 1- Right, 2- Front, 3- Down, 4- Left, 5- Back
+	 * <br> Example of use:
+	 * <br> Suppose we need to bring the current FRONT face to the bottom (to be the DOWN face),
+	 * <br> in order to know how this action affects the other faces, we should go to the 2nd row of
+	 * <br> the matrix (as listed above: 2- FRONT), and we will have the new positions of the other faces:
+	 * <br> position 0 has the value L -> indicates that the UP face (0 = UP) becomes the LEFT face.
+	 * <br> position 1 has the value F -> indicates that the RIGHT face (1 = RIGHT) becomes the FRONT face, etc.
+	 * <br> in conclusion we got these transforms: U->L , R->F , F->D , D->R, L->B , B->U
+	 * <br> this matrix help us to determine the positions of the faces in any transition.
 	 */
 	private static final Orientation[][] ORIENTATION_MAT = {
 			{ Orientation.D, Orientation.L, Orientation.F, Orientation.U, Orientation.R, Orientation.B },
@@ -48,11 +48,11 @@ public class Cube implements ICube {
 	/**
 	 * Constructor of an object of the type Cube.
 	 * <br>It initializes the faces with all the orientations, and initializes the table of actions.
-	 * <br> Table of actions: represents the actions needed to do in order to bring some face to
-	 * <br> the bottom (to be the DOWN face).
-	 * <br> Example: in order to bring the FRONT face to the bottom,
-	 * <br> we have to rotate it to the left, and then perform a flip.
-	 * <br> This action is stored on the actions array at position 2 (2 = FRONT)
+	 * <br>Table of actions: represents the actions needed to do in order to bring some face to
+	 * <br>the bottom (to be the DOWN face).
+	 * <br>Example: in order to bring the FRONT face to the bottom,
+	 * <br>we have to rotate it to the left, and then perform a flip.
+	 * <br>This action is stored on the actions array at position 2 (2 = FRONT)
 	 */
 	public Cube() {
 		
@@ -82,6 +82,7 @@ public class Cube implements ICube {
 	/**
 	 * Updates the new orientations of the faces after a transition of the cube.
 	 * <br>It uses the static matrix ORIENTATION_MAT in order to get the new orientations.
+	 * 
 	 * @param orientation The current orientation of the face we bring to the bottom (to be the DOWN face)
 	 */
 	void updateOrientations(Orientation orientation) {
@@ -105,7 +106,7 @@ public class Cube implements ICube {
 	}
 
 	/**
-	 * Scan and set the cube colors.
+	 * Scan and set the cube colors
 	 * 
 	 * <p>The method is first to scan all of the cube's colors in RGB mode,
 	 * and calculate their HSV representation as well as their distance from
@@ -230,10 +231,10 @@ public class Cube implements ICube {
 	}
 	
 	/**
-	 * This class represents a face of the Rubik's cube.
+	 * This class represents a face of the Rubik's cube
 	 * <br>An object of this class has an initial orientation which is final,
-	 * <br> a dynamic orientation which can change every transition,
-	 * <br> and a matrix of colors represent the colors on this face in the initial state.
+	 * <br>a dynamic orientation which can change every transition,
+	 * <br>and a matrix of colors represent the colors on this face in the initial state.
 	 */
 	public class Face implements IFace {
 		
@@ -276,9 +277,9 @@ public class Cube implements ICube {
 		
 		/**
 		 * Represents a turn of the face in a desired direction.
-		 * <br> It uses the dynamic orientation and the actions table to derive
-		 * <br> the number of flips and rotation needed in order to bring this face to the bottom.
-		 * <br> after this face is brought to the bottom, it is turn in the desired direction.
+		 * <br>It uses the dynamic orientation and the actions table to derive
+		 * <br>the number of flips and rotation needed in order to bring this face to the bottom.
+		 * <br>after this face is brought to the bottom, it is turn in the desired direction.
 		 * 
 		 * @param direction The direction that the face should turn
 		 */
