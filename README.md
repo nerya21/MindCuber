@@ -26,7 +26,7 @@ Only then build the PC project and run it. Upon running it will automaticlly con
   * Brute force - performs random robot's operations
   * Read color - read current color and print result to logger
   * Flip cube - perfors cube flipping operations
-* __Calibration Menu__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/calibrationmenu.jpg)
+* __Calibration__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/calibrationmenu.jpg)
   <br/>This menu contains all of the robot's calibration routines:
     * Color sensor - calibrate white color reading, place white color below the sensor and press _Enter_
     * Color motor - calibrate the color sensor motor. Follow the instructions of the program to calibrate the color sensor to it's three                       optional positions. Use the _<_ and _>_ buttons to rotate the motor
