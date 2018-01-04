@@ -43,12 +43,11 @@ public class TestRunner {
 		}
 		
 		//cube
-		CubeTest ct = new CubeTest();
-		ct.testCube();
-		ct.testUpdateOrientations();
-		ct.testTurn();
-		System.out.println("Cube class tests finished successfully");
-		
+		System.out.println("Running Cube class tests");
+		if (CubeTest.cubeTestRun()) {
+			System.out.println("Cube class tests finished successfully");
+		}
+
 		System.out.println("Finished...");
 	}
 }

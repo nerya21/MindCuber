@@ -11,6 +11,7 @@ public class CubeTest {
 
 	/**
 	 * Tests Cube constructor
+	 * <br> This method checks whether an object from the type Cube can be created.
 	 */
 	@Test
 	public void testCube() {
@@ -26,6 +27,9 @@ public class CubeTest {
 	
 	/**
 	 * Tests Cube.updateOrientations function
+	 * Whenever a face X gets to the bottom (to be the DOWN face),
+	 * <br> the other faces should be arranged according to X.
+	 * <br> This method checks whether it indeed happens.
 	 */
 	@Test
 	public void testUpdateOrientations() {
@@ -137,6 +141,9 @@ public class CubeTest {
 	
 	/**
 	 * Tests Cube.Face.turn function
+	 * <br> Whenever a face X should turn to one of the direction,
+	 * <br> it has to go to the bottom first (to be the DOWN face).
+	 * <br> This function checks whether X is indeed gets to the bottom.
 	 */
 	@Test
 	public void testTurn() {
@@ -148,12 +155,15 @@ public class CubeTest {
 			c.getFace(Orientation.D).turn(Direction.RIGHT);
 			if (c.getFace(Orientation.D).dynamicOrientation != Orientation.D)
 				throw new Exception();
+			c = new Cube();
 			c.getFace(Orientation.D).turn(Direction.LEFT);
 			if (c.getFace(Orientation.D).dynamicOrientation != Orientation.D)
 				throw new Exception();
+			c = new Cube();
 			c.getFace(Orientation.D).turn(Direction.MIRROR);
 			if (c.getFace(Orientation.D).dynamicOrientation != Orientation.D)
 				throw new Exception();
+			c = new Cube();
 			c.getFace(Orientation.D).turn(Direction.NONE);
 			if (c.getFace(Orientation.D).dynamicOrientation != Orientation.D)
 				throw new Exception();
@@ -162,6 +172,90 @@ public class CubeTest {
 			c.getFace(Orientation.U).turn(Direction.RIGHT);
 			if (c.getFace(Orientation.U).dynamicOrientation != Orientation.D)
 				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.U).turn(Direction.LEFT);
+			if (c.getFace(Orientation.U).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.U).turn(Direction.MIRROR);
+			if (c.getFace(Orientation.U).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.U).turn(Direction.NONE);
+			if (c.getFace(Orientation.U).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			
+			//FRONT face
+			c = new Cube();
+			c.getFace(Orientation.F).turn(Direction.RIGHT);
+			if (c.getFace(Orientation.F).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.F).turn(Direction.LEFT);
+			if (c.getFace(Orientation.F).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.F).turn(Direction.MIRROR);
+			if (c.getFace(Orientation.F).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.F).turn(Direction.NONE);
+			if (c.getFace(Orientation.F).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			
+			//BACK face
+			c = new Cube();
+			c.getFace(Orientation.B).turn(Direction.RIGHT);
+			if (c.getFace(Orientation.B).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.B).turn(Direction.LEFT);
+			if (c.getFace(Orientation.B).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.B).turn(Direction.MIRROR);
+			if (c.getFace(Orientation.B).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.B).turn(Direction.NONE);
+			if (c.getFace(Orientation.B).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			
+			//LEFT face
+			c = new Cube();
+			c.getFace(Orientation.L).turn(Direction.RIGHT);
+			if (c.getFace(Orientation.L).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.L).turn(Direction.LEFT);
+			if (c.getFace(Orientation.L).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.L).turn(Direction.MIRROR);
+			if (c.getFace(Orientation.L).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.L).turn(Direction.NONE);
+			if (c.getFace(Orientation.L).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			
+			//RIGHT face
+			c = new Cube();
+			c.getFace(Orientation.R).turn(Direction.RIGHT);
+			if (c.getFace(Orientation.R).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.R).turn(Direction.LEFT);
+			if (c.getFace(Orientation.R).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.R).turn(Direction.MIRROR);
+			if (c.getFace(Orientation.R).dynamicOrientation != Orientation.D)
+				throw new Exception();
+			c = new Cube();
+			c.getFace(Orientation.R).turn(Direction.NONE);
+			if (c.getFace(Orientation.R).dynamicOrientation != Orientation.D)
+				throw new Exception();
 			
 		}
 		catch (Exception e) {
@@ -169,6 +263,22 @@ public class CubeTest {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	//run class test
+	public static boolean cubeTestRun() {
+		try {		
+		CubeTest ct = new CubeTest();
+		ct.testCube();
+		ct.testUpdateOrientations();
+		ct.testTurn();
+		return true;
+		}
+		catch (Exception e) {
+			System.out.printf("Error in CubeTest %s %n");
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
 	
