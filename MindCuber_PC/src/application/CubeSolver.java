@@ -23,6 +23,37 @@ import twophase.TwoPhase;
 public class CubeSolver {
 	
 	/**
+	 * Solves the cube. If error found in cube's colors - try again
+	 * 
+	 * @param attempts Number of attempts to solve the cube
+	 * @param pattern The desired cube pattern
+	 * @return errorCode - 0 for success, otherwise error code as specified in TwoPhase
+	 *  or -9 when there are two centerpieces with the same color
+	 */
+	public static int forceSolveCube(int attempts, String pattern) {
+		int currAttempts = 0, status;
+
+		do {
+			status = solveCube(pattern);
+			currAttempts++;
+		} while (status != 0 && currAttempts < attempts);
+		
+		return status;
+	}
+	
+	/**
+	 * Solve the cube to standard pattern (each face different color). 
+	 * If error found in cube's colors - try again
+	 * 
+	 * @param attempts Number of attempts to solve the cube
+	 * @return errorCode - 0 for success, otherwise error code as specified in TwoPhase
+	 *  or -9 when there are two centerpieces with the same color
+	 */
+	public static int forceSolveCube(int attempts) {
+		return forceSolveCube(attempts, "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+	}
+	
+	/**
 	 * Solve the cube
 	 * 
 	 * @param pattern The desired cube pattern 
@@ -31,7 +62,7 @@ public class CubeSolver {
 	 * @see PatternMenu
 	 * @see TwoPhase
 	 */
-	public static int solveCube(String pattern) {
+	private static int solveCube(String pattern) {
 		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube started");
 		ICube cube = new Cube();
 		//Robot.waitForCube();
@@ -39,28 +70,26 @@ public class CubeSolver {
 		int errorCode = 0;
 		String cubeString = createCubeRepForAlgorithm(cube);
 		//check if conversion failed
-		if(cubeString == null) { 
+		if (cubeString == null) { 
 			//conversion failed, there are two centerpieces with the same color
 			Logger.log(LoggerLevel.ERROR, LoggerGroup.APPLICATION, "Two center facelets have the same color");
 			errorCode = -9;
-		}
-		else {
+		} else {
 			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Start calculating moves to solution");
 			List<Move> moves = new ArrayList<>();
 			int depth = 24;
 			do {
 				errorCode = TwoPhase.findSolution(cubeString, depth - 1, 120, moves, pattern);
 				depth = moves.size();
-			} while (errorCode == 0 && depth > 0);
+			} while (errorCode == 0 && depth > 0); 
 			
-			//if found a solution (status = 0 when the cube is already solved)
-			if(moves.size() != 0 || errorCode == 0) {
+			//if found a solution (status = 0 when the cube is already solved) 
+			if (moves.size() != 0 || errorCode == 0) {
 				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Finish calculating moves, start solving");
 				handleSolution(cube, moves);
 				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube finished");
 				Robot.finishSolve();
-			}
-			else {
+			} else {
 				//handle error code
 				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Error calculating moves:");
 				String result = "";
@@ -102,7 +131,10 @@ public class CubeSolver {
 	 * 
 	 * @return Status - 0 for success, otherwise error
 	 * @see #solveCube(String pattern)
+	 * 
+	 * @deprecated Use forceSolveCube(0)
 	 */
+	@Deprecated
 	public static int solveCube(){
 		return solveCube("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
 	}

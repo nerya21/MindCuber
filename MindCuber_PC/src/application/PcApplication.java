@@ -19,6 +19,8 @@ import robot.Tests;
  */
 public class PcApplication { 
 	
+	final static int NUM_OF_ATTEMPT_TO_SOLVE_CUBE = 3;
+	
 	/**
 	 * The main method
 	 */
@@ -47,7 +49,7 @@ public class PcApplication {
 		Boolean validation;
 
 		for (int i = 0; i < cycles; i++) {
-			status = CubeSolver.solveCube();
+			status = CubeSolver.forceSolveCube(0);
 			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION,
 					"[" + i + "] Solving finished with status: " + status);
 			if (status == 0) {
@@ -79,7 +81,7 @@ public class PcApplication {
 		for (;;) {
 			selection = waitForUserSelection(mainMenu);
 			if (selection == MainMenu.SOLVE.getValue()) {
-				CubeSolver.solveCube();
+				CubeSolver.forceSolveCube(NUM_OF_ATTEMPT_TO_SOLVE_CUBE);
 			} else if (selection == MainMenu.TESTS.getValue()) {
 				for (;;) {
 					selection = waitForUserSelection(testsMenu);
@@ -114,13 +116,13 @@ public class PcApplication {
 				for (;;){
 					selection = waitForUserSelection(patternMenu);
 					if (selection == PatternMenu.CROSS_4.getValue()) {
-						CubeSolver.solveCube(PatternMenu.CROSS_4.getPattern());
+						CubeSolver.forceSolveCube(NUM_OF_ATTEMPT_TO_SOLVE_CUBE, PatternMenu.CROSS_4.getPattern());
 					} else if (selection == PatternMenu.PLUS_MINUS.getValue()) {
-						CubeSolver.solveCube(PatternMenu.PLUS_MINUS.getPattern());
+						CubeSolver.forceSolveCube(NUM_OF_ATTEMPT_TO_SOLVE_CUBE, PatternMenu.PLUS_MINUS.getPattern());
 					} else if (selection == PatternMenu.CUBE_CUBE.getValue()) {
-						CubeSolver.solveCube(PatternMenu.CUBE_CUBE.getPattern());
+						CubeSolver.forceSolveCube(NUM_OF_ATTEMPT_TO_SOLVE_CUBE, PatternMenu.CUBE_CUBE.getPattern());
 					} else if (selection == PatternMenu.CUBE_CUBE_CUBE.getValue()) {
-						CubeSolver.solveCube(PatternMenu.CUBE_CUBE_CUBE.getPattern());
+						CubeSolver.forceSolveCube(NUM_OF_ATTEMPT_TO_SOLVE_CUBE, PatternMenu.CUBE_CUBE_CUBE.getPattern());
 					} else if (selection == CalibrationMenu.BACK.getValue() || selection == -1) {
 						break;
 					}
