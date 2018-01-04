@@ -1,5 +1,6 @@
 package application;
 
+import cube.Cube;
 import lejos.nxt.LCD;
 import lejos.util.TextMenu;
 import robot.Calibration;
@@ -16,7 +17,7 @@ import robot.Tests;
  * @see Logger
  * @see Robot
  */
-public class PcApplication {
+public class PcApplication { 
 	
 	/**
 	 * The main method
@@ -26,11 +27,42 @@ public class PcApplication {
 		Robot.init();		
 		registerShutdownHandler();
 		
-		run();
+		if (args.length == 1 && args[0] == "-overnight") {
+			runOvernightTest(100);
+		} else {
+			run();	
+		}
 		
 		Logger.close();
 	}
 	
+	/**
+	 * Runs overnight test.
+	 * This test solves and validate cube solving.
+	 * 
+	 * @param cycles Number of solving cycles
+	 */
+	private static void runOvernightTest(int cycles) {
+		int status, successes = 0;
+		Boolean validation;
+
+		for (int i = 0; i < cycles; i++) {
+			status = CubeSolver.solveCube();
+			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION,
+					"[" + i + "] Solving finished with status: " + status);
+			if (status == 0) {
+				successes++;
+				validation = Cube.validateCubeSolution();
+				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION,
+						"[" + i + "] Validation finished with status: " + validation);
+			}
+		}
+
+		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION,
+				"Overnight test finished with " + (float) successes / cycles * 100 + "% success rate ["
+						+ (cycles - successes) + "failures out of " + cycles + " cycles]");
+	}
+
 	/**
 	 * Run the application's user interface
 	 * 

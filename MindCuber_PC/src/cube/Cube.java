@@ -295,4 +295,27 @@ public class Cube implements ICube {
 		}
 	}
 
+	/**
+	 * Validate correct solution for cube 
+	 * 
+	 * @return True iff cube solved correctly
+	 */
+	public static Boolean validateCubeSolution() {
+		Cube cube = new Cube();
+		
+		cube.setColors();
+		
+		for (Face face : cube.faces) {
+			for (int row = 0; row < 3; row++) {
+				for (int col = 0; col< 3; col++) {
+					if (face.colors[row][col] != face.colors[0][0]) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+
 }
