@@ -468,10 +468,10 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
             <a name="algoRep"><h5>Cube Representation</h5></a>
             <p>
                 Cube’s state is represented using a set of coordinates, driven from it's corners and edges permutations
-                and orientation compared to a solved cube.<br>
-                This representation tells us how to move and rotate each corner and how to move and flip each edge
+                and orientations compared to a solved cube.<br>
+                The corners and edges permutations and orientations tells us how to move and rotate each corner and how to move and flip each edge
                 in order to reach a given cube from a solved cube.<br>
-                In this way, a cube representation c can be interpreted as a function f. Given an initial cube state,
+                In this way, a cube representation can be interpreted as a function. Given an initial cube state,
                 the algorithm implicitly finds the inverse cube\function to it.
             </p>
             <a name="solution"><h5>Searching For Solution</h5></a>
