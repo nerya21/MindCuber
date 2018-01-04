@@ -19,23 +19,23 @@ This project contains the unit tests
 First, build the NXT project and upload it to the brick using leJOS NXJ Plug-in in Eclipse.
 Only then build the PC project and run it. Upon running it will automaticlly connect to the NXT.
 ### User Guide
-![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/mainmenu.jpg)
+![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/resources/mainmenu.jpg)
 * __Solve cube__<br/>Use this option after completing necessary calibration steps for solving the cube
-* __Tests__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/testsmenu.jpg)
+* __Tests__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/resources/testsmenu.jpg)
   <br/>This menu contains all of the robot's tests recommended to run to validate all robot's operations:
   * Brute force - performs random robot's operations
   * Read color - read current color and print result to logger
   * Flip cube - perfors cube flipping operations
-* __Calibration__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/calibrationmenu.jpg)
+* __Calibration__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/resources/calibrationmenu.jpg)
   <br/>This menu contains all of the robot's calibration routines:
     * Color sensor - calibrate white color reading, place white color below the sensor and press _Enter_
     * Color motor - calibrate the color sensor motor. Follow the instructions of the program to calibrate the color sensor to it's three                       optional positions. Use the _<_ and _>_ buttons to rotate the motor
     * Cube tray - calibrate the cube's tray motor. Use the _<_ and _>_ buttons to rotate the tray to be aligned
     * Proximity - read the current proximity sensor data
     * Color light - read the current background light. Use it to make sure the lighting condition of the room are suitable for the color                       sensor:
-        * Light is okay<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/background_ok.jpg)
-        * Light is too strong<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/background_not.jpg)
-* __Pattern__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/media/patternmenu.jpg)
+        * Light okay<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/resources/background_ok.jpg)
+        * Light too strong<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/resources/background_not.jpg)
+* __Pattern__<br/>![alt text](https://raw.githubusercontent.com/nerya21/MindCuber/master/docs/resources/patternmenu.jpg)
   <br/>This menu contains additional patterns for cube solving:
   * Plus minus
   * 4 cross
