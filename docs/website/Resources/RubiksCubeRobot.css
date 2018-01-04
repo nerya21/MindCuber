@@ -17,6 +17,13 @@ TODO {
     font-size: 15px;
 }
 
+#cubeAnim {
+    object-fit: cover;
+    width:150px;
+    height:190px;
+
+}
+
 .midTitle {
     text-decoration: underline
 }
