@@ -1,6 +1,4 @@
-~~~ 
-FORGIVE ME C FOR I HAVE SINNED
-~~~
+<!-- FORGIVE ME C FOR I HAVE SINNED -->
 # MindCuber
 NXT 2.0 Rubik's Cube solver
 ## Projects
