@@ -16,7 +16,4 @@
 */bin
 
 # WebStorm IDE files:
-*/MindCuber_Website.iml
-*MindCuber_Website/.idea/modules.xml
-*MindCuber_Website/.idea/workspace.xml
-*MindCuber_Website/.idea/*
+*/.idea/*
