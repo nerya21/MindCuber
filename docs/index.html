@@ -9,18 +9,18 @@
     <meta name="resource-type" content="document">
 
     <title>Rubik's Cube Robot</title>
-    <link rel="stylesheet" href="./Resources/RubiksCubeRobot.css" type="text/css">
-    <script src="./Resources/RubiksCubeRobot.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="./Resources/lejos-tutorial.css" type="text/css">
+    <link rel="stylesheet" href="resources/RubiksCubeRobot.css" type="text/css">
+    <script src="resources/RubiksCubeRobot.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="resources/lejos-tutorial.css" type="text/css">
 </head>
 
 <body>
 <!-- The Dr. Shahar Maoz Header-->
-<div style="margin-left: 100px"><img style="width: 100%" src="./Resources/title.PNG"></div>
+<div style="margin-left: 100px"><img style="width: 100%" src="./resources/title.PNG"></div>
 
 <!------------------------ The side navigation bar ----------------------------->
 <div class="sidenav">
-    <img width="100" src="./Resources/cube.png">
+    <img width="100" src="./resources/cube.png">
     <a href="#PageTitle">Cube Solving Robot</a>
     <a href="#description">System Description</a>
     <a href="#nxtRobot">NXT Robot</a>
@@ -34,7 +34,7 @@
     <a href="#gallery">Gallery</a>
     <a href="javadoc/index.html">JavaDoc</a>
     <!-- A "Top" button to jump to the website beginning -->
-    <button id="topBtn" title="Go back to top" onclick="topFunction()">Top<img align="top" width="18" src="./Resources/up.png"></button>
+    <button id="topBtn" title="Go back to top" onclick="topFunction()">Top<img align="top" width="18" src="./resources/up.png"></button>
 </div>
 
 <!------------------------- The Site Contents ---------------------------------->
@@ -48,7 +48,7 @@
             <br>The Robot's NXT computer is able to run different kinds of cube solving algorithms written with Java
             <br>There's much to say on this amazing little Lego Robot,
                 but a picture is worth a thousand words
-                <br>and a <b>full Cube Solving video is worth a million...</b><img align="top" width="30" src="Resources/cubeAnimation2.gif">
+                <br>and a <b>full Cube Solving video is worth a million...</b><img align="top" width="30" src="resources/cubeAnimation2.gif">
             </p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/YC9H22MIo5o" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
             <p>And for those of you who are still shocked by the first demo, here's another demo:</p>
@@ -69,7 +69,7 @@
 
             <a name="nxtRobot"></a>
             <h4 class="midTitle">The NXT Robot</h4>
-            <img width="200" src="./Resources/robot.jpg"><br>
+            <img width="200" src="./resources/robot.jpg"><br>
             <p>The robot is built from a LEGO® MINDSTORMS® NXT 2.0 set designed to solve the Rubik's Cube®
                 <br>The building instructions are available <a href="http://mindcuber.com/mindcuber/mindcuber.html">here</a></p>
 
@@ -110,11 +110,11 @@
             </ul>
             <p>The following video demonstrates some of the Robot's actions:</p>
             <video controls>
-                <source src="./Resources/RobotDemos/CubeFlips.mp4" type="video/mp4">
-                <source src="./Resources/RobotDemos/CubeFlips.mp4" type="video/ogg">
+                <source src="./resources/RobotDemos/CubeFlips.mp4" type="video/mp4">
+                <source src="./resources/RobotDemos/CubeFlips.mp4" type="video/ogg">
                 Your browser does not support HTML5 video.
             </video>
-            <a href="./Resources/RobotDemos/CubeFlips.mp4" target="_blank">Robot Actions</a>
+            <a href="./resources/RobotDemos/CubeFlips.mp4" target="_blank">Robot Actions</a>
 
 <p>Following is the Flip method, which flips the cube according to the flipMethod enum parameter -  SINGLE(1), DOUBLE(2), NONE(0):
 <pre class="CodeBox"><code>
@@ -167,11 +167,11 @@ public static void rotateCube(Direction direction) {
             </ul>
             <p>The following video demonstrates the Robot's scanning phase:</p>
             <video controls>
-                <source src="./Resources/RobotDemos/FaceScan.mp4" type="video/mp4">
-                <source src="./Resources/RobotDemos/FaceScan.mp4" type="video/ogg">
+                <source src="./resources/RobotDemos/FaceScan.mp4" type="video/mp4">
+                <source src="./resources/RobotDemos/FaceScan.mp4" type="video/ogg">
                 Your browser does not support HTML5 video.
             </video>
-            <a href="./Resources/RobotDemos/FaceScan.mp4" target="_blank">Robot Color Scanning</a>
+            <a href="./resources/RobotDemos/FaceScan.mp4" target="_blank">Robot Color Scanning</a>
 
 <p>Following is the method responsible for Scanning each cube's face
 <br>@param allColors: List of all scanned colors
@@ -292,7 +292,7 @@ static void fixCorners(Face[] faces) {
 
             <a name="cubeClass"></a>
             <h4 class="midTitle">The Cube Class</h4>
-            <img id="cubeAnim" style="padding-right: 200px" align="right" src="Resources/cubeAnimation.gif">
+            <img id="cubeAnim" style="padding-right: 200px" align="right" src="resources/cubeAnimation.gif">
             <p>
                 Provides a smart and compact Cube object which holds the cube’s data: Faces, colors and
                 orientations<br>
@@ -376,7 +376,7 @@ void setColors();
             </p>
 
             <a name="orientations"><h5>Cube Orientations</h5></a>
-            <br><img width="200" src="./Resources/rubikFlat.png"><br>
+            <br><img width="200" src="./resources/rubikFlat.png"><br>
 
 <p>The Orientations Matrix:
     <br> Following every rotation and flip of the cube executed by the robot, the cube's orientations change (i.e. 'UP' face may become 'DOWN', etc.)
@@ -533,7 +533,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
             <a name="gallery"></a>
             <h4 class="midTitle">Gallery</h4>
             <TODO>TODO...</TODO>
-            <br><br><img width="400" src="./Resources/RubiksVariations.jpg"><br>
+            <br><br><img width="400" src="./resources/RubiksVariations.jpg"><br>
 
         </td>
         </tr>
