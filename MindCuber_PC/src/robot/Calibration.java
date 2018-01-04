@@ -9,7 +9,6 @@ import application.LoggerGroup;
 import application.LoggerLevel;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
-import lejos.util.Delay;
 
 /**
  * This class contains all of the robot's calibration routines
@@ -64,6 +63,7 @@ public class Calibration extends Robot {
 	private static int[] calibrateColor() {
 		LCD.clear();
 		LCD.drawString("Color calibrate", 0, 0);
+		LCD.drawString("place white", 0, 2);
 		LCD.drawString("and press Enter", 0, 3);
 
 		ColorDetector.setMotorLocation(SensorLocation.CORNER);
