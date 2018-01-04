@@ -29,7 +29,8 @@
     <a href="#robotClass">Robot Class</a>
     <a href="#cubeClass">Cube Class</a>
     <a href="#algorithm">Solving Algorithm</a>
-    <a href="#unitTesting">Overall Unit Tests</a>
+    <a href="#tests">Tests</a> 
+    <a href="#userGuide">User Guide</a>
     <a href="#generalRemarks">General Remarks</a>
     <a href="#gallery">Gallery</a>
     <a href="javadoc/index.html">JavaDoc</a>
@@ -74,114 +75,171 @@
                 <br>The building instructions are available <a href="http://mindcuber.com/mindcuber/mindcuber.html">here</a></p>
 
             <a name="devEnv"><h4 class="midTitle">The Development Environment</h4></a>
-            <TODO>TODO...</TODO>
-            <p>
-                Eclipse with Java
-                <br>open source libraries?
-                <br> The algorithm code?,
-                <br> LEGO MINDSTORMS NXT ® and LeJOS NXJ ...</p>
-            <p>For more information see: <a href="http://smlab.cs.tau.ac.il/projects/13/legocmp/">Guide for LEGO
-                MINDSTORMS NXT</a></p>
-
+                <p>The project built using LeJOS Java libraries
+                <a name="prerequisites"><h5>Prerequisites</h5></a>
+                    <ul>
+                        <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html">Java SE Development Kit 7 - 32 bit</a></li>
+                        <li><a href="https://www.lego.com/en-us/mindstorms/downloads/nxt-software-download">LEGO® MINDSTORMS® NXT 2.0</a></li>
+                        <li><a href="http://www.lejos.org/nxj-downloads.php">leJOS NXJ</a></li>
+                        <li><a href="http://www.eclipse.org/downloads/eclipse-packages/">Eclipse IDE for Java Developers - 32 bit</a></li>
+                        <li><a href="https://lejos.sourceforge.io/nxt/nxj/tutorial/Preliminaries/UsingEclipse.htm">leJOS NXJ Plug-in for Eclipse</a></li>
+                    </ul>
+                
+                <a name="buildInst"><h5>Build Instructions</h5></a><p>
+                        First, build the NXT project and upload it to the brick using leJOS NXJ Plug-in in Eclipse.
+                        <br>Only then build the PC project and run it. Upon running it will automaticlly connect to the NXT.
+            
             <a name="architecture"></a>
-            <h4 class="midTitle">The Project Architecture</h4>
-            <p>The Project is divided into the following main modules:</p>
-            <ul>
-                <li>The Algorithm: receives the cube representation and calculates the required solving steps (to be
-                    executed by the robot)
-                </li>
-                <li>The Cube: creating a Java class which holds the cube’s representation and relevant data (passed as
-                    an input to the algorithm)
-                </li>
-                <li>The Robot: creating our own friendly API for scanning and manipulating the cube</li>
-                <li>Unit Testing: Extensive, comprehensive and specific tests for each important component of the project</li>
-            </ul>
-
+                <h4 class="midTitle">Project Architecture</h4><p>                
+                    Due to the fact that the color sensor read method (RGB mode) is not implemented in the PC mode of 
+                    LeJOS, and on the other hand the algorithm cannot run in NXT mode due to insufficient memory,
+                    we devided the project to two applications.                    
+                    <br>We've implemented a communication between the PC application that's running the algorithm and 
+                    the NXT application that performs all of the robot's operations including the unimplemented 
+                    color sensor read operation.
+                
+                    <p>The Project is divided into the three following sub-projects:
+                
+                        <a name="nxtProj"><h5>NXT Project</h5></a><p>
+                            Running simple program waiting for commands from the PC application.
+                            
+                        <a name="pcProj"><h5>PC Project</h5></a><p>
+                            Main program of the project, the PC application.
+                            <p>The PC application responsible for the user interface, test methods, calibration methods and solving the cube.
+                            <p>This project is divided into the following main modules:</p>
+                                <ul>
+                                    <li>The Algorithm: receives the cube representation and calculates the required solving steps (to be
+                                        executed by the robot)
+                                    </li>
+                                    <li>The Cube: creating a Java class which holds the cube’s representation and relevant data (passed as
+                                        an input to the algorithm)
+                                    </li>
+                                    <li>The Robot: creating our own friendly API for scanning and manipulating the cube</li>
+                                </ul>
+                        <a name="utProj"><h5>Unit Test Project</h5></a><p>
+                            This project contains all the projects' unit testing
+                    
             <a name="robotClass"></a>
-            <h4 class="midTitle">The Robot Class</h4>
-            <a name="actions"><h5>Actions</h5></a>
-            <p>The Robot supports the following actions for the Cube's usage:</p>
-            <ul>
-                <li> Robot.flipCube(...)  &nbsp; &nbsp;  // performs 0, 1 or 2 Cube BackFlips as requested</li>
-                <li> Robot.rotateCube(...)&nbsp;         // performs Full Cube Rotations to the LEFT, RIGHT, or 180 degrees</li>
-                <li> Robot.turnFace(...)  &nbsp; &nbsp;  // Specific Cube Face Rotation to the LEFT, RIGHT, or 180 degrees</li>
-                <li> Robot.scanFace(...)  &nbsp; &nbsp;  // scans all colors in the given cube's face</li>
-                <li> More operations...</li>
-            </ul>
-            <p>The following video demonstrates some of the Robot's actions:</p>
-            <video controls>
-                <source src="./resources/RobotDemos/CubeFlips.mp4" type="video/mp4">
-                <source src="./resources/RobotDemos/CubeFlips.mp4" type="video/ogg">
-                Your browser does not support HTML5 video.
-            </video>
-            <a href="./resources/RobotDemos/CubeFlips.mp4" target="_blank">Robot Actions</a>
+                    <h4 class="midTitle">The Robot Class</h4>
+                    
+                    
+                    <a name="actions"><h5>Actions</h5></a>
+                    
+                            <p>The Robot supports the following actions for the Cube's usage:</p>
+                            <ul>
+                                <li> Robot.flipCube(...)  &nbsp; &nbsp;  // performs 0, 1 or 2 Cube BackFlips as requested</li>
+                                <li> Robot.rotateCube(...)&nbsp;         // performs Full Cube Rotations to the LEFT, RIGHT, or 180 degrees</li>
+                                <li> Robot.turnFace(...)  &nbsp; &nbsp;  // Specific Cube Face Rotation to the LEFT, RIGHT, or 180 degrees</li>
+                                <li> Robot.scanFace(...)  &nbsp; &nbsp;  // scans all colors in the given cube's face</li>
+                                <li> More operations...</li>
+                            </ul>
 
-<p>Following is the Flip method, which flips the cube according to the flipMethod enum parameter -  SINGLE(1), DOUBLE(2), NONE(0):
-<pre class="CodeBox"><code>
-    private static void flip(FlipMethod method) {
-        for (int i = 0; i < method.getFlips(); i++) {
-            motor.rotateTo(ARM_POSITION_HOLD + ARM_POSITION_HOLD_EXTRA);
-            motor.rotateTo(ARM_POSITION_HOLD);
-            Delay.msDelay(ARM_FLIP_DELAY_MS);
-            motor.rotateTo(ARM_POSITION_TACKLE);
-            motor.rotateTo(ARM_POSITION_HOLD);
-    }
+                            <p>Following is the 'flipCube' method, which flips the cube according to the flipMethod enum parameter -  SINGLE(1), DOUBLE(2), NONE(0):
+                            <pre class="CodeBox"><code>
+/**
+ * Flip the cube
+ *
+ * @param method Flip method
+ * @see FlipMethod
+ */
+public static void flipCube(FlipMethod method) {
+    for (int i = 0; i < method.getFlips(); i++) {
+        Arm.motor.rotateTo(ARM_POSITION_HOLD + ARM_POSITION_HOLD_EXTRA);
+        Arm.motor.rotateTo(ARM_POSITION_HOLD);
+        delayMillisec(ARM_FLIP_DELAY_MS);
+        Arm.motor.rotateTo(ARM_POSITION_TACKLE);
+        Arm.motor.rotateTo(ARM_POSITION_HOLD);
+    }	
 }
-</code></pre></p>
+                            </code></pre></p>
 
 
-<p>Following is the 'turnFace' method,
-    which turns the currently facing down face selected face according to the turning direction argument:
-<pre class="CodeBox"><code>
+                            <p>Following is the 'turnFace' method,
+                                which turns the currently facing down face selected face according to the turning direction argument:
+                            <pre class="CodeBox"><code>
+/**
+ * Rotate the face currently facing down
+ *
+ * @param direction Turning direction
+ * @see Direction
+ */
 public static void turnFace(Direction direction) {
     Arm.motor.rotateTo(ARM_POSITION_HOLD);
-    int extraRotation =
-            direction.getDegree() > 0 ? TRAY_MOTOR_EXTRA_ROTATION : (-TRAY_MOTOR_EXTRA_ROTATION);
+    int extraRotation = direction.getDegree() > 0 ? 
+                                        TRAY_MOTOR_EXTRA_ROTATION : (-TRAY_MOTOR_EXTRA_ROTATION);
     Tray.motor.rotate((direction.getDegree() + extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
     Tray.motor.rotate((-extraRotation) * TRAY_MOTOR_ROTATION_FACTOR);
 }
-</code></pre></p>
+                            </code></pre></p>
 
-<p>Following is the 'rotateCube' method,
-    which Rotates the entire cube according to the direction argument:
-<pre class="CodeBox"><code>
+                            <p>Following is the 'rotateCube' method,
+                                which Rotates the entire cube according to the direction argument:
+                            <pre class="CodeBox" style="width: 400px"><code>
+/**
+ * Rotate entire cube
+ *
+ * @param direction Rotate direction
+ * @see Direction
+ */
 public static void rotateCube(Direction direction) {
     if (direction != Direction.NONE) {
         Arm.release();
         Tray.rotate(direction.getDegree());
     }
 }
-</code></pre></p>
+                            </code></pre></p>
 
 
 
-            <a name="colorScan"><h5>Color Scan</h5></a>
-            <p>The Robot begins it's operation on the cube with the cube color-Scanning phase.<br>
-                Following are the steps performed in the color-Scanning phase to achieve a reliable image of all the
-                cube faces colors:
-            </p>
-            <ul>
-                <li>Scan current face -> Flip the Cube -> Scan next face</li>
-                <li>Do Some Nerya magic</li>
-                <li>Some more of Nerya's magic</li>
-            </ul>
-            <p>The following video demonstrates the Robot's scanning phase:</p>
-            <video controls>
-                <source src="./resources/RobotDemos/FaceScan.mp4" type="video/mp4">
-                <source src="./resources/RobotDemos/FaceScan.mp4" type="video/ogg">
-                Your browser does not support HTML5 video.
-            </video>
-            <a href="./resources/RobotDemos/FaceScan.mp4" target="_blank">Robot Color Scanning</a>
+                    <a name="colorScan"><h5>Color Scan</h5></a><p>
+                    
+                            The NXT's color sensor is problematic and unrelaiable, so we needed to be creative in order to scan the cube.
+                            
+                            <p>Those are the phases of our color scaning development:
+                            <ol>
+                                <li>
+                                        We've started with the simple ReadColorId method supplied with the LeJOS API.
+                                        <br>We've understanded very quick that this method cannot different at all between red and orange colors 
+                                        so it was useless for us.
+                                
+                                <li>
+                                        Later on we've used the RGB representation reading of each color.
+                                        <br>In order to utilize those readings, we've added calibration method that saves the RGB read of each color
+                                        before starting solving the cube.
+                                        <br>Then, when scanning the face and read RGB of some color, we've searched for the closest color with
+                                        the calibrated data we saved before.
+                                        <br>But... we still had problems with red and orange colors!
+                                        
+                                <li>
+                                        Our next step was to develop color corrector method.
+                                        <br>Since each of the cube's corners are deterministic, we can correct any red and orange mistakes in the cube's corners by looking at thier neighbors.
+                                        <br>More about it can be learned below.
+                                        <br>And yet it wasn't enough! We were on 70% success rate because we still had problems with red and orange colors that are not on the corners...
+                                 
+                                <li>
+                                        SHIFT DELETE.
+                                        <br>We needed to redesign the color reading method, we've decided to calculate the colors relatively. 
+                                        <br>First scan RGB colors of the whole cube. 
+                                        <br>Then, filter out all the white readings by thier destination to the calibrated data (similar to step 2 above). 
+                                        <br>Last, converting the readings to HSV format, and sorting them by thier hue value.
+                                        The first 9 lowest hue values are defined as red, the next 9 defined as orange and cetera... 
+                                        <br>Now, under good lighting conditions we're on 99% success rate!                                        
+                            </ol>
 
-<p>Following is the method responsible for Scanning each cube's face
-<br>@param allColors: List of all scanned colors
-<br>@param orientation Current cube orientation
-<pre class="CodeBox"><code>
-public static void scanFace(ArrayList allColors, Orientation orientation) {
+                            <p>Following is the method responsible for scanning single cube's face
+                            <pre class="CodeBox"><code>
+/**
+ * Scan cube's face
+ * 
+ * @param allColors List of all scanned colors 
+ * @param orientation Current cube orientation
+ * @see Orientation
+ */
+public static void scanFace(ArrayList<RawColor> allColors, Orientation orientation) {
     int coordinate, row, col;
     int[] rgb;
     SensorLocation location;
-
+     
     Arm.release();
     for (coordinate = 0; coordinate < 8; coordinate++) {
         row = COORDINATE_SCAN_ORDER[coordinate][0];
@@ -202,67 +260,84 @@ public static void scanFace(ArrayList allColors, Orientation orientation) {
     allColors.add(rawColor);
     ColorDetector.motor.rotateTo(0);
 }
-</code></pre></p>
-
-            <a name="colorCorrector"><h4 class="midTitle">The Color Corrector Class</h4></a>
-            <p>
-                <code><b>public class ColorCorrector</b></code><br>
-                An essential component in the process of solving a cube by robot,
-                is achieving a reliable image of the cube's colors. <br>
-                The ColorCorrector class is intended to do exactly that! It corrects color scanning errors
-                (which often occur due to the sensitive and unideal color sensors)
-                and provides a highly reliable description of the cube's colors (to be safely used by the algorithm).<br>
-                The NXT's color sensor has difficulties to distinguish between Red and Orange colors. <br>
-                Since we are able to determine the colors at each of the cube's corners by it's neighbors,
-                we can detect and correct any Red/Orange mix up at the corners.
-                This is how the class represents the corner:
-            <pre>
-                     +--------+--------+
-                     |        |        |
-                     | corner | right  |
-                     |        |        |
-                     |        |        |
-                     +--------+--------+
-                     |        |
-                     |  left  |
-                     |        |
-                     |        |
-                     +--------+
-            </pre>
-            Whereas each of the squares above belong to another cube's face.
-            </p>
-<p>The following enumeration represent all corners of cube's face:</p>
-<pre class="CodeBox" style="width: 400px"><code>
+                            </code></pre></p>
+                    
+                            <p>Following is the method responsible for setting the cube's colors given
+                            the raw readings of all the colors:
+                            <pre class="CodeBox" style="width: 500px"><code>
+/**
+ * Place all scanned colors on the cube, fix red/orange corners
+ * and print result to logger 
+ * 
+ * @param allColors All scanned colors
+ */
+private void calcAndSetColors(ArrayList<RawColor> allColors) {
+    setWhitesByDistance(allColors);
+    setNonWhitesByHue(allColors);
+    ColorCorrector.fixCorners(faces);
+    printCubeColorsToLogger();
+}
+                            </code></pre></p>
+                    
+                    
+                    <a name="colorCorrector"><h5>The Color Corrector Class</h5></a><p>
+                        <code><b>public class ColorCorrector</b></code><br>
+                        An essential component in the process of solving a cube by robot,
+                        is achieving a reliable image of the cube's colors. <br>
+                        The ColorCorrector class is intended to do exactly that! It corrects color scanning errors
+                        (which often occur due to the sensitive and unideal color sensors)
+                        and provides a highly reliable description of the cube's colors (to be safely used by the algorithm).<br>
+                        The NXT's color sensor has difficulties to distinguish between Red and Orange colors. <br>
+                        Since we are able to determine the colors at each of the cube's corners by it's neighbors,
+                        we can detect and correct any Red/Orange mix up at the corners.
+                        This is how the class represents the corner:
+                    <pre>
+                             +--------+--------+
+                             |        |        |
+                             | corner | right  |
+                             |        |        |
+                             |        |        |
+                             +--------+--------+
+                             |        |
+                             |  left  |
+                             |        |
+                             |        |
+                             +--------+
+                    </pre>
+                    Whereas each of the squares above belong to another cube's face.
+                    </p>
+        <p>The following enumeration represent all corners of cube's face:</p>
+        <pre class="CodeBox" style="width: 400px"><code>
 private enum Corner {
     UPPER_LEFT(0, 0, 0),
     UPPER_RIGHT(1, 0, 2),
     LOWER_LEFT(2, 2, 0),
     LOWER_RIGHT(3, 2, 2);
 }
-</code></pre>
-            <pre>
-                  +--------+--------+--------+
-                  |        |        |        |
-                  | UPPER  |        | UPPER  |
-                  | LEFT   |        | RIGHT  |
-                  |        |        |        |
-                  +--------+--------+--------+
-                  |        |        |        |
-                  |        |        |        |
-                  |        |        |        |
-                  |        |        |        |
-                  +--------+--------+--------+
-                  |        |        |        |
-                  | LOWER  |        | LOWER  |
-                  | LEFT   |        | RIGHT  |
-                  |        |        |        |
-                  +--------+--------+--------+
-            </pre>
-            <p>
-                The following 'fixCorners' method is responsible for the fix routine:<br>
-                Iterates over all the cube's Red/Orange corners and fix them according to their neighbors.
-            </p>
-<pre class="CodeBox"><code>
+        </code></pre>
+                    <pre>
+                          +--------+--------+--------+
+                          |        |        |        |
+                          | UPPER  |        | UPPER  |
+                          | LEFT   |        | RIGHT  |
+                          |        |        |        |
+                          +--------+--------+--------+
+                          |        |        |        |
+                          |        |        |        |
+                          |        |        |        |
+                          |        |        |        |
+                          +--------+--------+--------+
+                          |        |        |        |
+                          | LOWER  |        | LOWER  |
+                          | LEFT   |        | RIGHT  |
+                          |        |        |        |
+                          +--------+--------+--------+
+                    </pre>
+                    <p>
+                        The following 'fixCorners' method is responsible for the fix routine:<br>
+                        Iterates over all the cube's Red/Orange corners and fix them according to their neighbors.
+                    </p>
+        <pre class="CodeBox"><code>
 static void fixCorners(Face[] faces) {
     boolean cubeFixed = false;
     for (Orientation orientation : Orientation.values()) {
@@ -287,9 +362,66 @@ static void fixCorners(Face[] faces) {
         }
     }
 }
-</code></pre>
+        </code></pre>
 
+                            <a name="nxtComm"><h5>NXT Communication</h5></a><p>
+                            As mentioned before, we needed to implement communication between the PC and NXT applications.
+                            <br>We've simply wrapped all of the motors and sensors operations in the PC project, and send appropriate
+                            command to the NXT application, that parsed the command and act upon it.
 
+                            <p>For example, this is the implementation of the <code>rotateTo</code> method in the PC project:
+                            <pre class="CodeBox" style="width: 840px"><code>
+/**
+ * Rotate motor to specified location
+ * @param limitAngle Degrees limit to rotate
+ */
+public void rotateTo(int limitAngle) {
+    NxtCommand.sendCommand(NxtOperation.OPERATION_TYPE_MOTOR, id, NxtOperation.OPERATION_ID_ROTATE_TO, limitAngle, 0);		
+}
+                            </code></pre></p>
+                            
+                            <p>This data sent as bytes to the NXT application. Upon receiveing the raw bytes data,
+                            the NXT application interpretes and act upon it:
+                            <pre class="CodeBox" style="width: 600px"><code>
+/**
+ * Run the main loop waiting for command from PC
+ * This function exits upon pressing the ESC button on the NXT
+ */
+private static void runCommandListener() {
+
+...
+
+        for (;;) {
+            try {
+                if ((inputBufferLength = in.read(inputBuffer)) > 0) {
+                    if (inputBufferLength != 7) {
+                        printToLcd("Unknown data", "received", 10000);
+                        continue;
+                    }
+                    printToLcd("Command recieved:", bytesToHex(inputBuffer), 0);
+                    byte operationType = inputBuffer[0];
+                    int port = (int) inputBuffer[1];
+                    byte operationId = inputBuffer[2];
+
+                    int argument = 0;
+                    argument |= (((int) inputBuffer[3]) & 0x000000FF) << 24;
+                    argument |= (((int) inputBuffer[4]) & 0x000000FF) << 16;
+                    argument |= (((int) inputBuffer[5]) & 0x000000FF) << 8;
+                    argument |= (((int) inputBuffer[6]) & 0x000000FF) << 0;
+
+                    if (operationType == OPERATION_TYPE_MOTOR) {
+                        switch (operationId) {
+                        case OPERATION_ID_ROTATE:
+                            motors[port].rotate(argument);
+                            break;
+                        case OPERATION_ID_ROTATE_TO:
+                            motors[port].rotateTo(argument);
+                            break;
+                            
+...                            
+                            </code></pre></p>                     
+                            
+                            
             <a name="cubeClass"></a>
             <h4 class="midTitle">The Cube Class</h4>
             <img id="cubeAnim" style="padding-right: 200px" align="right" src="resources/cubeAnimation.gif">
@@ -522,9 +654,74 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                 was quite educational (and most definitely fun).
             </p>
 
-            <a name="unitTesting"></a>
-            <h4 class="midTitle">Overall Unit Testing</h4>
-            <TODO>TODO...</TODO>
+            <a name="tests"></a>
+            
+                    <a name="unitTsts"><h5>Unit Tests</h5></a><p>
+                    Since most of our logic in the project containd in the algorithm module, we've
+                    put our best efforts testing it, and indeed we've reached 96.8% coverage rate!
+                    <br>In addition we developed additional unit testing for the cube module.
+                    <p>Since the robot module is mostly an API we've decided to test it physically
+                    with brute force tests.
+            
+                    <a name="intgTest"><h5>Integration Tests</h5></a><p>
+                    To check the robot reliability we've developed over-night test that performs 100
+                    cube solving operations and validate the cube after each operation.
+                    We've reached the following results:
+                    <TODO> RESULTS </TODO>
+            
+            <a name="userGuide"></a>
+            <h4 class="midTitle">User Guide</h4><p>
+            
+                    <a name="pcApp"><h5>PC Application</h5></a><p>
+                    <p><img  src="./resources/mainmenu.jpg"><p>
+
+                        <ul>
+                            <li><b>Solve cube:</b>
+                                    <br>Use this option after completing necessary calibration steps for solving the cube
+                            </li><p>
+                            
+                            <li><b>Tests:</b>
+                                <p><img  src="./resources/testsmenu.jpg"><p>
+                                This menu contains all of the robot's tests recommended to run to validate all robot's operations:
+                                <ul>
+                                        <li>Brute force - performs random robot's operations</li>
+                                        <li>Read color - read current color and print result to logger</li>
+                                        <li>Flip cube - perfors cube flipping operations</li>
+                                </ul>
+                            </li><p>
+                            
+                            <li><b>Calibration:</b>
+                                <p><img  src="./resources/calibrationmenu.jpg"><p>
+                                This menu contains all of the robot's calibration routines:
+                                <ul>
+                                        <li>Color sensor - calibrate white color reading, place white color below the sensor and press <b>Enter</b></li>
+                                        <li>Color motor - calibrate the color sensor motor. Follow the instructions of the program to calibrate the color sensor to it's three optional positions. Use the <b><</b> and <b>></b> buttons to rotate the motor</li>
+                                        <li>Cube tray - calibrate the cube's tray motor. Use the <b><</b> and <b>></b> buttons to rotate the tray to be aligned</li>
+                                        <li>Proximity - read the current proximity sensor data</li>
+                                        <li>
+                                                Color light - read the current background light. Use it to make sure the lighting condition of the room are suitable for the color sensor:<p>
+                                                <ul>
+                                                        <li>Light okay:<p><img  src="./resources/background_ok.jpg"><p></li>
+                                                        <li>Light too strong<p><img  src="./resources/background_not.jpg"><p></li>
+                                                </ul>
+                                        </li>
+                                </ul>
+                                
+                            </li><p>
+                            
+                            <li><b>Pattern:</b>
+                                <p><img  src="./resources/patternmenu.jpg"><p>
+                                This menu contains additional patterns for cube solving:
+                                <ul>
+                                        <li>Plus minus</li>
+                                        <li>4 cross</li>
+                                        <li>Cube cube</li>
+                                        <li>Cube cube cube</li>
+                                </ul>
+                            </li><p>
+                            
+                        </ul>
+                                
 
             <a name="generalRemarks"></a>
             <h4 class="midTitle">General Remarks</h4>
