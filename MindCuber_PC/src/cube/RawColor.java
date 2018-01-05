@@ -68,8 +68,7 @@ public class RawColor {
 	public static Comparator<RawColor> hueComparator = new Comparator<RawColor>() {
 
 		public int compare(RawColor color1, RawColor color2) {
-			//TODO
-			return (color1.hue > color2.hue) ? 1 : -1;
+			return Double.compare(color1.hue, color2.hue);
 		}
 	};
 	
