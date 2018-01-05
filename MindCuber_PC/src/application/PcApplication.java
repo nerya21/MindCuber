@@ -29,7 +29,7 @@ public class PcApplication {
 		Robot.init();		
 		registerShutdownHandler();
 		
-		if (args.length == 1 && args[0] == "-overnight") {
+		if (args.length == 1 && args[0].compareTo("-overnight") == 0) {
 			runOvernightTest(100);
 		} else {
 			run();	
@@ -49,12 +49,15 @@ public class PcApplication {
 		Boolean validation;
 
 		for (int i = 0; i < cycles; i++) {
+			Tests.bruteForce(10);
 			status = CubeSolver.forceSolveCube(0);
 			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION,
 					"[" + i + "] Solving finished with status: " + status);
 			if (status == 0) {
-				successes++;
 				validation = Cube.validateCubeSolution();
+				if (validation) {
+					successes++;
+				}
 				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION,
 						"[" + i + "] Validation finished with status: " + validation);
 			}
@@ -86,7 +89,7 @@ public class PcApplication {
 				for (;;) {
 					selection = waitForUserSelection(testsMenu);
 					if (selection == TestsMenu.BRUTEFORCE.getValue()) {
-						Tests.bruteForce();
+						Tests.bruteForce(100);
 					} else if (selection == TestsMenu.COLOR.getValue()) {
 						Tests.readColor();
 					} else if (selection == TestsMenu.FLIP.getValue()) {

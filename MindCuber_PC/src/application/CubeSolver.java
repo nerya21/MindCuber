@@ -85,6 +85,7 @@ public class CubeSolver {
 			
 			//if found a solution (status = 0 when the cube is already solved) 
 			if (moves.size() != 0 || errorCode == 0) {
+				errorCode = 0;
 				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Finish calculating moves, start solving");
 				handleSolution(cube, moves);
 				Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube finished");

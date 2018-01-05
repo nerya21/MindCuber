@@ -48,9 +48,14 @@ public class Tests extends Robot {
 	/**
 	 * This method makes multiple cube operations (flip, turn and rotate)
 	 * in order to manually check the robustness of the robot
+	 * 
+	 * @param limit Number of operations
 	 */
-	public static void bruteForce() {
-		for (int i = 0; !Button.ESCAPE.isDown(); i++) {
+	public static void bruteForce(int limit) {
+		for (int i = 0; i < limit; i++) {
+			if (Button.ESCAPE.isDown()) {
+				break;
+			}
 			rotateCube(i % 3 == 0 ? Direction.RIGHT : Direction.NONE);
 			flipCube(i % 4 == 0 ? FlipMethod.DOUBLE : FlipMethod.SINGLE);
 			turnFace(i % 3 == 0 ? Direction.RIGHT : Direction.LEFT);
