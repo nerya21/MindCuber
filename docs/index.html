@@ -199,31 +199,31 @@ public static void rotateCube(Direction direction) {
                             <ol>
                                 <li>
                                         We've started with the simple ReadColorId method supplied with the LeJOS API.
-                                        <br>We've understanded very quick that this method cannot different at all between red and orange colors 
+                                        We've understanded very quick that this method cannot different at all between red and orange colors 
                                         so it was useless for us.
                                 
                                 <li>
                                         Later on we've used the RGB representation reading of each color.
-                                        <br>In order to utilize those readings, we've added calibration method that saves the RGB read of each color
+                                        In order to utilize those readings, we've added calibration method that saves the RGB read of each color
                                         before starting solving the cube.
-                                        <br>Then, when scanning the face and read RGB of some color, we've searched for the closest color with
+                                        Then, when scanning the face and read RGB of some color, we've searched for the closest color with
                                         the calibrated data we saved before.
-                                        <br>But... we still had problems with red and orange colors!
+                                        But... we still had problems with red and orange colors!
                                         
                                 <li>
                                         Our next step was to develop color corrector method.
-                                        <br>Since each of the cube's corners are deterministic, we can correct any red and orange mistakes in the cube's corners by looking at thier neighbors.
-                                        <br>More about it can be learned below.
-                                        <br>And yet it wasn't enough! We were on 70% success rate because we still had problems with red and orange colors that are not on the corners...
+                                        Since each of the cube's corners are deterministic, we can correct any red and orange mistakes in the cube's corners by looking at thier neighbors.
+                                        More about it can be learned below.
+                                        And yet it wasn't enough! We were on 70% success rate because we still had problems with red and orange colors that are not on the corners...
                                  
                                 <li>
                                         SHIFT DELETE.
-                                        <br>We needed to redesign the color reading method, we've decided to calculate the colors relatively. 
-                                        <br>First scan RGB colors of the whole cube. 
-                                        <br>Then, filter out all the white readings by thier destination to the calibrated data (similar to step 2 above). 
-                                        <br>Last, converting the readings to HSV format, and sorting them by thier hue value.
+                                        We needed to redesign the color reading method, we've decided to calculate the colors relatively. 
+                                        First scan RGB colors of the whole cube. 
+                                        Then, filter out all the white readings by thier destination to the calibrated data (similar to step 2 above). 
+                                        Last, converting the readings to HSV format, and sorting them by thier hue value.
                                         The first 9 lowest hue values are defined as red, the next 9 defined as orange and cetera... 
-                                        <br>Now, under good lighting conditions we're on 99% success rate!                                        
+                                        Now, under good lighting conditions we're on 99% success rate!                                        
                             </ol>
 
                             <p>Following is the method responsible for scanning single cube's face
@@ -589,28 +589,17 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
             <p>Following our research on Rubik’s cube solving algorithms, we chose the following two-phase
                 algorithm.</p>
             <a name="twoPhaseAlgo"><h5>2-Phase Algorithm</h5></a>
+			<img id="imgHerbertKociemba" src="https://www.speedsolving.com/interviews/interview-herbertk.jpg">
             <p>
-                We are using the two-phase algorithm, introduced by Herbert Kociemba in 1991-1992.
-                <img style="float: right; margin-right: 300px" width="80"
-                     src="https://www.speedsolving.com/interviews/interview-herbertk.jpg"><br>
-                The problem of solving the cube is translated into a shortest path in a graph problem, <br>
-                where the nodes are the different states of the cube, and there is an edge between two nodes <br>
-                if one state can be reached from the other by turning one face of the cube.
-            </p>
-            <a name="algoRep"><h5>Cube Representation</h5></a>
-            <p>
-                Cube’s state is represented using a set of coordinates, driven from it's corners and edges permutations
-                and orientations compared to a solved cube.<br>
-                The corners and edges permutations and orientations tells us how to move and rotate each corner and how to move and flip each edge
-                in order to reach a given cube from a solved cube.<br>
-                In this way, a cube representation can be interpreted as a function. Given an initial cube state,
-                the algorithm implicitly finds the inverse cube\function to it.
+				We are using the two-phase algorithm, introduced by Herbert Kociemba in 1991-1992.
+				The problem of solving the cube is translated into a shortest path in a graph problem, where the nodes are the different states of the cube,
+				and there is an edge between two nodes if one state can be reached from the other by turning one face of the cube.
+				Exploring and understanding the algorithm was one of the major parts of our project, and we believe it was quite educational (and most definitely fun :)).
             </p>
             <a name="solution"><h5>Searching For Solution</h5></a>
             <p>Searching for the solution is done in two phases:</p>
             <ol>
-                <li>The algorithm first tries to find a path from cube’s initial state to one of the states that can be
-                    reached
+                <li>The algorithm first tries to find a path from cube’s initial state to one of the states that can be reached
                     from a solved cube using only the following moves: U, D, R2, L2 F2, B2.
                 </li>
                 <li>Once we found a path, the algorithm tries to find a path from the current state to the solved cube,
@@ -626,32 +615,38 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                 solution cannot be found with the given state and depth. The heuristic function gives a lower bound on
                 the number of moves required to reach from a state to the goal state.
             </p>
+            <a name="algoRep"><h5>Cube Representation</h5></a>
+            <p>
+                Cube is represented in 3 levels:
+				<br><b> Facelets Level </b> - cube is represented by an 54 entries array. Each entry is one of the 6 possibe colors of cube faces.
+				This is the initial, most simple representation.
+				<br><b> Cubie Level </b> - cube is represented by it's coreners and edges permutations and orientations, compared to a solved cube.
+				This representation tells us where to move and how to rotate each corner and where to move and how to flip each edge in order to reach a given cube from a solved cube.
+				Using this representation, we can define the inverse cube of a cube, which is a cube that if we perform the set of moves created it from a solved cube on the original cube, we reach the solved cube.
+				We can also define a multiplication of two cubes. You can think of multiplying cube A by cube B like taking a set of moves that transform a solved cube into B cube and perform it on A.
+				<br><b> Coordinate Level </b> - cube is represented using a set of coordinates driven from it's corners and edges permutations and orientations compared to a solve cube.
+				The set of coordinates is not the same in both phases. This set of coordinates defines us the state of the cube, which is used during the search algorithm.
+            </p>
+			<p>For more information regarding the two-phase algorithm, please refer to Kociemba’s site: <a href="http://kociemba.org/cube.htm">http://kociemba.org/cube.htm</a></p>
             <a name="implementation"><h5>The Implementation</h5></a>
             <p>
-                Our implementation is based on Kociemba’s implementation for this algorithm, which he published in his
-                site:
-                <a href="http://kociemba.org/cube.htm">http://kociemba.org/cube.htm</a><br>
-                It implements the two-phase algorithm in a simple form, and does not use
-                symmetry for better performance. <br>Moreover, the implementation is not finding the shortest solution.
-                It
-                finds a short solution for the first phase, and then tries to find a short solution from current state
+                Our implementation is based on Kociemba’s implementation for this algorithm, which he published in his site.
+                It implements the two-phase algorithm in a simple form, and does not use symmetry for better performance.
+				Moreover, the implementation does not find the shortest solution.
+                It finds a short solution for the first phase, and then tries to find a short solution from current state
                 to the solved cube, so the combination of the two is not necessarily the shortest solution.
             </p>
 
             <a name="modifications"><h5>Our Modifications</h5></a>
-            <p>We also added the ability to select a pattern, so that preforming the set of moves returned by the
+            <p>We added the ability to select a pattern, so that preforming the set of moves returned by the
                 algorithm will produce a cube with the selected pattern.
                 To allow the pattern ability, we calculate the inverse cube of the pattern, multiply it by the given
-                cube and then find a solution for the result cube.
-                (You can think of multiplying cube A by B like taking a set of moves that transform a solved cube into B
-                cube and perform them on A cube).
-                The algorithm finds a solution for the resulted cube, which is a set
+                cube and then find a solution for the resulted cube.
+                The algorithm finds a solution for the resulted cube, which is also a set
                 of moves to create its reverse cube from a solved cube. This reverse cube is the multiplication of the
                 reverse of the original cube and the pattern, so applying the resulted set of moves on the cube brings
                 us from the initial cube to a solved cube and then to the patterned cube (this is not done one after the
                 other, this is just an easier way to understand what happens).
-                Exploring and understanding the algorithm was one of the major parts of our project, and we believe it
-                was quite educational (and most definitely fun).
             </p>
 
             <a name="tests"></a>
