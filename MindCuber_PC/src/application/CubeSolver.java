@@ -185,7 +185,7 @@ public class CubeSolver {
 	 * @param cube - the cube to create representation for
 	 * @return the string representation of the cube on success, and null on conversion failure.
 	 */
-	private static String createCubeRepForAlgorithm(ICube cube) {
+	public static String createCubeRepForAlgorithm(ICube cube) {
 		IFace face;
 		Colors realColor;
 		Color faceColor;

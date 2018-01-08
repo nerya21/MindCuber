@@ -4,6 +4,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import application.CubeSolverTest;
 import cube.CubeTest;
 import twophase.CubieCubeTest;
 import twophase.FaceCubeTest;
@@ -46,6 +47,15 @@ public class TestRunner {
 		System.out.println("Running Cube class tests");
 		if (CubeTest.cubeTestRun()) {
 			System.out.println("Cube class tests finished successfully");
+		}
+		
+		System.out.println("Running CubeSolverTest class tests");
+		result = JUnitCore.runClasses(CubeSolverTest.class);
+		for (Failure failure : result.getFailures()) {
+			System.out.println(failure.toString());
+		}
+		if(result.wasSuccessful()) {
+			System.out.println("CubeSolverTest class tests finished successfully");
 		}
 
 		System.out.println("Finished...");
