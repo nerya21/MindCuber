@@ -58,21 +58,35 @@
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/I49jcPHtw_A" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
 
             <a name="description"><h4 class="midTitle">System description</h4></a>
-            <p>We now give an informal description of the robot and its tasks...</p>
+            <p>We now provide an informal description of the robot and its tasks...</p>
             <a name="requirements"><h5>Requirements</h5></a>
             <ol>
                 <TODO>TODO...</TODO>
+                <li>The robot should be calibrated to provide optimal performance</li>
+                <li></li>
+                <li></li>
             </ol>
             <a name="assumptions"><h5>Assumptions</h5></a>
             <ol>
                 <TODO>TODO...</TODO>
+                <li>The backlight is not too bright (avoid dazzling the robot's color sensor)</li>
+                <li>The Cube is provided in a valid state (so that it is is guaranteed that a solution exists)</li>
+                <li></li>
+                <li></li>
             </ol>
 
             <a name="nxtRobot"></a>
             <h4 class="midTitle">The NXT Robot</h4>
             <img width="200" src="./resources/robot.jpg"><br>
             <p>The robot is built from a LEGO® MINDSTORMS® NXT 2.0 set designed to solve the Rubik's Cube®
-                <br>The building instructions are available <a href="http://mindcuber.com/mindcuber/mindcuber.html">here</a></p>
+                <br>The building instructions are available <a href="http://mindcuber.com/mindcuber/mindcuber.html">here.</a>
+            <br>
+                The NXT robot consists of three motors: one for the arm that performs flips,
+                the other for the rotation of the tray on which the cube is placed
+                and the third for the color sensor to be drawn to each of the sides in the color scanning phase
+                <br>The robot also has two sensors: the first is responsible for color scanning and
+                the other is a proximity sensor that identifies the distance from the cube.
+            </p>
 
             <a name="devEnv"><h4 class="midTitle">The Development Environment</h4></a>
                 <p>The project built using LeJOS Java libraries
@@ -680,7 +694,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
             <h4 class="midTitle">User Guide</h4><p>
             
                     <a name="pcApp"><h5>PC Application</h5></a><p>
-                    <p><img  src="./resources/mainmenu.jpg"><p>
+                    <p><img class="robotMenu" src="./resources/mainmenu.jpg"><p>
 
                         <ul>
                             <li><b>Solve cube:</b>
@@ -688,7 +702,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                             </li><p>
                             
                             <li><b>Tests:</b>
-                                <p><img  src="./resources/testsmenu.jpg"><p>
+                                <p><img class="robotMenu" src="./resources/testsmenu.jpg"><p>
                                 This menu contains all of the robot's tests recommended to run to validate all robot's operations:
                                 <ul>
                                         <li>Brute force - performs random robot's operations</li>
@@ -698,7 +712,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                             </li><p>
                             
                             <li><b>Calibration:</b>
-                                <p><img  src="./resources/calibrationmenu.jpg"><p>
+                                <p><img class="robotMenu" src="./resources/calibrationmenu.jpg"><p>
                                 This menu contains all of the robot's calibration routines:
                                 <ul>
                                         <li>Color sensor - calibrate white color reading, place white color below the sensor and press <b>Enter</b></li>
@@ -717,7 +731,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                             </li><p>
                             
                             <li><b>Pattern:</b>
-                                <p><img  src="./resources/patternmenu.jpg"><p>
+                                <p><img class="robotMenu" src="./resources/patternmenu.jpg"><p>
                                 This menu contains additional patterns for cube solving:
                                 <ul>
                                         <li>Plus minus</li>

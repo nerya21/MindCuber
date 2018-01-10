@@ -107,3 +107,10 @@ TODO {
 	padding-left: 20px; 
 	height: 250px;
 }
+
+.robotMenu {
+    display: block;
+    /*width: 150px;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+}
