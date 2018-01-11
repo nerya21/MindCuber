@@ -6,6 +6,7 @@ import org.junit.runner.notification.Failure;
 
 import application.CubeSolverTest;
 import cube.CubeTest;
+import twophase.CoordCubeTest;
 import twophase.CubieCubeTest;
 import twophase.FaceCubeTest;
 import twophase.SearchTest;
@@ -33,7 +34,14 @@ public class TestRunner {
 		if(result.wasSuccessful()) {
 			System.out.println("FaceCube class tests finished successfully");
 		}
-		
+		System.out.println("Running CoordCube class tests");
+		result = JUnitCore.runClasses(CoordCubeTest.class);
+		for (Failure failure : result.getFailures()) {
+			System.out.println(failure.toString());
+		}
+		if(result.wasSuccessful()) {
+			System.out.println("CoordCube class tests finished successfully");
+		}
 		System.out.println("Running Search class tests");
 		result = JUnitCore.runClasses(SearchTest.class);
 		for (Failure failure : result.getFailures()) {
