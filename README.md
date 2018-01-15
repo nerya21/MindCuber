@@ -48,4 +48,8 @@ Please complete the required steps before solving the cube:
 2. Make sure light conditions are okay with _Color light_ calibration option
 3. Run the _Brute force_ test to make sure everything is okay
 ## Authors
-TODO: complete
+* Elad Yacovi (eladyacovi@mail.tau.ac.il)
+* Ofek Amir (ofekamir7@gmail.com)
+* Gil Akiva (gilakiva@mail.tau.ac.il)
+* Nir Zaidman (nir.zaidman@gmail.com)
+* Nerya Meshulam (nerya.m@gmail.com)
