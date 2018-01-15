@@ -57,7 +57,6 @@
             <p>The next vedeo demonstrates a "Cross Pattern" cube solution:</p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/I49jcPHtw_A" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
 
-<!--
             <a name="description"><h4 class="midTitle">System description</h4></a>
             <p>We now provide an informal description of the robot and its tasks...</p>
             <a name="requirements"><h5>Requirements</h5></a>
@@ -75,7 +74,6 @@
                 <li></li>
                 <li></li>
             </ol>
--->
 
             <a name="nxtRobot"></a>
             <h4 class="midTitle">The NXT Robot</h4>
@@ -679,17 +677,34 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
 
             <a name="tests"></a>
             
-                    <a name="unitTsts"><h5>Unit Tests</h5></a><p>
-                    Since most of our logic in the project containd in the algorithm module, we've
-                    put our best efforts testing it, and indeed we've reached 96.8% coverage rate!
-                    <br>In addition we developed additional unit testing for the cube module.
-                    <p>Since the robot module is mostly an API we've decided to test it physically
-                    with brute force tests.
-            
-                    <a name="intgTest"><h5>Integration Tests</h5></a><p>
+                    <a name="unitTests"><h5>Unit Tests</h5></a>
+            <p>
+                Since most of our logic in the project containd in the algorithm module, we've
+                put our best efforts testing it, and indeed we've reached 96.8% coverage rate!
+            </p>
+            <p>
+                In addition we developed additional unit testing for the cube module.
+                Since the robot module is mostly an API we've decided to test it physically
+                with brute force tests.
+            </p>
+
+            <h5>Two phase algorithms unit tests:</h5>
+            <p>
+                We used the Junit framework to test our algorithm.
+                <br>We have 4 test cases: CoordCube, CubieCube, FaceCube and Search.
+                <br>In all our tests we used test files which contain the expected results, the files contain both valid cube and invalid cube cases.
+                <br>In the CoordCube test we checked the creation of the all the static arrays that are used in the algorithm, we used Kociemba website and other examples to calculate the expcted results.
+                <br>In CubieCube test we all getters and setters, and the different operations, we checked different cubes representation.
+                <br>In FaceCube test we checked to conversion and the constructor
+                <br>In Search test we checked the whole algorithm together by searching a solution for different cubes.
+                <br>To run the test right click on the MindCuber_UT project and choose Run As..->Junit (Or click the Run button in the menu bar)
+            </p>
+
+            <a name="intgTest"><h5>Integration Tests</h5></a>
+            <p>
                     To check the robot reliability we've developed over-night test that performs 100
                     cube solving operations and validate the cube after each operation.
-                    We've reached the following results:
+                    We've reached the following results:<br>
                     <TODO> RESULTS </TODO>
             
             <a name="userGuide"></a>
