@@ -33,6 +33,7 @@
     <a href="#userGuide">User Guide</a>
     <a href="#generalRemarks">General Remarks</a>
     <a href="#gallery">Gallery</a>
+    <a href="https://github.com/nerya21/MindCuber">Repository</a>
     <a href="javadoc/index.html">JavaDoc</a>
     <!-- A "Top" button to jump to the website beginning -->
     <button id="topBtn" title="Go back to top" onclick="topFunction()">Top<img align="top" width="18" src="./resources/up.png"></button>
@@ -44,35 +45,31 @@
         <tbody>
         <td>
             <!-- CONTENT AREA --> <!-- CONTENT TITLE -->
-            <div id="PageTitle">The Rubik's Cube Solving Robot</div>
-            <p>The Robot is a MindCuber for LEGO MINDSTORMS NXT 2.0 which was designed for solving Rubik's cube
+            <div id="PageTitle">MindCuber - The Rubik's Cube Solving Robot</div>
+            <p>The robot is LEGO® MINDSTORMS® NXT 2.0 kit which was designed to solving Rubik's cube.
             <br>The Robot's NXT computer is able to run different kinds of cube solving algorithms written with Java
             <br>There's much to say on this amazing little Lego Robot,
                 but a picture is worth a thousand words
-                <br>and a <b>full Cube Solving video is worth a million...</b><img align="top" width="30" src="resources/cubeAnimation2.gif">
+                <br>and a <b>full cube solving video is worth a million...</b><img align="top" width="30" src="resources/cubeAnimation2.gif">
             </p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/YC9H22MIo5o" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
             <p>And for those of you who are still shocked by the first demo, here's another demo:</p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/WYyZaW3r1MA" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
-            <p>The next vedeo demonstrates a "Cross Pattern" cube solution:</p>
+            <p>The next video demonstrates a "Cross Pattern" cube solution:</p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/I49jcPHtw_A" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
 
             <a name="description"><h4 class="midTitle">System description</h4></a>
             <p>We now provide an informal description of the robot and its tasks...</p>
             <a name="requirements"><h5>Requirements</h5></a>
             <ol>
-                <TODO>TODO...</TODO>
-                <li>The robot should be calibrated to provide optimal performance</li>
-                <li></li>
-                <li></li>
+                <li>The NXT robot was built according to the <a href="http://mindcuber.com/mindcuber/MindCuber.pdf">building instructions</a></li>
+                <li>The robot's arm is at it's startup position before running the application (as in the attached videos above)</li>
+                <li>The robot is calibrated (see <a href="#userGuide">User Guide</a>)</li>
             </ol>
             <a name="assumptions"><h5>Assumptions</h5></a>
             <ol>
-                <TODO>TODO...</TODO>
-                <li>The backlight is not too bright (avoid dazzling the robot's color sensor)</li>
-                <li>The Cube is provided in a valid state (so that it is is guaranteed that a solution exists)</li>
-                <li></li>
-                <li></li>
+                <li>The lighting conditions is stable during the robot's operation</li>
+                <li>The Rubik's Cube is provided in a valid state (so that it is is guaranteed that a solution exists)</li>
             </ol>
 
             <a name="nxtRobot"></a>
@@ -101,7 +98,8 @@
                 
                 <a name="buildInst"><h5>Build Instructions</h5></a><p>
                         First, build the NXT project and upload it to the brick using leJOS NXJ Plug-in in Eclipse.
-                        <br>Only then build the PC project and run it. Upon running it will automaticlly connect to the NXT.
+                        <br>Only then build the PC project and run it. Upon running it will automaticlly connect to the NXT,
+                        and will be ready for operation. 
             
             <a name="architecture"></a>
                 <h4 class="midTitle">Project Architecture</h4><p>                
@@ -676,37 +674,32 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
             </p>
 
             <a name="tests"></a>
-            
-                    <a name="unitTests"><h5>Unit Tests</h5></a>
+                        <h4 class="midTitle">Tests</h4><p>
+
+
+
+            <h5>Algorithm Unit Tests</h5>
             <p>
                 Since most of our logic in the project containd in the algorithm module, we've
-                put our best efforts testing it, and indeed we've reached 96.8% coverage rate!
-            </p>
-            <p>
-                In addition we developed additional unit testing for the cube module.
-                Since the robot module is mostly an API we've decided to test it physically
-                with brute force tests.
-            </p>
-
-            <h5>Two phase algorithms unit tests:</h5>
-            <p>
-                We used the Junit framework to test our algorithm.
+                put our best efforts testing it using unit tests, and indeed we've reached 96.8% coverage rate!
+                <p>We used the Junit framework to test our algorithm.
                 <br>We have 4 test cases: CoordCube, CubieCube, FaceCube and Search.
                 <br>In all our tests we used test files which contain the expected results, the files contain both valid cube and invalid cube cases.
                 <br>In the CoordCube test we checked the creation of the all the static arrays that are used in the algorithm, we used Kociemba website and other examples to calculate the expcted results.
                 <br>In CubieCube test we all getters and setters, and the different operations, we checked different cubes representation.
                 <br>In FaceCube test we checked to conversion and the constructor
                 <br>In Search test we checked the whole algorithm together by searching a solution for different cubes.
-                <br>To run the test right click on the MindCuber_UT project and choose Run As..->Junit (Or click the Run button in the menu bar)
+                <p>To run the test right click on the MindCuber_UT project and choose Run As..->Junit (Or click the Run button in the menu bar)
             </p>
 
-            <a name="intgTest"><h5>Integration Tests</h5></a>
+            <a name="intgTest"><h5>Validation Tests</h5></a>
             <p>
-                    To check the robot reliability we've developed over-night test that performs 100
-                    cube solving operations and validate the cube after each operation.
-                    We've reached the following results:<br>
-                    <TODO> RESULTS </TODO>
-            
+                    Since the robot module is mostly an API we've decided to focus on validation tests.
+                    <p>To check the robot reliability and robustness we've developed an over-night test that performs 100
+                    cube solving operations and validates the cube after each operation.
+                    <br>Those tests helped up caught and fix rare exceptions. In addition it helped 
+                    us optimized some parameters and increase our success rate.
+                    <br>In the last tests' cycle we've reached 98% success rate! (98 successes out of 100 tries)          
             <a name="userGuide"></a>
             <h4 class="midTitle">User Guide</h4><p>
             
