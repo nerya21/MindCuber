@@ -680,23 +680,27 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
             </p>
 
             <a name="tests"></a>
-                        <h4 class="midTitle">Tests</h4><p>
-
-
-
-            <h5>Algorithm Unit Tests</h5>
-            <p>
-                Since most of our logic in the project contained in the algorithm module, we've
-                put our best efforts testing it using unit tests, and indeed we've reached 96.8% coverage rate!
-                <p>We used the Junit framework to test our algorithm.
-                <br>We have 4 test cases: CoordCube, CubieCube, FaceCube and Search.
-                <br>In all our tests we used test files which contain the expected results, the files contain both valid cube and invalid cube cases.
-                <br>In the CoordCube test we checked the creation of the all the static arrays that are used in the algorithm, we used Kociemba website and other examples to calculate the expcted results.
-                <br>In CubieCube test we all getters and setters, and the different operations, we checked different cubes representation.
-                <br>In FaceCube test we checked to conversion and the constructor
-                <br>In Search test we checked the whole algorithm together by searching a solution for different cubes.
-                <p>To run the test right click on the MindCuber_UT project and choose Run As..->Junit (Or click the Run button in the menu bar)
-            </p>
+            <h4 class="midTitle">Tests</h4><p>
+            <h5>Unit Tests</h5>
+			<p>
+				We used the Junit framework for unit testing. All unit tests are found in the MindCuber_UT project.
+				<br>Since most of our logic in the project containd in the algorithm module, we've put our best efforts testing it using unit tests, and indeed we've reached 96.8% coverage rate!
+			</p>
+			<p>
+				Algorithms tests are found under the twophase package. There is a seperate test class for each of the 3 cube representations classes: CoordCubeTest, CubieCubeTest and FaceCubeTest.
+				We tested classes constructors, properties and methods. This includes coordinate calculations, cube operations such as multiply and inverse, translations from one representation to another, cube validation etch.
+				In the CoordCube test, we checked the creation of the all the static arrays that are used in the algorithm. We used Kociemba website and other examples to calculate the expcted results.
+				We also tested the main function that finds a solution, for both valid and invalid cube, with and without pattern supplied. This is done in SearchTest class.
+			</p>
+			<p>
+				Cube class tests are found under the cube package.
+				<br>Under the application package you can find tests for the conversion between cube and algorithm representation.
+				<br>The different tests are documented in each test class.
+				In most tests, we used text files which contain the inputs and expected results. These files can be found under testsFiles. This allows adding more inputs without changing the code.
+			</p>
+			<p>
+				To run the tests, open the MindCuber_UT project using eclipse, right click on the project and choose Run As..->Junit (Or click the Run button in the menu bar)
+			</p>
 
             <a name="intgTest"><h5>Validation Tests</h5></a>
             <p>
