@@ -79,7 +79,7 @@ public class CubeSolver {
 			List<Move> moves = new ArrayList<>();
 			int depth = 24;
 			do {
-				errorCode = TwoPhase.findSolution(cubeString, depth - 1, 120, moves, pattern);
+				errorCode = TwoPhase.findSolution(cubeString, depth - 1, 30, moves, pattern);
 				depth = moves.size();
 			} while (errorCode == 0 && depth > 0); 
 			
