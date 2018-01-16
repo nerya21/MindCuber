@@ -22,10 +22,10 @@
 <div class="sidenav">
     <img width="100" src="./resources/cube.png">
     <a href="#PageTitle">Cube Solving Robot</a>
-    <a href="#description">System Description</a>
     <a href="#nxtRobot">NXT Robot</a>
     <a href="#devEnv">Dev Environment</a>
     <a href="#architecture">Project Architecture</a>
+    <a href="#reqAndAssump">Requirements & Assumptions</a>
     <a href="#robotClass">Robot Class</a>
     <a href="#cubeClass">Cube Class</a>
     <a href="#algorithm">Solving Algorithm</a>
@@ -46,10 +46,13 @@
         <td>
             <!-- CONTENT AREA --> <!-- CONTENT TITLE -->
             <div id="PageTitle">MindCuber - The Rubik's Cube Solving Robot</div>
-            <p>The robot is LEGO® MINDSTORMS® NXT 2.0 kit which was designed to solving Rubik's cube.
-            <br>The Robot's NXT computer is able to run different kinds of cube solving algorithms written with Java
-            <br>There's much to say on this amazing little Lego Robot,
-                but a picture is worth a thousand words
+            <p>
+                This project deals with the development of a Rubik’s cube solving robot,
+                <br>based on a LEGO® MINDSTORMS® NXT 2.0 kit Robot designed for this purpose.
+                <br>The robot is capable of running different kinds of cube solving algorithms written with Java.
+            </p>
+            <p>
+                There's much more to say on this amazing little Lego Robot, but a picture is worth a thousand words
                 <br>and a <b>full cube solving video is worth a million...</b><img align="top" width="30" src="resources/cubeAnimation2.gif">
             </p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/YC9H22MIo5o" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
@@ -57,20 +60,6 @@
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/WYyZaW3r1MA" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
             <p>The next video demonstrates a "Cross Pattern" cube solution:</p>
             <div><iframe width="560" height="315" src="https://www.youtube.com/embed/I49jcPHtw_A" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></div>
-
-            <a name="description"><h4 class="midTitle">System description</h4></a>
-            <p>We now provide an informal description of the robot and its tasks...</p>
-            <a name="requirements"><h5>Requirements</h5></a>
-            <ol>
-                <li>The NXT robot was built according to the <a href="http://mindcuber.com/mindcuber/MindCuber.pdf">building instructions</a></li>
-                <li>The robot's arm is at it's startup position before running the application (as in the attached videos above)</li>
-                <li>The robot is calibrated (see <a href="#userGuide">User Guide</a>)</li>
-            </ol>
-            <a name="assumptions"><h5>Assumptions</h5></a>
-            <ol>
-                <li>The lighting conditions is stable during the robot's operation</li>
-                <li>The Rubik's Cube is provided in a valid state (so that it is is guaranteed that a solution exists)</li>
-            </ol>
 
             <a name="nxtRobot"></a>
             <h4 class="midTitle">The NXT Robot</h4>
@@ -86,51 +75,65 @@
             </p>
 
             <a name="devEnv"><h4 class="midTitle">The Development Environment</h4></a>
-                <p>The project built using LeJOS Java libraries
+            <p>The project built using LeJOS Java libraries</p>
                 <a name="prerequisites"><h5>Prerequisites</h5></a>
-                    <ul>
-                        <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html">Java SE Development Kit 7 - 32 bit</a></li>
-                        <li><a href="https://www.lego.com/en-us/mindstorms/downloads/nxt-software-download">LEGO® MINDSTORMS® NXT 2.0</a></li>
-                        <li><a href="http://www.lejos.org/nxj-downloads.php">leJOS NXJ</a></li>
-                        <li><a href="http://www.eclipse.org/downloads/eclipse-packages/">Eclipse IDE for Java Developers - 32 bit</a></li>
-                        <li><a href="https://lejos.sourceforge.io/nxt/nxj/tutorial/Preliminaries/UsingEclipse.htm">leJOS NXJ Plug-in for Eclipse</a></li>
-                    </ul>
-                
-                <a name="buildInst"><h5>Build Instructions</h5></a><p>
-                        First, build the NXT project and upload it to the brick using leJOS NXJ Plug-in in Eclipse.
-                        <br>Only then build the PC project and run it. Upon running it will automaticlly connect to the NXT,
-                        and will be ready for operation. 
-            
-            <a name="architecture"></a>
-                <h4 class="midTitle">Project Architecture</h4><p>                
-                    Due to the fact that the color sensor read method (RGB mode) is not implemented in the PC mode of 
-                    LeJOS, and on the other hand the algorithm cannot run in NXT mode due to insufficient memory,
-                    we devided the project to two applications.                    
-                    <br>We've implemented a communication between the PC application that's running the algorithm and 
-                    the NXT application that performs all of the robot's operations including the unimplemented 
-                    color sensor read operation.
-                
-                    <p>The Project is divided into the three following sub-projects:
-                
-                        <a name="nxtProj"><h5>NXT Project</h5></a><p>
-                            Running simple program waiting for commands from the PC application.
-                            
-                        <a name="pcProj"><h5>PC Project</h5></a><p>
-                            Main program of the project, the PC application.
-                            <p>The PC application responsible for the user interface, test methods, calibration methods and solving the cube.
-                            <p>This project is divided into the following main modules:</p>
-                                <ul>
-                                    <li>The Algorithm: receives the cube representation and calculates the required solving steps (to be
-                                        executed by the robot)
-                                    </li>
-                                    <li>The Cube: creating a Java class which holds the cube’s representation and relevant data (passed as
-                                        an input to the algorithm)
-                                    </li>
-                                    <li>The Robot: creating our own friendly API for scanning and manipulating the cube</li>
-                                </ul>
-                        <a name="utProj"><h5>Unit Test Project</h5></a><p>
-                            This project contains all the projects' unit testing
-                    
+            <ul>
+                <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html">Java
+                        SE Development Kit 7 - 32 bit</a></li>
+                <li><a href="https://www.lego.com/en-us/mindstorms/downloads/nxt-software-download">LEGO® MINDSTORMS®
+                    NXT 2.0</a></li>
+                <li><a href="http://www.lejos.org/nxj-downloads.php">leJOS NXJ</a></li>
+                <li><a href="http://www.eclipse.org/downloads/eclipse-packages/">Eclipse IDE for Java Developers - 32
+                    bit</a></li>
+                <li><a href="https://lejos.sourceforge.io/nxt/nxj/tutorial/Preliminaries/UsingEclipse.htm">leJOS NXJ
+                    Plug-in for Eclipse</a></li>
+            </ul>
+
+            <a name="buildInst"><h5>Build Instructions</h5></a>
+            <p>
+                First, build the NXT project and upload it to the brick using leJOS NXJ Plug-in in Eclipse.
+                <br>Only then build the PC project and run it. Upon running it will automaticlly connect to the NXT,
+                and will be ready for operation.
+            </p>
+
+            <a name="architecture"><h4 class="midTitle">Project Architecture</h4></a>
+            <p>
+                Due to the fact that the color sensor read method (RGB mode) is not implemented in the PC mode of
+                LeJOS, and on the other hand the algorithm cannot run in NXT mode due to insufficient memory,
+                we divided the project to two applications.
+                <br>We've implemented a communication between the PC application that's running the algorithm and
+                the NXT application that performs all of the robot's operations including the unimplemented
+                color sensor read operation.
+            </p>
+
+            <h5 style="text-decoration: underline">The Project is divided into the three following sub-projects:</h5>
+            <a name="nxtProj"><h5>1) NXT Project</h5></a>
+            <p>Running simple program waiting for commands from the PC application.</p>
+            <a name="pcProj"><h5>2) PC Project</h5></a>
+            <p>Main program of the project, the PC application. Responsible for the user interface, test methods,
+                calibration methods and solving the cube.
+            <br>This project is divided into the following main modules:
+            <ul>
+                <li>The Algorithm: receives the cube representation and calculates the required solving steps (to be
+                    executed by the robot)
+                </li>
+                <li>The Cube: creating a Java class which holds the cube’s representation and relevant data (passed as
+                    an input to the algorithm)
+                </li>
+                <li>The Robot: creating our own friendly API for scanning and manipulating the cube</li>
+            </ul></p>
+            <a name="utProj"><h5>3) Unit Test Project</h5></a>
+            <p>This project contains all the projects' unit testing</p>
+
+            <a name="reqAndAssump"><h4 class="midTitle">Requirements & Assumptions</h4></a>
+            <ol>
+                <li>The NXT robot was built according to the <a href="http://mindcuber.com/mindcuber/MindCuber.pdf">building instructions</a></li>
+                <li>The robot's arm is at it's startup position before running the application (as in the attached videos above)</li>
+                <li>The robot is calibrated (see <a href="#userGuide">User Guide</a>)</li>
+                <li>The lighting conditions is stable during the robot's operation</li>
+                <li>The Rubik's Cube is provided in a valid state (so that it is is guaranteed that a solution exists)</li>
+            </ol>
+
             <a name="robotClass"></a>
                     <h4 class="midTitle">The Robot Class</h4>
                     
@@ -202,44 +205,47 @@ public static void rotateCube(Direction direction) {
                             </code></pre></p>
 
 
+            <a name="colorScan"><h5>Color Scan</h5></a>
+            <p>
+                The NXT's color sensor is problematic and unreliable, so we needed to be creative in order to scan the
+                cube.
+                <br>Those are the phases of our color scanning development:
+            <ol>
+                <li>
+                    We started with the ‘ReadColorId’ method supplied in LeJOS API.
+                    We quickly understood that it cannot distinct between red and orange and therefore is useless.
+                </li>
+                <li>
+                    Later on we've used the RGB representation reading of each color.
+                    In order to utilize those readings, we've added calibration method that saves the RGB read of each
+                    color
+                    before starting solving the cube.
+                    Then, when scanning the face and read RGB of some color, we've searched for the closest color with
+                    the calibrated data we saved before.
+                    But... we still had problems with red and orange colors!
+                </li>
+                <li>
+                    Our next step was to develop color corrector method.
+                    Since each of the cube's corners are deterministic, we can correct any red and orange mistakes in
+                    the cube's corners by looking at their neighbors.
+                    More about it can be learned below.
+                    And yet it wasn't enough! We were on 70% success rate because we still had problems with red and
+                    orange colors that are not on the corners...
+                </li>
+                <li>
+                    SHIFT DELETE.
+                    We needed to redesign the color reading method, we've decided to calculate the colors relatively.
+                    First scan RGB colors of the whole cube.
+                    Then, filter out all the white readings by their destination to the calibrated data (similar to step
+                    2 above).
+                    Last, converting the readings to HSV format, and sorting them by their hue value.
+                    The first 9 lowest hue values are defined as red, the next 9 defined as orange, etc.
+                    Now, under good lighting conditions we're on 99% success rate!
+                </li>
+            </ol>
 
-                    <a name="colorScan"><h5>Color Scan</h5></a><p>
-                    
-                            The NXT's color sensor is problematic and unrelaiable, so we needed to be creative in order to scan the cube.
-                            
-                            <p>Those are the phases of our color scaning development:
-                            <ol>
-                                <li>
-                                        We've started with the simple ReadColorId method supplied with the LeJOS API.
-                                        We've understanded very quick that this method cannot different at all between red and orange colors 
-                                        so it was useless for us.
-                                
-                                <li>
-                                        Later on we've used the RGB representation reading of each color.
-                                        In order to utilize those readings, we've added calibration method that saves the RGB read of each color
-                                        before starting solving the cube.
-                                        Then, when scanning the face and read RGB of some color, we've searched for the closest color with
-                                        the calibrated data we saved before.
-                                        But... we still had problems with red and orange colors!
-                                        
-                                <li>
-                                        Our next step was to develop color corrector method.
-                                        Since each of the cube's corners are deterministic, we can correct any red and orange mistakes in the cube's corners by looking at thier neighbors.
-                                        More about it can be learned below.
-                                        And yet it wasn't enough! We were on 70% success rate because we still had problems with red and orange colors that are not on the corners...
-                                 
-                                <li>
-                                        SHIFT DELETE.
-                                        We needed to redesign the color reading method, we've decided to calculate the colors relatively. 
-                                        First scan RGB colors of the whole cube. 
-                                        Then, filter out all the white readings by thier destination to the calibrated data (similar to step 2 above). 
-                                        Last, converting the readings to HSV format, and sorting them by thier hue value.
-                                        The first 9 lowest hue values are defined as red, the next 9 defined as orange and cetera... 
-                                        Now, under good lighting conditions we're on 99% success rate!                                        
-                            </ol>
-
-                            <p>Following is the method responsible for scanning single cube's face
-                            <pre class="CodeBox"><code>
+            <p>Following is the method responsible for scanning single cube's face
+            <pre class="CodeBox"><code>
 /**
  * Scan cube's face
  * 
@@ -256,7 +262,7 @@ public static void scanFace(ArrayList<RawColor> allColors, Orientation orientati
     for (coordinate = 0; coordinate < 8; coordinate++) {
         row = COORDINATE_SCAN_ORDER[coordinate][0];
         col = COORDINATE_SCAN_ORDER[coordinate][1];
-        location = coordinate % 2 == 0 ? SensorLocation.ALLIGN : SensorLocation.CORNER;
+        location = coordinate % 2 == 0 ? SensorLocation.ALIGN : SensorLocation.CORNER;
         ColorDetector.setMotorLocation(location);
         rgb = ColorDetector.sensor.readColorRgb(SENSOR_NUMBER_OF_SAMPLES);
         RawColor rawColor = new RawColor(orientation, row, col, rgb);
@@ -392,8 +398,8 @@ public void rotateTo(int limitAngle) {
 }
                             </code></pre></p>
                             
-                            <p>This data sent as bytes to the NXT application. Upon receiveing the raw bytes data,
-                            the NXT application interpretes and act upon it:
+                            <p>This data sent as bytes to the NXT application. Upon receiving the raw bytes data,
+                            the NXT application interprets and act upon it:
                             <pre class="CodeBox" style="width: 600px"><code>
 /**
  * Run the main loop waiting for command from PC
@@ -644,7 +650,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                 Cube is represented in 3 levels:
 				<br><b> Facelets Level </b> - cube is represented by an 54 entries array. Each entry is one of the 6 possibe colors of cube faces.
 				This is the initial, most simple representation.
-				<br><b> Cubie Level </b> - cube is represented by it's coreners and edges permutations and orientations, compared to a solved cube.
+				<br><b> Cubie Level </b> - cube is represented by it's corners and edges permutations and orientations, compared to a solved cube.
 				This representation tells us where to move and how to rotate each corner and where to move and how to flip each edge in order to reach a given cube from a solved cube.
 				Using this representation, we can define the inverse cube of a cube, which is a cube that if we perform the set of moves created it from a solved cube on the original cube, we reach the solved cube.
 				We can also define a multiplication of two cubes. You can think of multiplying cube A by cube B like taking a set of moves that transform a solved cube into B cube and perform it on A.
@@ -680,7 +686,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
 
             <h5>Algorithm Unit Tests</h5>
             <p>
-                Since most of our logic in the project containd in the algorithm module, we've
+                Since most of our logic in the project contained in the algorithm module, we've
                 put our best efforts testing it using unit tests, and indeed we've reached 96.8% coverage rate!
                 <p>We used the Junit framework to test our algorithm.
                 <br>We have 4 test cases: CoordCube, CubieCube, FaceCube and Search.
@@ -717,7 +723,7 @@ actions[Orientation.L.getValue()] = new Action(FlipMethod.SINGLE, Direction.NONE
                                 <ul>
                                         <li>Brute force - performs random robot's operations</li>
                                         <li>Read color - read current color and print result to logger</li>
-                                        <li>Flip cube - perfors cube flipping operations</li>
+                                        <li>Flip cube - performs cube flipping operations</li>
                                 </ul>
                             </li><p>
                             
