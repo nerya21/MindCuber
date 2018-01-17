@@ -157,7 +157,6 @@ public class CubeSolver {
 	 *  
 	 * @param orientation The cube's orientation
 	 * @return The face's color
-	 * @see #convertFaceColor2Orientation(Color faceColor)
 	 */
 	private static Color convertOrientation2FaceColor(Orientation orientation) {
 		switch (orientation) {
