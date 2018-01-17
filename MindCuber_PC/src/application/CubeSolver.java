@@ -65,7 +65,7 @@ public class CubeSolver {
 	private static int solveCube(String pattern) {
 		Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Solving cube started");
 		ICube cube = new Cube();
-		//Robot.waitForCube();
+		Robot.waitForCube();
 		cube.setColors();
 		int errorCode = 0;
 		String cubeString = createCubeRepForAlgorithm(cube);
