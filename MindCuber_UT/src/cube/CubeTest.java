@@ -1,7 +1,5 @@
 package cube;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import robot.Direction;
@@ -16,6 +14,7 @@ public class CubeTest {
 	@Test
 	public void testCube() {
 		try {
+			@SuppressWarnings("unused")
 			Cube c = new Cube();
 		}
 		catch (Exception e) {
