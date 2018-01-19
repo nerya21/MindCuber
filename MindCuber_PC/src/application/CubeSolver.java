@@ -77,11 +77,11 @@ public class CubeSolver {
 		} else {
 			Logger.log(LoggerLevel.INFO, LoggerGroup.APPLICATION, "Start calculating moves to solution");
 			List<Move> moves = new ArrayList<>();
-			int depth = 24;
+			int depth = 24; //24 steps are enough to solve the cube
 			do {
-				errorCode = TwoPhase.findSolution(cubeString, depth - 1, 30, moves, pattern);
-				depth = moves.size();
-			} while (errorCode == 0 && depth > 0); 
+				errorCode = TwoPhase.findSolution(cubeString, depth, 30, moves, pattern);
+				depth = moves.size() - 1; //try solve with less steps
+			} while (errorCode == 0 && depth > 0);
 			
 			//if found a solution (status = 0 when the cube is already solved) 
 			if (moves.size() != 0 || errorCode == 0) {
